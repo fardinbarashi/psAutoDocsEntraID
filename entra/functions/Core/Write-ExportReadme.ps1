@@ -41,7 +41,6 @@ function Write-ExportReadme {
         @{ N = 'Report\excelkpi';      D = 'The KPI workbook "KPI <stamp>.xlsx": dashboard, charts and one analysed sheet per area.' }
         @{ N = 'Report\svg';           D = 'Vector maps of the tenant (open in a web browser). That folder has its own README.' }
         @{ N = 'Report\pdf';           D = 'PDF copies of every SVG map, gathered in one place for sharing or printing.' }
-        @{ N = 'Report\visio';         D = 'The same maps as editable Visio drawings (.vsdx).' }
         @{ N = 'Report\word';          D = 'The Word system-documentation report (.docx).' }
     )
 

@@ -8,7 +8,7 @@ function Invoke-AutodocReport {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][string]$EntraRoot,
-        [Parameter(Mandatory)][ValidateSet('Excel','Visio','Svg','Word','Html')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('Excel','Svg','Word','Html')][string]$Kind,
         [string]$SourceFolder,
         [string]$WordLanguage,
         [string]$WordCompanyLogo,
@@ -44,19 +44,6 @@ function Invoke-AutodocReport {
             'Excel' {
                 Build-EntraExcelReport -ExportsRoot $exportsRoot @extra | Out-Null
                 if ($src) { $outFolder = Join-Path $src 'Report\excelkpi' }
-            }
-            'Visio' {
-                # Visio files only (the two .vsdx). SVG has its own tab now.
-                if (-not $src) {
-                    Write-Host "No export folder to build a map from - run a collection first." -ForegroundColor Yellow
-                } else {
-                    Write-Host "Building Visio maps from: $src" -ForegroundColor Cyan
-                    Build-LicenceMapVisio -SourceFolder $src | Out-Null
-                    Build-OrgMapVisio     -SourceFolder $src | Out-Null
-                    Write-Host ""
-                    Write-Host "Done. Visio files: $(Join-Path $src 'Report\visio')" -ForegroundColor Green
-                    $outFolder = Join-Path $src 'Report\visio'
-                }
             }
             'Svg' {
                 # SVG files only (all maps), into the svg folder.

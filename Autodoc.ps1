@@ -47,7 +47,7 @@ $runAction = {
         'ReportDocs' {
             $fmts = @($request.Formats)
             if (-not $fmts -or $fmts.Count -eq 0) {
-                Write-Host "No formats selected - tick at least one (Excel, Visio, SVG, Word)." -ForegroundColor Yellow
+                Write-Host "No formats selected - tick at least one (Excel, SVG, HTML, Word)." -ForegroundColor Yellow
             } else {
                 foreach ($fmt in $fmts) {
                     Invoke-AutodocReport -EntraRoot $EntraRoot -Kind $fmt -SourceFolder $request.SourceFolder `

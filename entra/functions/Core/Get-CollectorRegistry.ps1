@@ -85,7 +85,7 @@ function Get-CollectorRegistry {
         }
         [pscustomobject]@{
             Key = 'Summary'; Name = 'Consolidated summary'; Owner = 'Summary'; Slow = $false
-            Description = 'TenantSummary workbook + index. For creating excel, visio and doc files.'
+            Description = 'TenantSummary workbook + index. For creating Excel, SVG, HTML and Word files.'
             Invoke = { param($c) Export-TenantSummary -Paths $c.Paths -Collected $c.Collected; $null }
         }
     )

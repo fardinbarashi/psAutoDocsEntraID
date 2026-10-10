@@ -17,6 +17,13 @@ function Export-TenantSummary {
         Write-Host "Start $Section" -ForegroundColor Yellow
 
         $fileDate = $Paths.FileDate
+        # paths are shown from "Entra\files\exports\..." onwards, not the full machine path
+        function ShortExportPath($path) {
+            $p = "$path"
+            if ($p -match '(?i)[\\/](entra[\\/]files[\\/]exports[\\/].*)$') { $p = $Matches[1] -replace '/', '\' -replace '^(?i)entra\\', 'Entra\' }
+            $p
+        }
+        $exportShort = ShortExportPath $Paths.Export
 
         # Pull datasets from the shared collection (missing = $null)
         $tenantData        = $Collected['TenantData']
@@ -95,7 +102,7 @@ function Export-TenantSummary {
             [pscustomobject]@{ Category = "RBAC";               Metric = "RBAC records";                        Value = (Get-DataRowCount -Data $rbac) }
             [pscustomobject]@{ Category = "Password Reset";     Metric = "SSPR enabled scope";                  Value = $passwordReset.SsprEnabledScope }
             [pscustomobject]@{ Category = "Export";             Metric = "Export generated at";                 Value = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss") }
-            [pscustomobject]@{ Category = "Export";             Metric = "Export folder";                       Value = $Paths.Export }
+            [pscustomobject]@{ Category = "Export";             Metric = "Export folder";                       Value = $exportShort }
         )
 
         $summaryIndexData = foreach ($dataSet in $summaryDataSets) {
@@ -105,9 +112,9 @@ function Export-TenantSummary {
                 WorksheetName = (Get-SafeExcelWorksheetName -Name $dataSet.WorksheetName)
                 RowCount      = $rowCount
                 Status        = if ($rowCount -gt 0) { "OK" } else { "No data or section failed" }
-                CsvPath       = $dataSet.CsvPath
-                JsonPath      = $dataSet.JsonPath
-                ExcelPath     = $dataSet.ExcelPath
+                CsvPath       = ShortExportPath $dataSet.CsvPath
+                JsonPath      = ShortExportPath $dataSet.JsonPath
+                ExcelPath     = ShortExportPath $dataSet.ExcelPath
                 Description   = $dataSet.Description
             }
         }

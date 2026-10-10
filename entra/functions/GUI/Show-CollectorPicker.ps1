@@ -94,7 +94,7 @@ function Show-CollectorPicker {
         }
     })
 
-    # Report source only applies to the report tabs (Excel/Visio/Word), not to
+    # Report source only applies to the report tabs (Excel/SVG/HTML/Word), not to
     # Download Data (which collects fresh data). Hide the panel on that tab.
     $actionTabs        = $window.FindName('ActionTabs')
     $reportSourcePanel = $window.FindName('ReportSourcePanel')
@@ -115,7 +115,6 @@ function Show-CollectorPicker {
 
     # document-format checkboxes on the Generate Documents tab
     $docExcel = $window.FindName('DocExcel')
-    $docVisio = $window.FindName('DocVisio')
     $docSvg   = $window.FindName('DocSvg')
     $docWord  = $window.FindName('DocWord')
     $docHtml  = $window.FindName('DocHtml')
@@ -180,7 +179,6 @@ function Show-CollectorPicker {
             'Generate Documents' {
                 $formats = @()
                 if ($docExcel.IsChecked) { $formats += 'Excel' }
-                if ($docVisio.IsChecked) { $formats += 'Visio' }
                 if ($docSvg.IsChecked)   { $formats += 'Svg' }
                 if ($docWord.IsChecked)  { $formats += 'Word' }
                 if ($docHtml.IsChecked)  { $formats += 'Html' }

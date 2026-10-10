@@ -247,7 +247,6 @@
                             <StackPanel>
                                 <TextBlock Text="Formats" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,10"/>
                                 <CheckBox x:Name="DocExcel" Margin="0,0,0,8"><TextBlock><Run Text="Excel report"/><Run Text="  (KPI workbook)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
-                                <CheckBox x:Name="DocVisio" Margin="0,0,0,8"><TextBlock><Run Text="Visio maps"/><Run Text="  (not implemented yet)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
                                 <CheckBox x:Name="DocSvg"   Content="SVG maps" Margin="0,0,0,8"/>
                                 <CheckBox x:Name="DocHtml"  Margin="0,0,0,8"><TextBlock TextWrapping="Wrap"><Run Text="HTML report"/><Run Text="  (Builds the SVG maps automatically if they aren't made yet)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
                                 <CheckBox x:Name="DocWord"  Margin="0,0,0,8"><TextBlock><Run Text="Word report"/></TextBlock></CheckBox>

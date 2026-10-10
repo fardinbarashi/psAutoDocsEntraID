@@ -70,13 +70,8 @@ function Build-EntraWordReport {
     $uMembers  = @($users | Where-Object { "$($_.UserType)" -ne 'Guest' }).Count
     $uEnabled  = @($users | Where-Object { $_.AccountEnabled }).Count
     $uDisabled = @($users | Where-Object { -not $_.AccountEnabled }).Count
-    $grpDyn    = @($groups | Where-Object { @($_.GroupTypes) -contains 'DynamicMembership' }).Count
-    $grpM365   = @($groups | Where-Object { (@($_.GroupTypes) -contains 'Unified') -or ("$($_.GroupCategory)" -match 'Microsoft 365|Unified') }).Count
-    $grpSec    = @($groups | Where-Object { "$($_.GroupCategory)" -match 'Security' }).Count
-    $grpOnprem = @($groups | Where-Object { $_.OnPremisesSyncEnabled }).Count
-    $grpCloud  = (@($groups).Count - $grpOnprem)
-    $rbacActive   = @($rbac | Where-Object { "$($_.AssignmentType)" -match 'Active' }).Count
-    $rbacEligible = @($rbac | Where-Object { "$($_.AssignmentType)" -match 'Eligible' }).Count
+    $rbacActive   = @($rbac | Where-Object { $_.RecordType -eq 'RoleAssignmentActive' }).Count     # same rule as the Excel RBAC sheet
+    $rbacEligible = @($rbac | Where-Object { $_.RecordType -eq 'RoleAssignmentEligible' }).Count
     $caEnabled  = @($caPol | Where-Object { "$($_.State)" -eq 'enabled' }).Count
     $caReport   = @($caPol | Where-Object { "$($_.State)" -match 'report' }).Count
     $caDisabled = @($caPol | Where-Object { "$($_.State)" -eq 'disabled' }).Count
@@ -87,16 +82,8 @@ function Build-EntraWordReport {
     # ---- tenant-structure figures (all from the exported JSON) ----
     function Num($n) { ([int]$n).ToString('N0', [Globalization.CultureInfo]::InvariantCulture) -replace ',', ' ' }
     function Pct($v) { $s = '{0:0.#}' -f [double]$v; if ($lang -eq 'sv') { $s = $s -replace '\.', ',' }; "$s %" }
-    $mAssigned = [int]((@($licenses | ForEach-Object { [int]$_.consumedUnits }) | Measure-Object -Sum).Sum)
-    $mUnused   = [int]((@($licenses | ForEach-Object { [int]$_.freeUnits }) | Measure-Object -Sum).Sum)
-    $mSkus     = @($licenses).Count
     $rbacAssign = @($rbac | Where-Object { "$($_.RecordType)" -like 'RoleAssignment*' })
     if (-not $rbacAssign.Count) { $rbacAssign = @($rbac | Where-Object { "$($_.RoleDefinitionName)" }) }
-    $mRoleAssign    = $rbacAssign.Count
-    $mDistinctRoles = @($rbacAssign | Where-Object { $_.RoleDefinitionName } | Select-Object -ExpandProperty RoleDefinitionName -Unique).Count
-    $privRoles = @('Global Administrator', 'Privileged Role Administrator', 'Privileged Authentication Administrator', 'Security Administrator', 'Conditional Access Administrator', 'Application Administrator', 'Cloud Application Administrator', 'User Administrator', 'Exchange Administrator', 'SharePoint Administrator', 'Intune Administrator', 'Hybrid Identity Administrator', 'Domain Name Administrator', 'Directory Synchronization Accounts', 'Partner Tier2 Support')
-    $mPrivAssign = @($rbacAssign | Where-Object { $privRoles -contains "$($_.RoleDefinitionName)" }).Count
-    $mAppsWithSp = @($apps | Where-Object { $_.ServicePrincipalExists -eq $true -or "$($_.ServicePrincipalExists)" -match 'True|Yes' }).Count
 
     # ---- OOXML building blocks ----
     function XmlEsc([string]$s) { if ($null -eq $s) { return '' }; $s -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' }
@@ -115,7 +102,6 @@ function Build-EntraWordReport {
     function GreyPar($k) { Par -Text (T $k) -Color '808080' }
     function Manual { GreyPar 'Manual' }
     function H1($t) { Par -Text $t -Style 'Heading1' }
-    function Bullet($t) { "<w:p><w:pPr><w:ind w:left='420' w:hanging='220'/></w:pPr><w:r><w:t xml:space='preserve'>&#8226;  </w:t></w:r><w:r><w:t xml:space='preserve'>$(XmlEsc $t)</w:t></w:r></w:p>" }
     function Note($t) { Par -Text $t -Color '808080' }
     function BoldRuns($text, $phrases) {
         $rest = "$text"; $runs = ''
@@ -204,6 +190,26 @@ function Build-EntraWordReport {
     # ---- body ----
     $sb = [System.Text.StringBuilder]::new()
 
+    # KPI cards: the same figures as the cards at the top of each Excel KPI sheet
+    $kpiCards = try { Get-KpiCardData -SourceFolder $src } catch { [ordered]@{} }
+    function CardVal($area, $label) {
+        $c = @($kpiCards[$area] | Where-Object { $_.Label -eq $label }) | Select-Object -First 1
+        if ($c -and "$($c.Value)" -match '^\d+$') { Num $c.Value } elseif ($c) { "$($c.Value)" } else { '' }
+    }
+    function KpiCards($area) {
+        $cards = @($kpiCards[$area])
+        if (-not $cards.Count) { return '' }
+        $per = if ($cards.Count -le 6) { $cards.Count } else { [math]::Ceiling($cards.Count / 2) }
+        $xml = ''
+        for ($i = 0; $i -lt $cards.Count; $i += $per) {
+            $chunk = @($cards[$i..([math]::Min($i + $per, $cards.Count) - 1)])
+            $w = [int](9000 / $chunk.Count)
+            $xml += Tbl -Header -Rows @(@($chunk | ForEach-Object { $_.Label }), @($chunk | ForEach-Object { CardVal $area $_.Label })) -ColW @(1..$chunk.Count | ForEach-Object { $w })
+            $xml += Par ''
+        }
+        $xml
+    }
+
     # cover
     # cover table: label | value | consultant logo (logo cell spans both rows)
     $cLogo = LogoDrawing $consultantLogo 1.9
@@ -287,18 +293,16 @@ function Build-EntraWordReport {
         [void]$sb.Append((Tbl -Header -BoldFirstCol -Rows $trows -ColW @(3000, 6000)))
         [void]$sb.Append((Par ''))
         # narrative summary (figures filled from the JSON)
-        [void]$sb.Append((Par ((T 'CH4_text_p1') -f (Num $tenant.Users), (Num $tenant.Devices), (Num $mAssigned), (Num $mSkus), (Num $mUnused))))
-        [void]$sb.Append((Par ((T 'CH4_text_p2') -f (Num $tenant.Groups), (Num $grpSec), (Num $grpM365), (Num $tenant.AppRegistrations), (Num $mAppsWithSp), (Num $mDistinctRoles), (Num $mRoleAssign), (Num $mPrivAssign))))
+        [void]$sb.Append((Par ((T 'CH4_text_p1') -f (CardVal 'Dashboard' 'Users'), (CardVal 'Dashboard' 'Devices'), (CardVal 'Dashboard' 'Assigned licences'), (CardVal 'Dashboard' 'Purchased SKUs'), (CardVal 'Dashboard' 'Unused units'))))
+        [void]$sb.Append((Par ((T 'CH4_text_p2') -f (CardVal 'Dashboard' 'Total groups'), (CardVal 'Dashboard' 'Security groups'), (CardVal 'Dashboard' 'Microsoft 365 groups'), (CardVal 'Dashboard' 'Total app registrations'), (CardVal 'Dashboard' 'Apps with service principal'), (CardVal 'Dashboard' 'Distinct roles'), (CardVal 'Dashboard' 'Role assignments'), (CardVal 'Dashboard' 'Privileged assignments'))))
         [void]$sb.Append((Par ''))
         # Table 2 - key figures (two label/value pairs per row)
         $krows = @(, @('Category', 'Value', 'Category', 'Value'))
-        $krows += , @('Users', (Num $tenant.Users), 'Total groups', (Num $tenant.Groups))
-        $krows += , @('Devices', (Num $tenant.Devices), 'Security groups', (Num $grpSec))
-        $krows += , @('Assigned licences', (Num $mAssigned), 'Microsoft 365 groups', (Num $grpM365))
-        $krows += , @('Purchased SKUs', (Num $mSkus), 'Total app registrations', (Num $tenant.AppRegistrations))
-        $krows += , @('Unused units', (Num $mUnused), 'Apps with service principal', (Num $mAppsWithSp))
-        $krows += , @('Distinct roles', (Num $mDistinctRoles), 'Role assignments', (Num $mRoleAssign))
-        $krows += , @('Privileged assignments', (Num $mPrivAssign), '', '')
+        foreach ($pair in @(@('Users', 'Total groups'), @('Devices', 'Security groups'), @('Assigned licences', 'Microsoft 365 groups'),
+                @('Purchased SKUs', 'Total app registrations'), @('Unused units', 'Apps with service principal'),
+                @('Distinct roles', 'Role assignments'), @('Privileged assignments', ''))) {
+            $krows += , @($pair[0], (CardVal 'Dashboard' $pair[0]), $pair[1], $(if ($pair[1]) { CardVal 'Dashboard' $pair[1] } else { '' }))
+        }
         [void]$sb.Append((Tbl -Header -Rows $krows -ColW @(2600, 1900, 2600, 1900)))
     }
     else { [void]$sb.Append((RedMissing (T 'S3_1'))) }
@@ -375,15 +379,7 @@ function Build-EntraWordReport {
 
     [void]$sb.Append((H2 (T 'S5_2')))
     [void]$sb.Append((Par (T 'Exp_Groups')))
-    if ($groups.Count) {
-        $grows = @(, @((T 'L_GroupTypeSource'), (T 'L_Count')))
-        $grows += , @((T 'L_SecurityGroups'), ('{0:N0}' -f $grpSec))
-        $grows += , @((T 'L_M365Groups'), ('{0:N0}' -f $grpM365))
-        $grows += , @((T 'L_DynamicGroups'), ('{0:N0}' -f $grpDyn))
-        $grows += , @((T 'L_CloudGroups'), ('{0:N0}' -f $grpCloud))
-        $grows += , @((T 'L_OnPremSynced'), ('{0:N0}' -f $grpOnprem))
-        [void]$sb.Append((Tbl -Header -Rows $grows -ColW @(5000, 4000)))
-    }
+    if ($kpiCards['Groups']) { [void]$sb.Append((KpiCards 'Groups')) }
     else { [void]$sb.Append((RedMissing (T 'S5_2'))) }
     [void]$sb.Append((Par (T 'Grp_types_p')))
     [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 08 Groups overview, check also svg Groups'))
@@ -402,6 +398,7 @@ function Build-EntraWordReport {
 
     [void]$sb.Append((H2 (T 'S5_3')))
     [void]$sb.Append((Par (T 'Exp_RBAC')))
+    [void]$sb.Append((KpiCards 'Rbac'))
     if ($rbac.Count) { [void]$sb.Append((Par ((T 'S5_3_body') -f $rbacActive, $rbacEligible))) }
     else { [void]$sb.Append((RedMissing (T 'S5_3'))) }
     [void]$sb.Append((Par (T 'Role_p1')))
@@ -425,6 +422,7 @@ function Build-EntraWordReport {
 
     [void]$sb.Append((H2 (T 'S6_1')))
     [void]$sb.Append((Par (T 'Exp_CA')))
+    [void]$sb.Append((KpiCards 'ConditionalAccess'))
     if ($caPol.Count) {
         [void]$sb.Append((Par ((T 'S6_1_body') -f $caPol.Count, $caEnabled, $caReport, $caDisabled)))
         $crows = @(, @((T 'L_Policy'), (T 'L_State')))
@@ -453,6 +451,7 @@ function Build-EntraWordReport {
     [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi fliken for SSPR, check also svg for SSPR'))
     [void]$sb.Append((H2 (T 'L_AppRegs')))
     [void]$sb.Append((Par (T 'Exp_AppReg')))
+    [void]$sb.Append((KpiCards 'AppRegistrations'))
     if ($apps.Count) {
         $expired = @($apps | Where-Object { $_.CredentialExpired -eq $true -or "$($_.CredentialExpired)" -eq 'True' }).Count
         [void]$sb.Append((Par ((T 'S7_1_body') -f $apps.Count, $appSingle, $appMulti, $expired)))
@@ -469,18 +468,12 @@ function Build-EntraWordReport {
     $spApps = @($apps | Where-Object { IsYes $_.ServicePrincipalExists })
     if ($spApps.Count) {
         $spTotal  = $spApps.Count
-        $spSso    = @($spApps | Where-Object { IsYes $_.SSOConfigured }).Count
-        $spUsed   = @($spApps | Where-Object { IsYes $_.UsedWithin30Days }).Count
         $spGraph  = @($spApps | Where-Object { IsYes $_.UsesGraphPermissions }).Count
         $spPublic = @($spApps | Where-Object { IsYes $_.PublicClient }).Count
-        $spRisk   = @($spApps | Where-Object { $f = try { Get-AppRiskFinding -App $_ } catch { $null }; $f -and $f.Risk }).Count
         $grpApps = @{}
         foreach ($g in $groups) { foreach ($an in @("$($g.Applications)" -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ })) { $grpApps[$an] = $true } }
         $spViaGrp = @($spApps | Where-Object { $grpApps.ContainsKey("$($_.AppName)") }).Count
-        [void]$sb.Append((Tbl -Header -Rows @(
-                    @('Apps with service principal', 'SSO configured', 'Without SSO', 'Used last 30 days', 'Uses Graph API', 'Apps with risk'),
-                    @((Num $spTotal), (Num $spSso), (Num ($spTotal - $spSso)), (Num $spUsed), (Num $spGraph), (Num $spRisk))
-                ) -ColW @(1700, 1450, 1400, 1550, 1450, 1450)))
+        [void]$sb.Append((KpiCards 'EnterpriseApps'))
         $kpiTbl = {
             param($title, $hdr, $pairs)
             [void]$sb.Append((Par ''))
@@ -704,5 +697,14 @@ function Build-EntraWordReport {
     Remove-Item -LiteralPath $tmp -Recurse -Force
 
     Write-Host "  Word report: $out" -ForegroundColor DarkGreen
+    Write-Host ""
+    if ($lang -eq 'sv') {
+        Write-Host "  Nu är Word-filen klar, men allt kopieras inte över från Excel och SVG rakt in i Word." -ForegroundColor Yellow
+        Write-Host "  Ta en titt på Word-filen och de andra filerna, och kopiera och klistra in diagram och bilder i systemdokumentationen." -ForegroundColor Yellow
+    }
+    else {
+        Write-Host "  The Word file is ready, but not everything is copied over from Excel and SVG straight into Word." -ForegroundColor Yellow
+        Write-Host "  Review the Word file and the other files, and copy and paste charts and images into the system documentation." -ForegroundColor Yellow
+    }
     return $out
 }
