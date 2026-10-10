@@ -304,15 +304,7 @@ current usage against the documented Microsoft Entra service limits
 ---
 
 ## Roadmap
-1. Buggfix for App-reg. Wrong date ? 
-2. Implement the **Word** system-documentation.
-3. Implement **Visio** map export .
 
-4. Implent more Service limits & recommendations.
-5. if add hybrid Entra connect helth
-
-Last. Automated documentation of **Windows Servers** — installed roles and
-  configurations.
 
 
 ---
