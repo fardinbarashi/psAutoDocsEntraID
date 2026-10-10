@@ -4,8 +4,6 @@
 ![](https://github.com/fardinbarashi/psAutoDocs/blob/main/githubRepoContentDeleteIfYouWant/screenshots/Excel%20dashboard.jpg)
 ![](https://github.com/fardinbarashi/psAutoDocs/blob/main/githubRepoContentDeleteIfYouWant/data-mock%20(Lab%20Contoso)/svg/EntraID%20-%20Hub%202026-08-02_20.01.53.svg) 
 
-> **Status: beta.** Autodoc is under active development — 
-Word and Visio output aren't finished yet, and things may change between versions.
 
 ## Table of Contents
 - [About](#about)
@@ -71,8 +69,7 @@ documentation:
 
     README.md        Describes every folder and documents each JSON file
    
-   visio\           Visio drawings (not implemented yet)
-   word\            Word report (not implemented yet)
+   word\            Word report
 
 ```
 ---
@@ -146,7 +143,6 @@ Entra\
       Groups\ Users\ ...    Per-area collectors
       Reports\
          Excel\             KPI workbook and sheets
-         Visio\Svg\         SVG map builders
          Word\              Word templates + resolver (builder in progress)
          Common\            Shared helpers (KPI, limits, PDF, glossary)
    Settings\                Word templates, script settings
@@ -304,15 +300,7 @@ current usage against the documented Microsoft Entra service limits
 ---
 
 ## Roadmap
-1. Buggfix for App-reg. Wrong date ? 
-2. Implement the **Word** system-documentation.
-3. Implement **Visio** map export .
 
-4. Implent more Service limits & recommendations.
-5. if add hybrid Entra connect helth
-
-Last. Automated documentation of **Windows Servers** — installed roles and
-  configurations.
 
 
 ---
