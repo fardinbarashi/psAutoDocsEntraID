@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-ConditionalAccessData {
     <#
-        Section 1.5 — Conditional Access policies, named locations and
+        Section 1.5 - Conditional Access policies, named locations and
         authentication strength policies, with IDs resolved to display names.
         Requires Policy.Read.All (+ User/Group/Application.Read.All for lookups).
 

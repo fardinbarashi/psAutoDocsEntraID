@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-LicenseReferenceData {
     <#
         Loads the Microsoft licensing reference CSV and builds lookup tables

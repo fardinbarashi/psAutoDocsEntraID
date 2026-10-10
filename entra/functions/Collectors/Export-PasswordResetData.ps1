@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-PasswordResetData {
     <#
-        Section 1.7.1 — Self-service password reset (SSPR) configuration:
+        Section 1.7.1 - Self-service password reset (SSPR) configuration:
         enabled scope, available methods, security questions and admin SSPR.
         Requires Policy.Read.All.
     #>

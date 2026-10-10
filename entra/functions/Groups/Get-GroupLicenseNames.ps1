@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GroupLicenseNames {
     <# Resolves a group's assigned licenses to friendly names. #>
     param(

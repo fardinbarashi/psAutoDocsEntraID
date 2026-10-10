@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Resolve-AutodocSource {
     <#
         Resolves which export folder a report should build from: the explicit

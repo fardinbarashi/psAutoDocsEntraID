@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-EntraSvgMaps {
     <#
         Builds every SVG map for an export into <export>\Report\svg and returns
@@ -8,6 +9,11 @@ function Build-EntraSvgMaps {
     param(
         [Parameter(Mandatory)][string]$SourceFolder
     )
+
+    # remove any earlier set of maps first, so running SVG + HTML (+ Word) together,
+    # or re-running, leaves a single current set instead of duplicates
+    $svgDir = Join-Path $SourceFolder 'Report\svg'
+    if (Test-Path $svgDir) { Get-ChildItem -Path $svgDir -Filter '*.svg' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue }
 
     Build-KpiDashboardSvg         -SourceFolder $SourceFolder | Out-Null   # KPI charts (Excel graphs as doughnuts)
     Build-LicenceMapSvg           -SourceFolder $SourceFolder | Out-Null   # licences

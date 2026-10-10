@@ -1,8 +1,9 @@
+# Autodoc v1.0
 function Get-EntraLimitStatus {
     <#
         Compares the tenant's actual counts against the documented Microsoft
         Entra service limits. The limits themselves come from an editable config
-        file (files/cache/EntraServiceLimits.json, transcribed from Microsoft Learn);
+        file (Config/EntraServiceLimits.json, transcribed from Microsoft Learn);
         the current values are counted from the exported JSON.
 
         Returns one object per metric: Area, Metric, Current, Limit, Type,
@@ -21,7 +22,7 @@ function Get-EntraLimitStatus {
         # from Microsoft on each collect/report. Three levels up from this file
         # (Functions\Reports\Common) is the Entra root.
         $entraRoot = Split-Path (Split-Path (Split-Path $PSScriptRoot))
-        $ConfigPath = Join-Path $entraRoot 'files\cache\EntraServiceLimits.json'
+        $ConfigPath = Join-Path $entraRoot 'Config\EntraServiceLimits.json'
     }
     if (-not (Test-Path $ConfigPath)) {
         # Not cached yet (e.g. a fresh clone or a standalone call) - create it

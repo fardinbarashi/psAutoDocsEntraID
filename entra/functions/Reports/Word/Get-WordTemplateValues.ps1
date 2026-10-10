@@ -1,8 +1,9 @@
+# Autodoc v1.0
 function Get-WordTemplateValues {
     <#
         Builds the flat {placeholder} -> value table used to fill the Word
         template text files. Every number comes from the exported JSON (via the
-        shared map-data helpers plus a little extra counting); the template files
+        shared map-data plus a little extra counting); the template files
         supply all the wording around them, so the prose can be edited freely
         without touching code.
 

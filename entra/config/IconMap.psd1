@@ -68,5 +68,14 @@
         'AppRegistration'                 = 'App-Registrations'
         'EnterpriseApp'                   = 'Enterprise-Applications'
         'Workplace'                       = 'Microsoft-Entra-ID'
+          # --- hub/overview service names -> fragments matching the bundled icons ---
+          '10230-icon-service-Users'                                   = 'users'
+          '10233-icon-service-Conditional-Access'                      = 'conditional-access'
+          '10223-icon-service-Groups'                                  = 'groups'
+          '10223-icon-service-GroupOwner'                              = 'person'
+          '10225-icon-service-Enterprise-Applications'                 = 'enterprise-applications'
+          '10340-icon-service-Entra-Identity-Roles-and-Administrators' = 'shield'
+          '10222-icon-service-Entra-Domain-Services'                   = 'building'
+          'sspr-user-lock'                                             = 'lock'
     }
 }

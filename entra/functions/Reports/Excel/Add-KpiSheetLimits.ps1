@@ -1,7 +1,8 @@
+# Autodoc v1.0
 function Add-KpiSheetLimits {
     <#
         "Limits & recommendations" sheet: the tenant's current counts against the
-        documented Microsoft Entra service limits (files/cache/EntraServiceLimits.json,
+        documented Microsoft Entra service limits (Config/EntraServiceLimits.json,
         from Microsoft Learn). A bar chart shows percent-of-limit used per metric,
         a table lists the detail, and the Status cells are colour-coded.
     #>
@@ -65,7 +66,7 @@ function Add-KpiSheetLimits {
     $xl = Open-ExcelPackage -Path $ReportPath
     $ws = $xl.Workbook.Worksheets[$SheetName]
     Add-KpiCards -Worksheet $ws -Title 'SERVICE LIMITS & RECOMMENDATIONS' -Cards @(
-        @{ Label = 'Metrics tracked';      Value = $rows.Count }
+        @{ Label = 'Limits tracked';      Value = $rows.Count }
         @{ Label = 'Highest usage';        Value = ("{0}%" -f $highest) }
         @{ Label = 'Approaching (>=60%)';  Value = $approaching }
         @{ Label = 'At or over limit';     Value = $over }
@@ -89,7 +90,7 @@ function Add-KpiSheetLimits {
     }
 
     # source note under the cards
-    $ws.Cells['A2'].Value = 'Limits: Microsoft Entra service limits and restrictions (Microsoft Learn) via files\cache\EntraServiceLimits.json. Current values counted from this export.'
+    $ws.Cells['A2'].Value = 'Limits: Microsoft Entra service limits and restrictions (Microsoft Learn) via Config\EntraServiceLimits.json. Current values counted from this export.'
     $ws.Cells['A2'].Style.Font.Size = 9
     $ws.Cells['A2'].Style.Font.Color.SetColor([System.Drawing.ColorTranslator]::FromHtml('#808080'))
     Close-ExcelPackage $xl

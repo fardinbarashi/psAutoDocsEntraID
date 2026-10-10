@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GroupMembersWithDetails {
     <#
         Returns user members of a group enriched with UPN, department, office

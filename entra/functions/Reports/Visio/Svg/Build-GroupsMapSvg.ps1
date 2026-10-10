@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-GroupsMapSvg {
     <#
         SVG map of the tenant's groups: tenant at the top, a dashed legend, then

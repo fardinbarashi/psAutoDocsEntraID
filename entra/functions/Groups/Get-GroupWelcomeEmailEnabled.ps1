@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GroupWelcomeEmailEnabled {
     <#
         For M365 (Unified) groups, reads autoSubscribeNewMembers from the beta
@@ -8,7 +9,7 @@ function Get-GroupWelcomeEmailEnabled {
         [AllowNull()][AllowEmptyCollection()][string[]]$GroupTypes = @()
     )
 
-    # Groups with no groupTypes (plain security groups) arrive as $null — treat as non-Unified
+    # Groups with no groupTypes (plain security groups) arrive as $null - treat as non-Unified
     if (-not $GroupTypes -or $GroupTypes -notcontains 'Unified') { return $null }
 
     try {

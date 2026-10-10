@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-TenantInformation {
     <#
-        Section 1.2.1 — Tenant info + directory object counts + verified domains.
+        Section 1.2.1 - Tenant info + directory object counts + verified domains.
         Requires Organization.Read.All and Directory.Read.All.
     #>
     [CmdletBinding()]

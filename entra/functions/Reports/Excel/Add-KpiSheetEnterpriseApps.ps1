@@ -1,15 +1,16 @@
+# Autodoc v1.0
 function Add-KpiSheetEnterpriseApps {
     <#
         Enterprise application overview: SSO configuration, protocol mix,
         Graph permission usage and sign-in recency.
 
-        SCOPE LIMITATION — read this before trusting the totals.
+        SCOPE LIMITATION - read this before trusting the totals.
         The collector builds its app list from Get-MgApplication (app
         registrations) and joins each one to its service principal. Gallery
         and pre-integrated enterprise apps that have a service principal but
         no app registration in this tenant (Salesforce, Workday, ServiceNow
         and similar) are therefore NOT included, and neither are sign-in
-        counts — only the date of the most recent sign-in.
+        counts - only the date of the most recent sign-in.
 
         Covering those properly means collecting all service principals as
         their own dataset; until then this sheet describes the applications

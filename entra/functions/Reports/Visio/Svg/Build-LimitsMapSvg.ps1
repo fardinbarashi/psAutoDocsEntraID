@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-LimitsMapSvg {
     <#
         Builds the "Service limits & recommendations" SVG: one horizontal bar
@@ -6,7 +7,7 @@ function Build-LimitsMapSvg {
         the coloured fill is current usage, so a short bar means plenty of
         headroom and a long/red bar means the limit is close.
 
-        Limits come from files/cache/EntraServiceLimits.json (from Microsoft Learn);
+        Limits come from Config/EntraServiceLimits.json (from Microsoft Learn);
         current values are counted from the exported JSON by Get-EntraLimitStatus.
     #>
     [CmdletBinding()]
@@ -133,7 +134,7 @@ function Build-LimitsMapSvg {
     $noteCY = TopY ($mTop + $tenantH + $gapNote + $noteH / 2)
     $shapes += @{ Id = 'note'; Kind = 'Rectangle'; Fill = '#F7F7F7'; Line = '#CCCCCC';
                   Lines = @(
-                      @{ BoldPrefix = 'Limits: '; Text = 'Microsoft Entra service limits and restrictions (Microsoft Learn), via files\cache\EntraServiceLimits.json.'; Align = 'start' }
+                      @{ BoldPrefix = 'Limits: '; Text = 'Microsoft Entra service limits and restrictions (Microsoft Learn), via Config\EntraServiceLimits.json.'; Align = 'start' }
                       @{ Text = 'Current values counted from the exported JSON for this tenant.'; Bold = $false; Align = 'start' }
                   );
                   X = $labelX0 + ($pageW - 2 * $marginX) / 2; Y = $noteCY; W = $pageW - 2 * $marginX; H = $noteH; FontSize = 10 }

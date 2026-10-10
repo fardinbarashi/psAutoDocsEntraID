@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-AppRegistrationData {
     <#
-        Section 1.4 — App registrations + matching enterprise apps (service
+        Section 1.4 - App registrations + matching enterprise apps (service
         principals): owners, secret/certificate expiry, API permissions, SSO
         type and sign-in activity ("used within N days").
         Requires Application.Read.All and AuditLog.Read.All.

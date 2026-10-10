@@ -1,5 +1,6 @@
+# Autodoc v1.0
 # ---------------------------------------------------------------------------
-# Shared DATA helpers for the maps. These only read and shape the exported
+# Shared DATA for the maps. These only read and shape the exported
 # data - they do NOT build any Visio- or SVG-specific model. The two renderers
 # (Visio and SVG) each build their own model from this data, so a change to one
 # renderer can never affect the other.
@@ -117,50 +118,6 @@ function Get-GroupsMapData {
     [pscustomobject]@{ Tenant = $tenant; Categories = $byCat; Total = $nodes.Count }
 }
 
-function Get-ManagerMapData {
-    <#
-        From GroupMembers, aggregates by manager: how many distinct people report
-        to them (who appear in groups), how many group memberships those people
-        hold in total, and which groups they belong to.
-    #>
-    param([Parameter(Mandatory)][string]$SourceFolder)
-
-    $tenant  = @(Get-AutodocExportData -ExportFolder $SourceFolder -BaseName 'TenantInformation') | Select-Object -First 1
-    $members = @(Get-AutodocExportData -ExportFolder $SourceFolder -BaseName 'GroupMembers')
-    if (-not $members) { return $null }
-
-    $byMgr = @{}
-    foreach ($m in $members) {
-        $mgr = "$($m.ManagerDisplayName)".Trim()
-        if (-not $mgr) { $mgr = '(no manager)' }
-        if (-not $byMgr.ContainsKey($mgr)) {
-            $byMgr[$mgr] = [pscustomobject]@{
-                Manager     = $mgr
-                People      = New-Object System.Collections.Generic.HashSet[string]
-                Memberships = 0
-                Groups      = New-Object System.Collections.Generic.HashSet[string]
-            }
-        }
-        $rec = $byMgr[$mgr]
-        [void]$rec.People.Add("$($m.UserPrincipalName)".Trim())
-        [void]$rec.Groups.Add("$($m.GroupDisplayName)".Trim())
-        $rec.Memberships++
-    }
-
-    $list = foreach ($k in $byMgr.Keys) {
-        $r = $byMgr[$k]
-        [pscustomobject]@{
-            Manager     = $r.Manager
-            PeopleCount = $r.People.Count
-            Memberships = $r.Memberships
-            Groups      = @($r.Groups)
-        }
-    }
-    $list = @($list | Sort-Object Memberships -Descending)
-
-    [pscustomobject]@{ Tenant = $tenant; Managers = $list; TotalMemberships = ($members.Count) }
-}
-
 function Get-GroupDeptMapData {
     <#
         From GroupMembers, builds group -> department -> count. Used by the three
@@ -188,14 +145,6 @@ function Get-GroupDeptMapData {
     $depts  = @($deptTotals.Keys | Sort-Object { -$deptTotals[$_] })
 
     [pscustomobject]@{ Tenant = $tenant; Tree = $tree; Groups = $groups; Departments = $depts; TotalMembers = $members.Count }
-}
-
-function Get-MapPalette {
-    <# A fixed, distinct colour per index for department colouring. #>
-    param([int]$Index)
-    $p = @('#4E79A7','#F28E2B','#59A14F','#E15759','#B07AA1','#76B7B2','#EDC948','#FF9DA7','#9C755F','#BAB0AC',
-           '#86BCB6','#D37295','#A0CBE8','#FFBE7D','#8CD17D','#F1CE63','#B6992D','#499894','#D4A6C8','#79706E')
-    return $p[$Index % $p.Count]
 }
 
 function Get-LegendHeight {
@@ -599,7 +548,7 @@ function Get-AppFullData {
         Returns the full app records (all fields) split into app registrations and
         enterprise apps for the overview tree. Both come from the same
         AppRegEnterpriseApps export; every column is passed through so the tree
-        can show all values. The dedicated map helpers keep their trimmed shape.
+        can show all values. The dedicated map builders keep their trimmed shape.
     #>
     param([Parameter(Mandatory)][string]$SourceFolder)
 
@@ -941,7 +890,7 @@ function Get-MapDataSourceBlock {
             $meaning = if ($glossary.ContainsKey($f)) { $glossary[$f] } else { '' }
             $meaning = ("$meaning" -replace '\s*\([^)]*\)', '').Trim()   # drop parenthetical text
             if ($meaning) {
-                $prefix  = "$f — "
+                $prefix  = "$f - "
                 $reserve = Measure-MapTextWidth $prefix $FontSize
                 $parts   = @(Split-MapTextToWidth -Text $meaning -AvailIn $availIn -FontSize $FontSize -FirstReserveIn $reserve)
                 $lines += @{ BoldPrefix = $prefix; Text = $parts[0]; Align = 'start' }

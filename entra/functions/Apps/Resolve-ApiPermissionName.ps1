@@ -1,9 +1,10 @@
+# Autodoc v1.0
 function Resolve-ApiPermissionName {
     <#
         Turns an application's RequiredResourceAccess into readable text, e.g.
           "Microsoft Graph: Directory.Read.All (Application), User.Read (Delegated)"
 
-        Falls back to the raw GUID for any permission the lookup doesn't cover —
+        Falls back to the raw GUID for any permission the lookup doesn't cover -
         that happens when the resource has no service principal in this tenant.
         Returns @{ Text = '...'; Count = <n> }.
     #>

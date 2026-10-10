@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Merge-CollectedData {
     <#
         Merges a collector's returned hashtable of named datasets into the

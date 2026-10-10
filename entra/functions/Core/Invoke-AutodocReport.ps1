@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Invoke-AutodocReport {
     <#
-        STEP 2 wrapper — runs a report builder with a transcript, so report runs
+        STEP 2 wrapper - runs a report builder with a transcript, so report runs
         are logged the same way collections are. The log lands next to the
         collection logs in Entra\files\logs.
     #>
@@ -30,7 +31,7 @@ function Invoke-AutodocReport {
             # Keep the service-limits config current (in Entra\Config), live from
             # Microsoft when reachable. A refresh failure must never break a report.
             try {
-                $limitsConfig = Join-Path (Split-Path (Split-Path $PSScriptRoot)) 'files/cache/EntraServiceLimits.json'
+                $limitsConfig = Join-Path (Split-Path (Split-Path $PSScriptRoot)) 'Config/EntraServiceLimits.json'
                 Update-EntraServiceLimits -OutputPath $limitsConfig | Out-Null
             }
             catch { Write-Host "  Service limits: refresh skipped ($($_.Exception.Message))." -ForegroundColor DarkYellow }

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-SafeExcelWorksheetName {
     <# Sanitises a string into a valid Excel worksheet name (<=31 chars, no : \ / ? * [ ]). #>
     param([Parameter(Mandatory)][string]$Name)

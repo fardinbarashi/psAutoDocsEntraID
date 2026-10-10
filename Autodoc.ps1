@@ -1,3 +1,4 @@
+# Autodoc v1.0
 <#
     Autodoc
     ------------------------------------------------------------------
@@ -75,6 +76,6 @@ try {
                          -OnRun $runAction
 }
 catch {
-    Write-Host "GUI unavailable ($($_.Exception.Message)) — collecting all sections." -ForegroundColor Yellow
+    Write-Host "GUI unavailable ($($_.Exception.Message)) - collecting all sections." -ForegroundColor Yellow
     & $runAction ([pscustomobject]@{ Action = 'Collect'; Collectors = @($registry.Key); Formats = $selectedFormats })
 }

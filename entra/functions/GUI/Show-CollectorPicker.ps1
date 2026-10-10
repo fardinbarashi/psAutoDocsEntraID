@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Show-CollectorPicker {
     <#
         Shows the Autodoc window (layout in Entra\Config\CollectorPicker.xaml).
@@ -63,13 +64,23 @@ function Show-CollectorPicker {
 
     # --- report source folder: newest export preselected, Browse for anything else ---
     $sourceCombo = $window.FindName('SourceFolders')
-    if ($ExportsRoot -and (Test-Path $ExportsRoot)) {
-        foreach ($folder in (Get-ChildItem -Path $ExportsRoot -Directory | Sort-Object Name -Descending)) {
-            $null = $sourceCombo.Items.Add($folder.FullName)
+    $populateSource = {
+        $prev = "$($sourceCombo.SelectedItem)"
+        $sourceCombo.Items.Clear()
+        if ($ExportsRoot -and (Test-Path $ExportsRoot)) {
+            foreach ($folder in (Get-ChildItem -Path $ExportsRoot -Directory | Sort-Object Name -Descending)) {
+                $null = $sourceCombo.Items.Add($folder.FullName)
+            }
         }
+        if ($sourceCombo.Items.Count -gt 0) {
+            if ($prev -and $sourceCombo.Items.Contains($prev)) { $sourceCombo.SelectedItem = $prev }   # keep current pick if still there
+            else { $sourceCombo.SelectedIndex = 0 }   # otherwise latest
+        }
+        else { $null = $sourceCombo.Items.Add('(no exports found - run a collection first)'); $sourceCombo.SelectedIndex = 0 }
     }
-    if ($sourceCombo.Items.Count -gt 0) { $sourceCombo.SelectedIndex = 0 }   # latest
-    else { $null = $sourceCombo.Items.Add('(no exports found - run a collection first)'); $sourceCombo.SelectedIndex = 0 }
+    & $populateSource
+
+    $window.FindName('BtnReloadSource').Add_Click({ & $populateSource })
 
     $window.FindName('BtnBrowse').Add_Click({
         Add-Type -AssemblyName System.Windows.Forms
@@ -186,7 +197,7 @@ function Show-CollectorPicker {
         }
 
         $btnRun.IsEnabled = $false
-        $status.Text      = "Running: $header — see the console for progress..."
+        $status.Text      = "Running: $header - see the console for progress..."
         # Let WPF paint the disabled state before the (blocking) work starts
         $window.Dispatcher.Invoke([action]{}, [Windows.Threading.DispatcherPriority]::Render)
 

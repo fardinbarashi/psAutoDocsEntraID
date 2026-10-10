@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-GroupData {
     <#
-        Section 1.3 — Groups with owners, members, role assignments, licenses,
+        Section 1.3 - Groups with owners, members, role assignments, licenses,
         welcome-email status and summary counts.
         Requires Group.Read.All, Directory.Read.All and RoleManagement.Read.Directory.
 
@@ -78,7 +79,7 @@ function Export-GroupData {
             $licenses        = Get-GroupLicenseNames -Group $entraGroup -LicenseRef $LicenseRef -GraphRef $GraphRef
             $ownerUpns       = ($owners | Where-Object { $_.UserPrincipalName } | Select-Object -ExpandProperty UserPrincipalName) -join "; "
 
-            # NOTE: don't use "= if (...) { ... } else { @() }" here — an empty array
+            # NOTE: don't use "= if (...) { ... } else { @() }" here - an empty array
             # returned from an if-block unrolls to $null. Assign explicitly instead.
             $groupTypesArr = @()
             if ($entraGroup.GroupTypes) { $groupTypesArr = @($entraGroup.GroupTypes) }

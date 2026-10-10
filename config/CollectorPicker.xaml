@@ -250,7 +250,7 @@
                                 <CheckBox x:Name="DocVisio" Margin="0,0,0,8"><TextBlock><Run Text="Visio maps"/><Run Text="  (not implemented yet)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
                                 <CheckBox x:Name="DocSvg"   Content="SVG maps" Margin="0,0,0,8"/>
                                 <CheckBox x:Name="DocHtml"  Margin="0,0,0,8"><TextBlock TextWrapping="Wrap"><Run Text="HTML report"/><Run Text="  (Builds the SVG maps automatically if they aren't made yet)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
-                                <CheckBox x:Name="DocWord"  Margin="0,0,0,8"><TextBlock><Run Text="Word report"/><Run Text="  (beta)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
+                                <CheckBox x:Name="DocWord"  Margin="0,0,0,8"><TextBlock><Run Text="Word report"/></TextBlock></CheckBox>
                                 <StackPanel Orientation="Horizontal" Margin="26,0,0,2">
                                     <TextBlock Text="Language:" VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}" Width="105" Margin="0,0,12,0"/>
                                     <ComboBox x:Name="WordLanguage" Width="170" Height="26" VerticalContentAlignment="Center"/>
@@ -292,6 +292,8 @@
                            Foreground="{StaticResource TextSecondary}" FontSize="12" Margin="0,0,10,0"/>
                 <Button x:Name="BtnBrowse" DockPanel.Dock="Right" Content="Browse..." Width="90" Height="28"
                         Margin="8,0,0,0" Style="{StaticResource SecondaryButton}"/>
+                <Button x:Name="BtnReloadSource" DockPanel.Dock="Right" Content="Reload" Width="70" Height="28"
+                        Margin="8,0,0,0" Style="{StaticResource SecondaryButton}" ToolTip="Rescan the exports folder for new exports"/>
                 <ComboBox x:Name="SourceFolders" Height="28" VerticalContentAlignment="Center"/>
             </DockPanel>
         </Border>

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-DomainMapSvg {
     <#
         SVG map of the tenant's verified domains, banded by Type (Managed,

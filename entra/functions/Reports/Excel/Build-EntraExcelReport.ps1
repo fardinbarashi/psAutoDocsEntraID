@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Build-EntraExcelReport {
     <#
-        STEP 2 — Builds "KPI <date>_<time>.xlsx": a licence-focused workbook with
+        STEP 2 - Builds "KPI <date>_<time>.xlsx": a licence-focused workbook with
         a dashboard and one sheet per analysis, each with its own chart.
 
         Reads the JSON (CSV fallback) from the most recent export folder unless
@@ -22,7 +23,7 @@ function Build-EntraExcelReport {
           12 RBAC                role assignments, privileged roles, duration
 
         On visible numbers: chart data labels are NOT set through the EPPlus
-        DataLabel API — writing those elements after the fact produces XML that
+        DataLabel API - writing those elements after the fact produces XML that
         Excel rejects ("workbook repaired"). Instead every chart's category
         label has the value baked into the text, so the numbers are always on
         screen without hovering, and the file stays schema-clean.
@@ -40,7 +41,7 @@ function Build-EntraExcelReport {
 
     # ---------- resolve source ----------
     if (-not $SourceFolder) {
-        if (-not (Test-Path $ExportsRoot)) { Write-Host "No exports found at $ExportsRoot — run a collection first." -ForegroundColor Yellow; return }
+        if (-not (Test-Path $ExportsRoot)) { Write-Host "No exports found at $ExportsRoot - run a collection first." -ForegroundColor Yellow; return }
         $SourceFolder = (Get-ChildItem -Path $ExportsRoot -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName
     }
     if (-not $SourceFolder -or -not (Test-Path $SourceFolder)) { Write-Host "No export folder to build a report from." -ForegroundColor Yellow; return }
@@ -73,9 +74,9 @@ function Build-EntraExcelReport {
         }
     }
 
-    if (-not $skus -and -not $users -and -not $groups) { Write-Host "Neither licence nor user data found — nothing to report." -ForegroundColor Yellow; return }
+    if (-not $skus -and -not $users -and -not $groups) { Write-Host "Neither licence nor user data found - nothing to report." -ForegroundColor Yellow; return }
 
-    # ---------- helpers ----------
+    # ---------- shared ----------
     function ColLetter([int]$i) {   # 1 -> A
         $s = ''
         while ($i -gt 0) { $m = ($i - 1) % 26; $s = [char](65 + $m) + $s; $i = [int](($i - $m) / 26) }
@@ -342,7 +343,7 @@ function Build-EntraExcelReport {
     Write-Host "  Dashboard added." -ForegroundColor DarkGreen
 
     # ============================================================
-    # 01  LICENSES — inventory with a colour-coded utilisation column
+    # 01  LICENSES - inventory with a colour-coded utilisation column
     # ============================================================
     if ($skuRows) {
         $n = $skuRows.Count
@@ -861,7 +862,7 @@ function Build-EntraExcelReport {
 
     # ============================================================
     # 09-12  CONDITIONAL ACCESS / APP REG / ENTERPRISE APPS / RBAC
-    # Each builder is a separate function and simply returns if its dataset
+    # Each builder is a separate function and returns if its dataset
     # was not collected, so a partial collection still produces a workbook.
     # ============================================================
     $sheetJobs = @(

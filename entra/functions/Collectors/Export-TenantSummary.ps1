@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-TenantSummary {
     <#
-        Section 1.12 — Builds the consolidated TenantSummary: a multi-sheet Excel
+        Section 1.12 - Builds the consolidated TenantSummary: a multi-sheet Excel
         workbook (Dashboard + DataSets index + one sheet per dataset), plus a CSV
         index and a structured JSON. Reads every dataset from the $Collected
         dictionary populated by the earlier collectors.
@@ -17,7 +18,7 @@ function Export-TenantSummary {
 
         $fileDate = $Paths.FileDate
 
-        # Pull datasets from the shared collection (missing = $null, handled gracefully)
+        # Pull datasets from the shared collection (missing = $null)
         $tenantData        = $Collected['TenantData']
         $domainData        = $Collected['DomainData']
         $licenseInventory  = $Collected['LicenseInventory']

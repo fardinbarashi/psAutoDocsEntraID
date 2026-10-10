@@ -1,0 +1,74 @@
+{
+  "source": "Microsoft Entra service limits and restrictions",
+  "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/users/directory-service-limits-restrictions",
+  "sourceMarkdown": "https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/main/docs/includes/entra-service-limits-include.md",
+  "retrieved": "2026-08-06",
+  "limitsSource": "live (7 of 7 refreshed from Microsoft docs)",
+  "note": "Recreated on each export. Numbers refreshed from the Microsoft Entra docs when reachable; edit here to pin values or adjust to your own governance thresholds.",
+  "metrics": [
+    {
+      "key": "DirectoryObjects",
+      "area": "Directory",
+      "label": "Directory objects (total)",
+      "limit": 300000,
+      "type": "Quota (verified-domain default)",
+      "note": "Default quota with at least one verified domain (50,000 without). Raise via Microsoft Support."
+    },
+    {
+      "key": "Users",
+      "area": "Users",
+      "label": "Users",
+      "limit": 1000000,
+      "type": "Recommended max per tenant",
+      "note": "Microsoft recommends a single tenant holds no more than ~1,000,000 users (~3,000,000 objects)."
+    },
+    {
+      "key": "ConditionalAccessPolicies",
+      "area": "Conditional Access",
+      "label": "Conditional Access policies",
+      "limit": 240,
+      "type": "Hard limit",
+      "note": "Maximum 240 policies per tenant across all policy states."
+    },
+    {
+      "key": "ManagedDomains",
+      "area": "Domains",
+      "label": "Managed domains",
+      "limit": 5000,
+      "type": "Hard limit",
+      "note": "No more than 5,000 managed domain names can be added."
+    },
+    {
+      "key": "FederatedDomains",
+      "area": "Domains",
+      "label": "Federated domains",
+      "limit": 300,
+      "type": "Recommended (max 2,500)",
+      "note": "Federation with on-premises AD is recommended to stay at or below 300 domains; hard max is 2,500."
+    },
+    {
+      "key": "LicenseSubscriptions",
+      "area": "Licenses",
+      "label": "License subscriptions",
+      "limit": 300,
+      "type": "Hard limit",
+      "note": "Limit of 300 license-based subscriptions (such as Microsoft 365 subscriptions) per tenant."
+    },
+    {
+      "key": "DynamicGroups",
+      "area": "Groups",
+      "label": "Dynamic groups",
+      "limit": 15000,
+      "type": "Hard limit",
+      "note": "Max 15,000 dynamic groups and dynamic administrative units combined per tenant."
+    },
+    {
+      "key": "RoleAssignableGroups",
+      "area": "Groups",
+      "label": "Role-assignable groups",
+      "limit": 500,
+      "type": "Hard limit",
+      "note": "Max 500 role-assignable groups can be created in a single tenant."
+    }
+  ]
+}

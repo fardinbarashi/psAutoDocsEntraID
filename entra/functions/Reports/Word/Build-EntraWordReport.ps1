@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-EntraWordReport {
     <#
         Builds a Word system-documentation report (.docx) from an export, in pure
@@ -24,20 +25,25 @@ function Build-EntraWordReport {
 
     $src = if ($SourceFolder) { $SourceFolder } else { Resolve-AutodocSource -ExportsRoot $ExportsRoot }
     if (-not $src) { Write-Host "No export to build a Word report from." -ForegroundColor Yellow; return }
+    $lang = if ("$Language" -eq 'en') { 'en' } else { 'sv' }
 
     # ---- profile (metadata that isn't in Graph) ----
     $entraRoot = Split-Path (Split-Path (Split-Path $PSScriptRoot))   # Functions\Reports\Word -> Entra
-    $profilePath = Join-Path $entraRoot 'Config\WordReportProfile.psd1'
+    # document text - editable per language under files\cache\wordTemplates\<lang> (also matches eng/swe)
+    $txtAll = @{}
+    $txtFile = Join-Path $entraRoot 'Config\wordText.json'
+    if (Test-Path $txtFile) { try { $txtAll = Get-Content -LiteralPath $txtFile -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable } catch { $txtAll = @{} } }
+    function T($k) { $e = $txtAll[$k]; if ($e -and "$($e[$lang])") { "$($e[$lang])" } elseif ($e -and "$($e['en'])") { "$($e['en'])" } else { "[$k]" } }
     $prof = @{}
-    if (Test-Path $profilePath) { try { $prof = Import-PowerShellDataFile -Path $profilePath } catch { $prof = @{} } }
-    function PV($k, $ph) { $v = "$($prof[$k])"; if ($v) { $v } else { "[$ph]" } }
-
-    $consultant = PV 'ConsultantCompany' 'Konsultbolag'
-    $author     = PV 'Author'            'Utarbetad av'
-    $customer   = PV 'CustomerName'      'Kundens namn'
-    $docId      = if ("$($prof.DocumentId)") { "$($prof.DocumentId)" } else { 'Systemdokumentation Entra ID' }
+    $profilePath = Join-Path $entraRoot 'Config\WordReportProfile.json'
+    if (Test-Path $profilePath) { try { $prof = Get-Content -LiteralPath $profilePath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable } catch { $prof = @{} } }
+    # real values live centrally in Config\WordReportProfile.json; a blank field falls back to the per-language default/placeholder in Config\wordText.json
+    $consultant = if ("$($prof.ConsultantCompany)") { "$($prof.ConsultantCompany)" } else { T 'ConsultantPlaceholder' }
+    $author     = if ("$($prof.Author)") { "$($prof.Author)" } else { T 'AuthorPlaceholder' }
+    $customer   = if ("$($prof.CustomerName)") { "$($prof.CustomerName)" } else { T 'CustomerPlaceholder' }
+    $docId      = if ("$($prof.DocumentId)") { "$($prof.DocumentId)" } else { T 'DocIdDefault' }
     $version    = if ("$($prof.Version)")    { "$($prof.Version)" }    else { '1.0' }
-    $firstChg   = if ("$($prof.FirstChange)"){ "$($prof.FirstChange)" }else { 'Första utkast' }
+    $firstChg   = if ("$($prof.FirstChange)"){ "$($prof.FirstChange)" }else { T 'FirstChangeDefault' }
     $today      = Get-Date -Format 'yyyy-MM-dd'
 
     # logos: GUI parameter -> cached logo (files\cache\wordTemplates\template\img) -> profile -> text placeholder
@@ -47,17 +53,84 @@ function Build-EntraWordReport {
     $customerLogo   = if ($CustomerLogo   -and (Test-Path $CustomerLogo))   { $CustomerLogo }   elseif (CachedLogo 'clientlogo')  { CachedLogo 'clientlogo' }  elseif ("$($prof.CustomerLogo)"   -and (Test-Path "$($prof.CustomerLogo)"))   { "$($prof.CustomerLogo)" }   else { '' }
 
     $tenant = @(Get-AutodocExportData -ExportFolder $src -BaseName 'TenantInformation') | Select-Object -First 1
+    $users   = @(Get-AutodocExportData -ExportFolder $src -BaseName 'UserInformation')
+    $groups  = @(Get-AutodocExportData -ExportFolder $src -BaseName 'EntraGroups')
+    $apps    = @(Get-AutodocExportData -ExportFolder $src -BaseName 'AppRegEnterpriseApps')
+    $domains = @(Get-AutodocExportData -ExportFolder $src -BaseName 'TenantInformationDomain')
+    $licenses = @(Get-AutodocExportData -ExportFolder $src -BaseName 'LicensesInformation')
+    $eapps    = @(Get-AutodocExportData -ExportFolder $src -BaseName 'EnterpriseApps')
+    $rbac     = @(Get-AutodocExportData -ExportFolder $src -BaseName 'RBAC')
+    $sspr     = @(Get-AutodocExportData -ExportFolder $src -BaseName 'PasswordReset') | Select-Object -First 1
+    $caRoot   = @(Get-AutodocExportData -ExportFolder $src -BaseName 'ConditionalAccess') | Select-Object -First 1
+    $caPol    = @($caRoot.ConditionalAccessPolicies)
+    $namedLoc = @($caRoot.ConditionalAccessNamedLocations)
+    $vals     = Get-WordTemplateValues -SourceFolder $src
+    # counts computed directly from the raw data (independent of the resolver)
+    $uGuests   = @($users | Where-Object { "$($_.UserType)" -eq 'Guest' }).Count
+    $uMembers  = @($users | Where-Object { "$($_.UserType)" -ne 'Guest' }).Count
+    $uEnabled  = @($users | Where-Object { $_.AccountEnabled }).Count
+    $uDisabled = @($users | Where-Object { -not $_.AccountEnabled }).Count
+    $grpDyn    = @($groups | Where-Object { @($_.GroupTypes) -contains 'DynamicMembership' }).Count
+    $grpM365   = @($groups | Where-Object { (@($_.GroupTypes) -contains 'Unified') -or ("$($_.GroupCategory)" -match 'Microsoft 365|Unified') }).Count
+    $grpSec    = @($groups | Where-Object { "$($_.GroupCategory)" -match 'Security' }).Count
+    $grpOnprem = @($groups | Where-Object { $_.OnPremisesSyncEnabled }).Count
+    $grpCloud  = (@($groups).Count - $grpOnprem)
+    $rbacActive   = @($rbac | Where-Object { "$($_.AssignmentType)" -match 'Active' }).Count
+    $rbacEligible = @($rbac | Where-Object { "$($_.AssignmentType)" -match 'Eligible' }).Count
+    $caEnabled  = @($caPol | Where-Object { "$($_.State)" -eq 'enabled' }).Count
+    $caReport   = @($caPol | Where-Object { "$($_.State)" -match 'report' }).Count
+    $caDisabled = @($caPol | Where-Object { "$($_.State)" -eq 'disabled' }).Count
+    $appMulti   = @($apps | Where-Object { "$($_.SignInAudience)" -match 'MultipleOrgs|PersonalMicrosoftAccount' }).Count
+    $appSingle  = (@($apps).Count - $appMulti)
+    $ssoYes = @($eapps | Where-Object { $_.SSOConfigured -eq $true -or "$($_.SSOConfigured)" -eq 'True' }).Count
+    $ssoNo  = (@($eapps).Count - $ssoYes)
+    # ---- tenant-structure figures (all from the exported JSON) ----
+    function Num($n) { ([int]$n).ToString('N0', [Globalization.CultureInfo]::InvariantCulture) -replace ',', ' ' }
+    function Pct($v) { $s = '{0:0.#}' -f [double]$v; if ($lang -eq 'sv') { $s = $s -replace '\.', ',' }; "$s %" }
+    $mAssigned = [int]((@($licenses | ForEach-Object { [int]$_.consumedUnits }) | Measure-Object -Sum).Sum)
+    $mUnused   = [int]((@($licenses | ForEach-Object { [int]$_.freeUnits }) | Measure-Object -Sum).Sum)
+    $mSkus     = @($licenses).Count
+    $rbacAssign = @($rbac | Where-Object { "$($_.RecordType)" -like 'RoleAssignment*' })
+    if (-not $rbacAssign.Count) { $rbacAssign = @($rbac | Where-Object { "$($_.RoleDefinitionName)" }) }
+    $mRoleAssign    = $rbacAssign.Count
+    $mDistinctRoles = @($rbacAssign | Where-Object { $_.RoleDefinitionName } | Select-Object -ExpandProperty RoleDefinitionName -Unique).Count
+    $privRoles = @('Global Administrator', 'Privileged Role Administrator', 'Privileged Authentication Administrator', 'Security Administrator', 'Conditional Access Administrator', 'Application Administrator', 'Cloud Application Administrator', 'User Administrator', 'Exchange Administrator', 'SharePoint Administrator', 'Intune Administrator', 'Hybrid Identity Administrator', 'Domain Name Administrator', 'Directory Synchronization Accounts', 'Partner Tier2 Support')
+    $mPrivAssign = @($rbacAssign | Where-Object { $privRoles -contains "$($_.RoleDefinitionName)" }).Count
+    $mAppsWithSp = @($apps | Where-Object { $_.ServicePrincipalExists -eq $true -or "$($_.ServicePrincipalExists)" -match 'True|Yes' }).Count
 
-    # ---- OOXML helpers ----
+    # ---- OOXML building blocks ----
     function XmlEsc([string]$s) { if ($null -eq $s) { return '' }; $s -replace '&', '&amp;' -replace '<', '&lt;' -replace '>', '&gt;' }
     function Par {
-        param([string]$Text = '', [string]$Style = '', [string]$Align = '', [switch]$Bold, [int]$Size = 0)
+        param([string]$Text = '', [string]$Style = '', [string]$Align = '', [switch]$Bold, [int]$Size = 0, [string]$Color = '')
         $ppr = ''; if ($Style) { $ppr += "<w:pStyle w:val='$Style'/>" }; if ($Align) { $ppr += "<w:jc w:val='$Align'/>" }
-        $rpr = ''; if ($Bold) { $rpr += '<w:b/>' }; if ($Size) { $rpr += "<w:sz w:val='$Size'/><w:szCs w:val='$Size'/>" }
+        $rpr = ''; if ($Bold) { $rpr += '<w:b/>' }; if ($Size) { $rpr += "<w:sz w:val='$Size'/><w:szCs w:val='$Size'/>" }; if ($Color) { $rpr += "<w:color w:val='$Color'/>" }
         $ppr = if ($ppr) { "<w:pPr>$ppr</w:pPr>" } else { '' }; $rpr = if ($rpr) { "<w:rPr>$rpr</w:rPr>" } else { '' }
         "<w:p>$ppr<w:r>$rpr<w:t xml:space='preserve'>$(XmlEsc $Text)</w:t></w:r></w:p>"
     }
+    # bold red heading + red line, used where the export SHOULD have data but none was found
+    function RedMissing($heading) {
+        (Par -Text "$($heading):" -Bold -Color 'C00000') + (Par -Text (T 'NoData') -Color 'C00000')
+    }
+    # neutral grey note (text comes from the language file)
+    function GreyPar($k) { Par -Text (T $k) -Color '808080' }
+    function Manual { GreyPar 'Manual' }
     function H1($t) { Par -Text $t -Style 'Heading1' }
+    function Bullet($t) { "<w:p><w:pPr><w:ind w:left='420' w:hanging='220'/></w:pPr><w:r><w:t xml:space='preserve'>&#8226;  </w:t></w:r><w:r><w:t xml:space='preserve'>$(XmlEsc $t)</w:t></w:r></w:p>" }
+    function Note($t) { Par -Text $t -Color '808080' }
+    function BoldRuns($text, $phrases) {
+        $rest = "$text"; $runs = ''
+        while ($rest.Length) {
+            $bestIdx = -1; $bestLen = 0
+            foreach ($ph in $phrases) { if (-not $ph) { continue }; $i = $rest.IndexOf("$ph"); if ($i -ge 0 -and ($bestIdx -lt 0 -or $i -lt $bestIdx -or ($i -eq $bestIdx -and "$ph".Length -gt $bestLen))) { $bestIdx = $i; $bestLen = "$ph".Length } }
+            if ($bestIdx -lt 0) { $runs += "<w:r><w:t xml:space='preserve'>$(XmlEsc $rest)</w:t></w:r>"; break }
+            if ($bestIdx -gt 0) { $runs += "<w:r><w:t xml:space='preserve'>$(XmlEsc $rest.Substring(0, $bestIdx))</w:t></w:r>" }
+            $runs += "<w:r><w:rPr><w:b/></w:rPr><w:t xml:space='preserve'>$(XmlEsc $rest.Substring($bestIdx, $bestLen))</w:t></w:r>"
+            $rest = $rest.Substring($bestIdx + $bestLen)
+        }
+        $runs
+    }
+    function ParBold($text, $phrases) { "<w:p>$(BoldRuns $text $phrases)</w:p>" }
+    function BulletBold($text, $phrases) { "<w:p><w:pPr><w:ind w:left='420' w:hanging='220'/></w:pPr><w:r><w:t xml:space='preserve'>&#8226;  </w:t></w:r>$(BoldRuns $text $phrases)</w:p>" }
     function H2($t) { Par -Text $t -Style 'Heading2' }
     function PageBreak { "<w:p><w:r><w:br w:type='page'/></w:r></w:p>" }
     function Tbl {
@@ -69,7 +142,8 @@ function Build-EntraWordReport {
             $tcs = ''
             for ($c = 0; $c -lt $Rows[$r].Count; $c++) {
                 $hdr = ($Header -and $r -eq 0)
-                $shd = if ($hdr) { "<w:shd w:val='clear' w:color='auto' w:fill='4472C4'/>" } else { '' }
+                $dataIdx = if ($Header) { $r - 1 } else { $r }
+                $shd = if ($hdr) { "<w:shd w:val='clear' w:color='auto' w:fill='4472C4'/>" } elseif ($dataIdx % 2 -eq 1) { "<w:shd w:val='clear' w:color='auto' w:fill='F2F2F2'/>" } else { '' }
                 $b = ($hdr -or ($BoldFirstCol -and $c -eq 0))
                 $col = if ($hdr) { "<w:color w:val='FFFFFF'/>" } else { '' }
                 $rpr = if ($b -or $col) { "<w:rPr>$(if($b){'<w:b/>'})$col</w:rPr>" } else { '' }
@@ -80,7 +154,7 @@ function Build-EntraWordReport {
         "<w:tbl><w:tblPr><w:tblW w:w='$total' w:type='dxa'/><w:tblBorders><w:top w:val='single' w:sz='4' w:color='BFBFBF'/><w:left w:val='single' w:sz='4' w:color='BFBFBF'/><w:bottom w:val='single' w:sz='4' w:color='BFBFBF'/><w:right w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideH w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideV w:val='single' w:sz='4' w:color='BFBFBF'/></w:tblBorders></w:tblPr><w:tblGrid>$grid</w:tblGrid>$trs</w:tbl>"
     }
 
-    # ---- image helpers (logos) ----
+    # ---- image building blocks (logos) ----
     $images = [System.Collections.Generic.List[object]]::new()
     $imgSeq = 0
     function Get-ImageSize($path) {
@@ -125,62 +199,428 @@ function Build-EntraWordReport {
         return $null
     }
 
+    # ---- simple horizontal bar chart (SVG -> PNG) for KPI distributions ----
+    # ---- KPI subsection: H2 + 2-col table (+ optional bar) from label/value pairs ----
     # ---- body ----
     $sb = [System.Text.StringBuilder]::new()
 
     # cover
-    [void]$sb.Append((Tbl -BoldFirstCol -Rows @(@('Dokumenttyp', 'Systemdokumentation'), @('Område', 'Entra ID')) -ColW @(1900, 2600)))
-    [void]$sb.Append((Par ''))
-    $cLogo = LogoDrawing $consultantLogo 2.2
-    if ($cLogo) { [void]$sb.Append("<w:p><w:r>$cLogo</w:r></w:p>") } else { [void]$sb.Append((Par -Text "[$consultant logo]")) }
-    1..4 | ForEach-Object { [void]$sb.Append((Par '')) }
+    # cover table: label | value | consultant logo (logo cell spans both rows)
+    $cLogo = LogoDrawing $consultantLogo 1.9
+    $logoRun = if ($cLogo) { "<w:r>$cLogo</w:r>" } else { "<w:r><w:t xml:space='preserve'>$(XmlEsc "[$consultant logo]")</w:t></w:r>" }
+    $cw = @(1900, 2600, 3000)
+    $cvTc = { param($w, $text, $bold, $fill) "<w:tc><w:tcPr><w:tcW w:w='$w' w:type='dxa'/>$(if($fill){"<w:shd w:val='clear' w:color='auto' w:fill='$fill'/>"})<w:vAlign w:val='center'/></w:tcPr><w:p><w:pPr><w:spacing w:after='0'/></w:pPr><w:r>$(if($bold){'<w:rPr><w:b/></w:rPr>'})<w:t xml:space='preserve'>$(XmlEsc $text)</w:t></w:r></w:p></w:tc>" }
+    $logoTop = "<w:tc><w:tcPr><w:tcW w:w='$($cw[2])' w:type='dxa'/><w:vMerge w:val='restart'/><w:vAlign w:val='center'/></w:tcPr><w:p><w:pPr><w:spacing w:after='0'/><w:jc w:val='center'/></w:pPr>$logoRun</w:p></w:tc>"
+    $logoCont = "<w:tc><w:tcPr><w:tcW w:w='$($cw[2])' w:type='dxa'/><w:vMerge/></w:tcPr><w:p><w:pPr><w:spacing w:after='0'/></w:pPr></w:p></w:tc>"
+    $coverRows = "<w:tr>$(& $cvTc $cw[0] 'Document Type' $true '')$(& $cvTc $cw[1] 'System Documentation' $false '')$logoTop</w:tr>" +
+                 "<w:tr>$(& $cvTc $cw[0] 'Area' $true 'F2F2F2')$(& $cvTc $cw[1] 'Entra ID' $false 'F2F2F2')$logoCont</w:tr>"
+    $coverGrid = ($cw | ForEach-Object { "<w:gridCol w:w='$_'/>" }) -join ''
+    [void]$sb.Append("<w:tbl><w:tblPr><w:tblW w:w='$(($cw|Measure-Object -Sum).Sum)' w:type='dxa'/><w:tblBorders><w:top w:val='single' w:sz='4' w:color='BFBFBF'/><w:left w:val='single' w:sz='4' w:color='BFBFBF'/><w:bottom w:val='single' w:sz='4' w:color='BFBFBF'/><w:right w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideH w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideV w:val='single' w:sz='4' w:color='BFBFBF'/></w:tblBorders></w:tblPr><w:tblGrid>$coverGrid</w:tblGrid>$coverRows</w:tbl>")
+    1..5 | ForEach-Object { [void]$sb.Append((Par '')) }
     [void]$sb.Append((Par -Text $docId -Style 'Title' -Align 'center'))
     [void]$sb.Append((Par -Text $customer -Align 'center' -Size 36))
     1..7 | ForEach-Object { [void]$sb.Append((Par '')) }
     $kLogo = LogoDrawing $customerLogo 2.6
-    if ($kLogo) { [void]$sb.Append("<w:p><w:pPr><w:jc w:val='center'/></w:pPr><w:r>$kLogo</w:r></w:p>") } else { [void]$sb.Append((Par -Text '[Kundens logo]' -Align 'center')) }
+    if ($kLogo) { [void]$sb.Append("<w:p><w:pPr><w:jc w:val='center'/></w:pPr><w:r>$kLogo</w:r></w:p>") } else { [void]$sb.Append((Par -Text (T 'Cover_CustomerLogo') -Align 'center')) }
     [void]$sb.Append((PageBreak))
 
     # table of contents (populated when the field is updated in Word)
-    [void]$sb.Append((Par -Text 'Innehållsförteckning' -Style 'TOCHeading'))
-    [void]$sb.Append("<w:p><w:r><w:fldChar w:fldCharType='begin'/></w:r><w:r><w:instrText xml:space='preserve'> TOC \o &quot;1-3&quot; \h \z \u </w:instrText></w:r><w:r><w:fldChar w:fldCharType='separate'/></w:r><w:r><w:t xml:space='preserve'>Uppdatera fältet (markera allt, F9) i Word f&#246;r att fylla inneh&#229;llsf&#246;rteckningen.</w:t></w:r><w:r><w:fldChar w:fldCharType='end'/></w:r></w:p>")
+    [void]$sb.Append((Par -Text (T 'TOC_Title') -Style 'TOCHeading'))
+    [void]$sb.Append("<w:p><w:r><w:fldChar w:fldCharType='begin'/></w:r><w:r><w:instrText xml:space='preserve'> TOC \o &quot;1-3&quot; \h \z \u </w:instrText></w:r><w:r><w:fldChar w:fldCharType='separate'/></w:r><w:r><w:t xml:space='preserve'>$(XmlEsc (T 'TOC_Placeholder'))</w:t></w:r><w:r><w:fldChar w:fldCharType='end'/></w:r></w:p>")
     [void]$sb.Append((PageBreak))
 
-    # 1 Inledning
-    [void]$sb.Append((H1 'Inledning'))
-    [void]$sb.Append((H2 'Uppdatering av dokument'))
-    [void]$sb.Append((Par 'Systemansvarig ansvarar för att detta dokument är aktuellt och relevant. En årlig översyn ska utföras.'))
-    [void]$sb.Append((H2 'Versionshantering'))
-    [void]$sb.Append((Tbl -Header -Rows @(@('Version', 'Datum', 'Förändrad av', 'Förändring'), @($version, $today, $author, $firstChg)) -ColW @(1200, 1800, 3000, 3000)))
+    # ============ 1 Inledning ============
+    $boldWords = @('Kundens', 'Kunden', 'Kund', 'Leverantören', 'Leverantör', 'Konsultbolaget', 'Konsultbolag', "$customer", "$consultant")
+    [void]$sb.Append((H1 (T 'S1')))
+    [void]$sb.Append((Par (T 'CH1_p1')))
+    [void]$sb.Append((Par (T 'CH1_p2')))
+    [void]$sb.Append((Par (T 'CH1_p3')))
+    [void]$sb.Append((Par (T 'CH1_p4')))
+    [void]$sb.Append((Par (T 'CH1_p5')))
+    [void]$sb.Append((H2 (T 'CH1_1')))
+    [void]$sb.Append((ParBold ((T 'CH1_1_body') -f $customer) $boldWords))
+    [void]$sb.Append((BulletBold (T 'CH1_1_b1') $boldWords))
+    [void]$sb.Append((BulletBold (T 'CH1_1_b2') $boldWords))
+    [void]$sb.Append((BulletBold ((T 'CH1_1_b3') -f $consultant) $boldWords))
+    [void]$sb.Append((H2 (T 'S1_1')))
+    [void]$sb.Append((Par (T 'S1_1_body')))
+    [void]$sb.Append((H2 (T 'CH1_3')))
+    [void]$sb.Append((Tbl -Header -Rows @(@((T 'L_Document'), (T 'L_Reference')), @((T 'Ref_docLabel'), 'N/A')) -ColW @(5000, 4000)))
+    [void]$sb.Append((H2 (T 'S1_2')))
+    [void]$sb.Append((Tbl -Header -Rows @(@((T 'F_Version'), (T 'F_Date'), (T 'L_ChangedBy'), (T 'L_Change')), @($version, $today, $author, $firstChg)) -ColW @(1200, 1800, 3000, 3000)))
 
-    # 2 Förvaltning och support
-    [void]$sb.Append((H1 'Förvaltning och support'))
-    [void]$sb.Append((H2 "Kontakt $consultant"))
-    [void]$sb.Append((Par (PV 'ContactConsultant' 'Kontaktuppgifter till konsultbolaget')))
-    [void]$sb.Append((H2 'Kontaktpersoner kund'))
-    [void]$sb.Append((Par (PV 'ContactCustomer' 'Kontaktpersoner hos kunden')))
+    # ============ 2 Förvaltning och support ============
+    [void]$sb.Append((H1 (T 'S2')))
+    [void]$sb.Append((H2 (T 'CH2_1')))
+    [void]$sb.Append((Par (T 'CH2_1_body')))
+    [void]$sb.Append((H2 (T 'CH2_2')))
+    [void]$sb.Append((Tbl -Header -Rows @(
+                @('Role', 'Name', 'Phone', 'Email'),
+                @('Operations', 'Operationsdesk', 'XXX-XXX-XXX', 'autodoc.@contoso.se'),
+                @('Support', 'Supportdesk', 'XXX-XXX-XXX', 'autodoc.@contoso.se')
+            ) -ColW @(2000, 2500, 2200, 2800)))
+    [void]$sb.Append((H2 (T 'S2_customer')))
+    [void]$sb.Append((Tbl -Header -Rows @(
+                @('Role', 'Name', 'Phone', 'Email'),
+                @('', '', '', '')
+            ) -ColW @(2000, 2500, 2200, 2800)))
 
-    # 3 Allmän systembeskrivning
-    [void]$sb.Append((H1 'Allmän systembeskrivning'))
-    [void]$sb.Append((Par '[Innehåll kommer]'))
+    # ============ 3 Allmän systembeskrivning ============
+    [void]$sb.Append((H1 (T 'CH3_general')))
+    [void]$sb.Append((Par (T 'CH3_gen_p1')))
+    [void]$sb.Append((Par (T 'CH3_gen_p2')))
 
-    # 4 Systemkarta
-    [void]$sb.Append((H1 'Systemkarta'))
-    [void]$sb.Append((Par 'Översiktskarta över tenanten (hub). Detaljerade områdeskartor finns i avsnitt 5 samt som separata SVG- och PDF-filer.'))
+    # ============ 4 Arkitektur och konfiguration ============
+    [void]$sb.Append((H1 (T 'S3')))
+    [void]$sb.Append((Par (T 'S3_intro')))
+
+    [void]$sb.Append((H2 (T 'S3_1')))
+    if ($tenant) {
+        # Table 1 - tenant identity
+        $trows = @(
+            @('Category', 'Value'),
+            @('Tenant', "$($tenant.TenantName)"),
+            @('Tenant ID', "$($tenant.TenantId)"),
+            @('Primary domain', "$($tenant.PrimaryDomain)"),
+            @('Country', "$($tenant.CountryCode)")
+        )
+        [void]$sb.Append((Tbl -Header -BoldFirstCol -Rows $trows -ColW @(3000, 6000)))
+        [void]$sb.Append((Par ''))
+        # narrative summary (figures filled from the JSON)
+        [void]$sb.Append((Par ((T 'CH4_text_p1') -f (Num $tenant.Users), (Num $tenant.Devices), (Num $mAssigned), (Num $mSkus), (Num $mUnused))))
+        [void]$sb.Append((Par ((T 'CH4_text_p2') -f (Num $tenant.Groups), (Num $grpSec), (Num $grpM365), (Num $tenant.AppRegistrations), (Num $mAppsWithSp), (Num $mDistinctRoles), (Num $mRoleAssign), (Num $mPrivAssign))))
+        [void]$sb.Append((Par ''))
+        # Table 2 - key figures (two label/value pairs per row)
+        $krows = @(, @('Category', 'Value', 'Category', 'Value'))
+        $krows += , @('Users', (Num $tenant.Users), 'Total groups', (Num $tenant.Groups))
+        $krows += , @('Devices', (Num $tenant.Devices), 'Security groups', (Num $grpSec))
+        $krows += , @('Assigned licences', (Num $mAssigned), 'Microsoft 365 groups', (Num $grpM365))
+        $krows += , @('Purchased SKUs', (Num $mSkus), 'Total app registrations', (Num $tenant.AppRegistrations))
+        $krows += , @('Unused units', (Num $mUnused), 'Apps with service principal', (Num $mAppsWithSp))
+        $krows += , @('Distinct roles', (Num $mDistinctRoles), 'Role assignments', (Num $mRoleAssign))
+        $krows += , @('Privileged assignments', (Num $mPrivAssign), '', '')
+        [void]$sb.Append((Tbl -Header -Rows $krows -ColW @(2600, 1900, 2600, 1900)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'S3_1'))) }
+
+    [void]$sb.Append((H2 (T 'S3_2')))
+    if ($tenant -and "$($tenant.HybridStatus)") {
+        $envLabel = "$($tenant.HybridStatus)"
+        $syncU = @($users | Where-Object { $_.OnPremisesSyncEnabled }).Count
+        $syncG = @($groups | Where-Object { $_.OnPremisesSyncEnabled }).Count
+        if ($envLabel -match 'Onprem') {
+            [void]$sb.Append((ParBold ((T 'S3_2_hybrid') -f $envLabel, $syncU, $syncG) @('Vilket synkverktyg (Entra Connect eller Cloud Sync) som används framgår inte av katalogdatan.', 'Which sync tool (Entra Connect or Cloud Sync) is used is not exposed by the directory data.')))
+        }
+        else { [void]$sb.Append((Par ((T 'S3_2_cloud') -f $envLabel))) }
+    }
+    else { [void]$sb.Append((RedMissing (T 'S3_2'))) }
+
+    [void]$sb.Append((H2 (T 'S3_3')))
+    if ($domains.Count) {
+        $domUsers = @{}
+        $umdDom = try { Get-UsersMapData -SourceFolder $src } catch { $null }
+        if ($umdDom) { foreach ($x in @($umdDom.Domains)) { $domUsers["$($x.Name)".ToLower()] = [int]$x.Count } }
+        $drows = @(, @('Domain', 'Type', 'Default', 'Users'))
+        foreach ($d in ($domains | Sort-Object @{ E = { - [int][bool]$_.IsDefault } }, Domain)) {
+            $du = $domUsers["$($d.Domain)".ToLower()]
+            $drows += , @("$($d.Domain)", "$($d.Type)", $(if ($d.IsDefault) { T 'L_Yes' } else { '' }), $(if ($du) { Num $du } else { '0' }))
+        }
+        [void]$sb.Append((Tbl -Header -Rows $drows -ColW @(4000, 1900, 1500, 1600)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'S3_3'))) }
+
+    # ============ 4 Systemkarta ============
+    [void]$sb.Append((H1 (T 'S4')))
+    [void]$sb.Append((Par (T 'S4_intro')))
     $hubDraw = Get-MapPng 'Hub' { Build-OverviewMapSvg -SourceFolder $src -Style hub } 6.3
     if ($hubDraw) { [void]$sb.Append("<w:p><w:pPr><w:jc w:val='center'/></w:pPr><w:r>$hubDraw</w:r></w:p>") }
-    else { [void]$sb.Append((Par '[Hub-karta kunde inte skapas - kontrollera att SVG-kartorna byggs]')) }
+    else { [void]$sb.Append((RedMissing (T 'S4'))) }
 
-    # 5 Systemkonfiguration / inställningar
-    [void]$sb.Append((H1 'Systemkonfiguration / inställningar'))
-    foreach ($a in 'Users', 'Groups', 'Licenses', 'Departments & offices', 'Conditional Access', 'App registrations', 'Enterprise apps', 'Domains', 'Self-service password reset (SSPR)', 'Service limits & recommendations') {
-        [void]$sb.Append((H2 $a)); [void]$sb.Append((Par '[Innehåll kommer]'))
+    # ============ 5 Microsoft Entra ID (KPI dashboard + pointer to the Excel workbook) ============
+    [void]$sb.Append((H1 (T 'S_KPI')))
+    $kpiSvg = Build-KpiDashboardSvg -SourceFolder $src   # always rebuild so the image reflects current data
+    if ($kpiSvg -and (Test-Path $kpiSvg)) {
+        $kpiPng = Join-Path ([System.IO.Path]::GetTempPath()) ("wrdash_" + [guid]::NewGuid().ToString('N') + '.png')
+        if (Convert-SvgToPng -SvgPath $kpiSvg -PngPath $kpiPng) { [void]$sb.Append("<w:p><w:pPr><w:jc w:val='center'/></w:pPr><w:r>$(LogoDrawing $kpiPng 6.3)</w:r></w:p>"); [void]$sb.Append((Par '')) }
+    }
+    [void]$sb.Append((Par (T 'KPI_seeExcel')))
+
+    # ============ 6 Systemkonfiguration och inställningar ============
+    [void]$sb.Append((H1 (T 'CH6')))
+
+    [void]$sb.Append((H2 (T 'S5_1')))
+    [void]$sb.Append((Par (T 'Exp_Users')))
+    if ($users.Count) {
+        $urows = @(, @((T 'L_Category'), (T 'L_Count')))
+        $urows += , @((T 'L_Members'), ('{0:N0}' -f $uMembers))
+        $urows += , @((T 'L_GuestsB2B'), ('{0:N0}' -f $uGuests))
+        $urows += , @((T 'L_Enabled'), ('{0:N0}' -f $uEnabled))
+        $urows += , @((T 'L_Disabled'), ('{0:N0}' -f $uDisabled))
+        [void]$sb.Append((Tbl -Header -Rows $urows -ColW @(5000, 4000)))
+        $umd = try { Get-UsersMapData -SourceFolder $src } catch { $null }
+        if ($umd -and @($umd.Domains).Count) {
+            [void]$sb.Append((Par -Text 'Users per domain' -Bold))
+            $ddrows = @(, @('Domain', 'Users'))
+            foreach ($d in $umd.Domains) { $ddrows += , @("$($d.Name)", (Num $d.Count)) }
+            [void]$sb.Append((Tbl -Header -Rows $ddrows -ColW @(6000, 3000)))
+        }
+        if ($umd -and @($umd.Auth).Count) {
+            [void]$sb.Append((Par -Text 'Authentication methods' -Bold))
+            $amrows = @(, @('Method', 'Users'))
+            foreach ($a in $umd.Auth) { $amrows += , @("$($a.Name)", (Num $a.Count)) }
+            [void]$sb.Append((Tbl -Header -Rows $amrows -ColW @(6000, 3000)))
+        }
+    }
+    else { [void]$sb.Append((RedMissing (T 'S5_1'))) }
+
+    [void]$sb.Append((H2 (T 'S5_2')))
+    [void]$sb.Append((Par (T 'Exp_Groups')))
+    if ($groups.Count) {
+        $grows = @(, @((T 'L_GroupTypeSource'), (T 'L_Count')))
+        $grows += , @((T 'L_SecurityGroups'), ('{0:N0}' -f $grpSec))
+        $grows += , @((T 'L_M365Groups'), ('{0:N0}' -f $grpM365))
+        $grows += , @((T 'L_DynamicGroups'), ('{0:N0}' -f $grpDyn))
+        $grows += , @((T 'L_CloudGroups'), ('{0:N0}' -f $grpCloud))
+        $grows += , @((T 'L_OnPremSynced'), ('{0:N0}' -f $grpOnprem))
+        [void]$sb.Append((Tbl -Header -Rows $grows -ColW @(5000, 4000)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'S5_2'))) }
+    [void]$sb.Append((Par (T 'Grp_types_p')))
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 08 Groups overview, check also svg Groups'))
+    [void]$sb.Append((H2 (T 'Grp_size_h')))
+    [void]$sb.Append((Par (T 'Grp_size_p')))
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 08 Groups overview, check also svg Groups'))
+    [void]$sb.Append((H2 (T 'Grp_dyn_h')))
+    [void]$sb.Append((Par (T 'Grp_dyn_p')))
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 08 Groups overview, check also svg Groups'))
+    [void]$sb.Append((H2 (T 'Grp_owner_h')))
+    [void]$sb.Append((Par (T 'Grp_owner_p')))
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 08 Groups overview, check also svg Groups'))
+    [void]$sb.Append((H2 (T 'Grp_deptown_h')))
+    [void]$sb.Append((Par (T 'Grp_deptown_p')))
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 08 Groups overview, check also svg Groups'))
+
+    [void]$sb.Append((H2 (T 'S5_3')))
+    [void]$sb.Append((Par (T 'Exp_RBAC')))
+    if ($rbac.Count) { [void]$sb.Append((Par ((T 'S5_3_body') -f $rbacActive, $rbacEligible))) }
+    else { [void]$sb.Append((RedMissing (T 'S5_3'))) }
+    [void]$sb.Append((Par (T 'Role_p1')))
+    if ($rbacAssign.Count) {
+        $rrows = @(, @('Role', 'Assignments', 'Share'))
+        foreach ($g in (@($rbacAssign | Group-Object RoleDefinitionName | Sort-Object Count -Descending))) { $rrows += , @("$($g.Name)", (Num $g.Count), (Pct ([double]$g.Count / $rbacAssign.Count * 100))) }
+        [void]$sb.Append((Tbl -Header -Rows $rrows -ColW @(5000, 2000, 2000)))
     }
 
-    # 6-8
-    [void]$sb.Append((H1 'Behörighetsgrupper / RBAC (roller)')); [void]$sb.Append((Par '[Innehåll kommer]'))
-    [void]$sb.Append((H1 'Logghantering')); [void]$sb.Append((Par '[Innehåll kommer]'))
-    [void]$sb.Append((H1 'Överlämning')); [void]$sb.Append((Par '[Innehåll kommer]'))
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 12 RBAC overview, check also svg for RBAC'))
+    [void]$sb.Append((H2 (T 'S5_4')))
+    [void]$sb.Append((Par (T 'Exp_PIM')))
+    if ($rbacEligible -gt 0) { [void]$sb.Append((Par ((T 'S5_4_inuse') -f $rbacEligible))) }
+    else { [void]$sb.Append((GreyPar 'S5_4_none')) }
+
+    [void]$sb.Append((H2 (T 'S5_5')))
+    [void]$sb.Append((Par (T 'Exp_Guests')))
+    $guestList = @($users | Where-Object { "$($_.UserType)" -eq 'Guest' })
+    if ($guestList.Count) { [void]$sb.Append((Par ((T 'S5_5_some') -f $guestList.Count))) }
+    else { [void]$sb.Append((Par (T 'S5_5_none'))) }
+
+    [void]$sb.Append((H2 (T 'S6_1')))
+    [void]$sb.Append((Par (T 'Exp_CA')))
+    if ($caPol.Count) {
+        [void]$sb.Append((Par ((T 'S6_1_body') -f $caPol.Count, $caEnabled, $caReport, $caDisabled)))
+        $crows = @(, @((T 'L_Policy'), (T 'L_State')))
+        foreach ($p in ($caPol | Sort-Object DisplayName)) { $crows += , @("$($p.DisplayName)", "$($p.State)") }
+        [void]$sb.Append((Tbl -Header -Rows $crows -ColW @(6500, 2500)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'S6_1'))) }
+
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi 09 Conditional access, check also svg for Conditional'))
+    [void]$sb.Append((H2 (T 'S6_3')))
+    [void]$sb.Append((Par (T 'Exp_MFA')))
+    [void]$sb.Append((GreyPar 'S6_3_body'))
+    [void]$sb.Append((Note 'Kopiera SVG Entra ID - Users (types, domains, auth, titles), Authentication methods'))
+    [void]$sb.Append((Note 'Add data from EntraID Authentication methods | Policies'))
+    [void]$sb.Append((Tbl -Header -Rows @(@('Name', 'Target', 'Enabled', 'Method'), @('', '', '', ''), @('', '', '', ''), @('', '', '', '')) -ColW @(2600, 2200, 2200, 2000)))
+
+    [void]$sb.Append((H2 (T 'S6_4')))
+    [void]$sb.Append((Par (T 'Exp_SSPR')))
+    if ($sspr) {
+        $enabledState = "$($sspr.EnabledState)$($sspr.Enablement)$($sspr.State)"
+        if ($enabledState) { [void]$sb.Append((Par ((T 'S6_4_status') -f $enabledState))) }
+        else { [void]$sb.Append((GreyPar 'S6_4_present')) }
+    }
+    else { [void]$sb.Append((RedMissing (T 'S6_4'))) }
+
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi fliken for SSPR, check also svg for SSPR'))
+    [void]$sb.Append((H2 (T 'L_AppRegs')))
+    [void]$sb.Append((Par (T 'Exp_AppReg')))
+    if ($apps.Count) {
+        $expired = @($apps | Where-Object { $_.CredentialExpired -eq $true -or "$($_.CredentialExpired)" -eq 'True' }).Count
+        [void]$sb.Append((Par ((T 'S7_1_body') -f $apps.Count, $appSingle, $appMulti, $expired)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'L_AppRegs'))) }
+    [void]$sb.Append((Par (T 'App_kpiRisk')))
+
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi fliken for this category, check also svg for the category'))
+    [void]$sb.Append((H2 (T 'S7_2')))
+    [void]$sb.Append((Par (T 'Exp_Enterprise')))
+    [void]$sb.Append((Par (T 'Ent_p1')))
+    # same basis as the Excel KPI sheet "11 Enterprise apps": registrations that have a service principal
+    function IsYes($v) { $v -eq $true -or "$v" -match '^(Yes|True)$' }
+    $spApps = @($apps | Where-Object { IsYes $_.ServicePrincipalExists })
+    if ($spApps.Count) {
+        $spTotal  = $spApps.Count
+        $spSso    = @($spApps | Where-Object { IsYes $_.SSOConfigured }).Count
+        $spUsed   = @($spApps | Where-Object { IsYes $_.UsedWithin30Days }).Count
+        $spGraph  = @($spApps | Where-Object { IsYes $_.UsesGraphPermissions }).Count
+        $spPublic = @($spApps | Where-Object { IsYes $_.PublicClient }).Count
+        $spRisk   = @($spApps | Where-Object { $f = try { Get-AppRiskFinding -App $_ } catch { $null }; $f -and $f.Risk }).Count
+        $grpApps = @{}
+        foreach ($g in $groups) { foreach ($an in @("$($g.Applications)" -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ })) { $grpApps[$an] = $true } }
+        $spViaGrp = @($spApps | Where-Object { $grpApps.ContainsKey("$($_.AppName)") }).Count
+        [void]$sb.Append((Tbl -Header -Rows @(
+                    @('Apps with service principal', 'SSO configured', 'Without SSO', 'Used last 30 days', 'Uses Graph API', 'Apps with risk'),
+                    @((Num $spTotal), (Num $spSso), (Num ($spTotal - $spSso)), (Num $spUsed), (Num $spGraph), (Num $spRisk))
+                ) -ColW @(1700, 1450, 1400, 1550, 1450, 1450)))
+        $kpiTbl = {
+            param($title, $hdr, $pairs)
+            [void]$sb.Append((Par ''))
+            [void]$sb.Append((Par -Text $title -Bold))
+            $rows = @(, @($hdr, 'Apps', 'Share'))
+            foreach ($p in $pairs) { $rows += , @("$($p[0])", (Num $p[1]), (Pct ([double]$p[1] / $spTotal * 100))) }
+            [void]$sb.Append((Tbl -Header -Rows $rows -ColW @(4600, 2200, 2200)))
+        }
+        $ssoPairs = @($spApps | Group-Object { if ("$($_.SSOType)") { "$($_.SSOType)" } else { 'None' } } | Sort-Object Count -Descending | ForEach-Object { , @($_.Name, $_.Count) })
+        & $kpiTbl 'Authentication protocol (SSO type)' 'SSO type' $ssoPairs
+        $bands = @($spApps | ForEach-Object { try { Get-SignInRecencyBand -LastSignIn $_.LastSignInDateTime } catch { 'Never / no data' } })
+        $recPairs = @(foreach ($b in 'Last 7 days', '8-30 days', '31-90 days', '90+ days', 'Never / no data') { $c = @($bands | Where-Object { $_ -eq $b }).Count; if ($c) { , @($b, $c) } })
+        & $kpiTbl 'Last sign-in' 'Last sign-in' $recPairs
+        & $kpiTbl 'Microsoft Graph permissions' 'Graph' @(@('Uses Graph API', $spGraph), @('No Graph API', ($spTotal - $spGraph)))
+        & $kpiTbl 'Client type' 'Client' @(@('Public client', $spPublic), @('Confidential client', ($spTotal - $spPublic)))
+        & $kpiTbl 'App assignment through groups' 'Assignment' @(@('Assigned via group', $spViaGrp), @('No group assignment', ($spTotal - $spViaGrp)))
+    }
+    [void]$sb.Append((Note 'Add dashboard and data from ExcelKpi fliken for this category, check also svg for the category'))
+
+    # ============ 9 Beroenden till andra system ============
+    [void]$sb.Append((H1 (T 'CH9')))
+    [void]$sb.Append((H2 (T 'CH9_1'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH9_2'))); [void]$sb.Append((Manual))
+
+    # ============ 10 Licenser och avtal ============
+    [void]$sb.Append((H1 (T 'CH10')))
+    [void]$sb.Append((H2 (T 'S8_1')))
+    if ($licenses.Count) {
+        $lrows = @(, @((T 'L_SKU'), (T 'L_LicEnabled'), (T 'L_LicConsumed'), (T 'L_LicFree')))
+        foreach ($l in ($licenses | Sort-Object @{ E = { [int]$_.consumedUnits } } -Descending)) {
+            $lrows += , @("$($l.skuPartNumber)", ('{0:N0}' -f [int]$l.enabledUnits), ('{0:N0}' -f [int]$l.consumedUnits), ('{0:N0}' -f [int]$l.freeUnits))
+        }
+        [void]$sb.Append((Tbl -Header -Rows $lrows -ColW @(3600, 1800, 1800, 1800)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'S8_1'))) }
+
+    [void]$sb.Append((H2 (T 'CH_LicShare')))
+    if ($licenses.Count) {
+        $licSorted = @($licenses | Sort-Object @{ E = { [int]$_.consumedUnits } } -Descending)
+        $totCons = [int]((@($licenses | ForEach-Object { [int]$_.consumedUnits }) | Measure-Object -Sum).Sum); if ($totCons -le 0) { $totCons = 1 }
+        if ($licSorted.Count -ge 3) {
+            $a = $licSorted[0]; $b = $licSorted[1]; $c = $licSorted[2]
+            [void]$sb.Append((Par ((T 'CH_LicShare_intro') -f `
+                        "$($a.skuPartNumber)", (Num $a.consumedUnits), (Pct ([double][int]$a.consumedUnits / $totCons * 100)), `
+                        "$($b.skuPartNumber)", (Num $b.consumedUnits), (Pct ([double][int]$b.consumedUnits / $totCons * 100)), `
+                        "$($c.skuPartNumber)", (Num $c.consumedUnits), (Pct ([double][int]$c.consumedUnits / $totCons * 100)))))
+        }
+        $srows = @(, @('Licence', 'Users', 'Share'))
+        foreach ($l in $licSorted) {
+            $srows += , @("$($l.skuPartNumber)", (Num $l.consumedUnits), (Pct ([double][int]$l.consumedUnits / $totCons * 100)))
+        }
+        [void]$sb.Append((Tbl -Header -Rows $srows -ColW @(4600, 2200, 2200)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'CH_LicShare'))) }
+
+    [void]$sb.Append((H2 (T 'Lic_util_h')))
+    if ($licenses.Count) {
+        [void]$sb.Append((Par (T 'Lic_util_p1')))
+        $urows = @(, @('Sku', 'Category', 'Enabled', 'Consumed', 'Free', 'Util %', 'Status'))
+        foreach ($l in ($licenses | Sort-Object @{ E = { [int]$_.consumedUnits } } -Descending)) {
+            $en = [int]$l.enabledUnits; $co = [int]$l.consumedUnits
+            $util = if ($en -gt 0) { Pct ([double]$co / $en * 100) } else { Pct 0 }
+            $cat = try { Get-LicenseSkuCategory -SkuPartNumber "$($l.skuPartNumber)" } catch { '' }
+            $urows += , @("$($l.skuPartNumber)", "$cat", (Num $l.enabledUnits), (Num $l.consumedUnits), (Num $l.freeUnits), $util, "$($l.capabilityStatus)")
+        }
+        [void]$sb.Append((Tbl -Header -Rows $urows -ColW @(2500, 1300, 1150, 1300, 1150, 1050, 1300)))
+        [void]$sb.Append((Par (T 'Lic_util_p2')))
+    }
+    else { [void]$sb.Append((RedMissing (T 'Lic_util_h'))) }
+
+    [void]$sb.Append((H2 (T 'Lic_assigned_h')))
+    if ($licenses.Count) {
+        [void]$sb.Append((Par (T 'Lic_assigned_p')))
+        $arows = @(, @('Sku', 'Assigned', 'Unused'))
+        foreach ($l in ($licenses | Sort-Object @{ E = { [int]$_.freeUnits } } -Descending)) { $arows += , @("$($l.skuPartNumber)", (Num $l.consumedUnits), (Num $l.freeUnits)) }
+        [void]$sb.Append((Tbl -Header -Rows $arows -ColW @(4600, 2200, 2200)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'Lic_assigned_h'))) }
+
+    [void]$sb.Append((H2 (T 'Lic_top10_h')))
+    if ($licenses.Count) {
+        [void]$sb.Append((Par (T 'Lic_top10_p')))
+        $trows2 = @(, @('Sku', 'Assigned units'))
+        foreach ($l in (@($licenses | Sort-Object @{ E = { [int]$_.consumedUnits } } -Descending | Select-Object -First 10))) { $trows2 += , @("$($l.skuPartNumber)", (Num $l.consumedUnits)) }
+        [void]$sb.Append((Tbl -Header -Rows $trows2 -ColW @(6000, 3000)))
+    }
+    else { [void]$sb.Append((RedMissing (T 'Lic_top10_h'))) }
+
+    [void]$sb.Append((H2 (T 'Lic_dept_h')))
+    [void]$sb.Append((Par (T 'Lic_dept_p')))
+    [void]$sb.Append((H2 (T 'Lic_office_h')))
+    [void]$sb.Append((Par (T 'Lic_office_p')))
+    [void]$sb.Append((H2 (T 'Lic_peruser_h')))
+    [void]$sb.Append((Par (T 'Lic_peruser_p')))
+
+    # ============ 11 Certifikat ============
+    [void]$sb.Append((H1 (T 'CH11')))
+    $fedDomains = @($domains | Where-Object { "$($_.Type)" -match 'Federat' })
+    if ($fedDomains.Count) { $fedList = (($fedDomains | ForEach-Object { $_.Domain }) -join ', '); [void]$sb.Append((Par ((T 'S11_fed') -f $fedList))) }
+    else { [void]$sb.Append((GreyPar 'S11_none')) }
+    [void]$sb.Append((H2 (T 'CH11_1'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH11_2'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH11_3'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH11_4'))); [void]$sb.Append((Manual))
+
+    # ============ 12 Användarkonton, systemkonton och lösenord ============
+    [void]$sb.Append((H1 (T 'CH12')))
+    [void]$sb.Append((H2 (T 'CH12_1'))); [void]$sb.Append((Manual))
+
+    # ============ 13 Behörighetsgrupper (RBAC) ============
+    [void]$sb.Append((H1 (T 'CH13')))
+    if ($rbac.Count) { [void]$sb.Append((Par ((T 'S5_3_body') -f $rbacActive, $rbacEligible))) }
+    else { [void]$sb.Append((RedMissing (T 'CH13'))) }
+
+    # ============ 14 Säkerhet ============
+    [void]$sb.Append((H1 (T 'CH14')))
+    [void]$sb.Append((H2 (T 'CH14_1'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH14_2'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH14_3'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH14_4'))); [void]$sb.Append((Manual))
+
+    # ============ 15 Övervakning ============
+    [void]$sb.Append((H1 (T 'CH15')))
+    [void]$sb.Append((GreyPar 'S9_body'))
+
+    # ============ 16 Logghantering ============
+    [void]$sb.Append((H1 (T 'CH16')))
+    [void]$sb.Append((H2 (T 'CH16_1'))); [void]$sb.Append((Manual))
+
+    # ============ 17 Backup och återläsning ============
+    [void]$sb.Append((H1 (T 'CH17')))
+    [void]$sb.Append((H2 (T 'CH17_1'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH17_2'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH17_3'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH17_4'))); [void]$sb.Append((Manual))
+    [void]$sb.Append((H2 (T 'CH17_5'))); [void]$sb.Append((Manual))
+
+    # ============ 18 Överlämning och godkännande ============
+    [void]$sb.Append((H1 (T 'CH18')))
+    [void]$sb.Append((Manual))
 
     $sectPr = "<w:sectPr><w:footerReference w:type='default' r:id='rId3'/><w:pgSz w:w='11906' w:h='16838'/><w:pgMar w:top='1417' w:right='1417' w:bottom='1417' w:left='1417' w:header='708' w:footer='708' w:gutter='0'/></w:sectPr>"
     $bodyXml = $sb.ToString() + $sectPr
@@ -196,11 +636,13 @@ function Build-EntraWordReport {
         "<w:tc><w:tcPr><w:tcW w:w='$w' w:type='dxa'/></w:tcPr><w:p><w:pPr><w:spacing w:after='0'/></w:pPr><w:r>$rpr<w:t xml:space='preserve'>$(XmlEsc "$text")</w:t></w:r></w:p></w:tc>"
     }
     $fw = @(2400, 2400, 1500, 1000, 1700)
-    $ftrHead = '<w:tr>' + (FtrCell $fw[0] 'Utarbetad av' $true) + (FtrCell $fw[1] 'Dokument-ID' $true) + (FtrCell $fw[2] 'Datum' $true) + (FtrCell $fw[3] 'Version' $true) + (FtrCell $fw[4] 'Sida' $true) + '</w:tr>'
+    $ftrHead = '<w:tr>' + (FtrCell $fw[0] 'Prepared by' $true) + (FtrCell $fw[1] 'Document ID' $true) + (FtrCell $fw[2] 'Date' $true) + (FtrCell $fw[3] 'Version' $true) + (FtrCell $fw[4] 'Page' $true) + '</w:tr>'
     $sidaCell = "<w:tc><w:tcPr><w:tcW w:w='$($fw[4])' w:type='dxa'/></w:tcPr>$pageField</w:tc>"
     $ftrVal = '<w:tr>' + (FtrCell $fw[0] $author $false) + (FtrCell $fw[1] $docId $false) + (FtrCell $fw[2] $today $false) + (FtrCell $fw[3] $version $false) + $sidaCell + '</w:tr>'
     $ftrGrid = ($fw | ForEach-Object { "<w:gridCol w:w='$_'/>" }) -join ''
-    $footerTbl = "<w:tbl><w:tblPr><w:tblW w:w='$(($fw|Measure-Object -Sum).Sum)' w:type='dxa'/><w:tblBorders><w:top w:val='single' w:sz='4' w:color='BFBFBF'/><w:bottom w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideH w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideV w:val='single' w:sz='4' w:color='BFBFBF'/></w:tblBorders></w:tblPr><w:tblGrid>$ftrGrid</w:tblGrid>$ftrHead$ftrVal</w:tbl>"
+    $restW = $fw[1] + $fw[2] + $fw[3] + $fw[4]
+    $ftrClass = '<w:tr>' + (FtrCell $fw[0] 'Informationsklass' $true) + "<w:tc><w:tcPr><w:tcW w:w='$restW' w:type='dxa'/><w:gridSpan w:val='4'/></w:tcPr><w:p><w:pPr><w:spacing w:after='0'/></w:pPr></w:p></w:tc>" + '</w:tr>'
+    $footerTbl = "<w:tbl><w:tblPr><w:tblW w:w='$(($fw|Measure-Object -Sum).Sum)' w:type='dxa'/><w:tblBorders><w:top w:val='single' w:sz='4' w:color='BFBFBF'/><w:bottom w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideH w:val='single' w:sz='4' w:color='BFBFBF'/><w:insideV w:val='single' w:sz='4' w:color='BFBFBF'/></w:tblBorders></w:tblPr><w:tblGrid>$ftrGrid</w:tblGrid>$ftrHead$ftrVal$ftrClass</w:tbl>"
     $footerXml = "<?xml version=`"1.0`" encoding=`"UTF-8`" standalone=`"yes`"?>`n<w:ftr xmlns:w=`"http://schemas.openxmlformats.org/wordprocessingml/2006/main`" xmlns:r=`"http://schemas.openxmlformats.org/officeDocument/2006/relationships`">$footerTbl</w:ftr>"
 
     $contentTypes = @'
@@ -252,7 +694,9 @@ function Build-EntraWordReport {
     $wordDir = Join-Path $src 'Report\word'
     if (-not (Test-Path $wordDir)) { New-Item -ItemType Directory -Path $wordDir -Force | Out-Null }
     $stamp = Get-Date -Format 'yyyy-MM-dd_HH.mm.ss'
-    $out = Join-Path $wordDir "Systemdokumentation Entra ID $stamp.docx"
+    $baseName = (($docId -replace '[\\/:*?"<>|]', ' ') -replace '\s+', ' ').Trim()
+    if (-not $baseName) { $baseName = T 'DocIdDefault' }
+    $out = Join-Path $wordDir "$baseName $stamp.docx"
     if (Test-Path $out) { Remove-Item -LiteralPath $out -Force }
 
     Add-Type -AssemblyName System.IO.Compression.FileSystem

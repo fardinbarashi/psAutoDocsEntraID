@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-GroupDeptMatrixSvg {
     <#
         Group -> department matrices, one SVG FILE PER FIRST LETTER. Each file
@@ -89,7 +90,7 @@ function Build-GroupDeptMatrixSvg {
 
         $gridLeft = ($pageW - $gridW) / 2
         $titleCy  = ($dsY - $dsH / 2 - $gapY) - $titleH / 2
-        $titleText = "Groups starting with `"$letter`"   —   $($grps.Count) groups, $($depts.Count) departments"
+        $titleText = "Groups starting with `"$letter`"   -   $($grps.Count) groups, $($depts.Count) departments"
         # widen the title band when the grid is narrow so the title never spills
         $titleBandW = [math]::Min($pageW - 2 * $marginSide, [math]::Max($gridW, (Measure-MapTextWidth $titleText $fsTitle) + 0.5))
         [void]$shapes.Add(@{ Id='ltitle'; Kind='Rectangle'

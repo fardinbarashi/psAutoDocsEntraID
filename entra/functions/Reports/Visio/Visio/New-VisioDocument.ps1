@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function New-VisioDocument {
     <#
         Writes a .vsdx from a simple shape/connector model.
@@ -147,37 +148,6 @@ $geom
     }
 
     # ---------- an icon becomes a Foreign shape over its node ----------
-    function ForeignXml($s, [int]$id, [string]$relId) {
-        $side = [math]::Min($s.H * 0.6, $s.W * 0.3)
-        $px = $s.X - $s.W / 2 + $s.W * 0.06 + $side / 2
-        # Per [MS-VSDX] the ForeignData element takes only ForeignType; the
-        # image cells (ImgOffset/ImgWidth/ImgHeight) and a NoShow geometry that
-        # frames the picture are what let Visio actually render it. The earlier
-        # CompressionType/CompressionLevel/ObjectWidth attributes are not valid
-        # here and caused the crossed-out placeholder.
-        @"
-      <Shape ID='$id' NameU='Icon$id' Type='Foreign' LineStyle='0' FillStyle='0' TextStyle='0'>
-        <Cell N='PinX' V='$px'/><Cell N='PinY' V='$($s.Y)'/>
-        <Cell N='Width' V='$side'/><Cell N='Height' V='$side'/>
-        <Cell N='LocPinX' V='$($side/2)' F='Width*0.5'/><Cell N='LocPinY' V='$($side/2)' F='Height*0.5'/>
-        <Cell N='Angle' V='0'/><Cell N='FlipX' V='0'/><Cell N='FlipY' V='0'/>
-        <Cell N='ImgOffsetX' V='0'/><Cell N='ImgOffsetY' V='0'/>
-        <Cell N='ImgWidth' V='$side'/><Cell N='ImgHeight' V='$side'/>
-        <Section N='Geometry' IX='0'>
-          <Cell N='NoFill' V='1'/><Cell N='NoLine' V='1'/><Cell N='NoShow' V='0'/>
-          <Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row>
-          <Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='0'/></Row>
-          <Row T='RelLineTo' IX='3'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row>
-          <Row T='RelLineTo' IX='4'><Cell N='X' V='0'/><Cell N='Y' V='1'/></Row>
-          <Row T='RelLineTo' IX='5'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row>
-        </Section>
-        <ForeignData ForeignType='Bitmap'>
-          <Rel r:id='$relId'/>
-        </ForeignData>
-      </Shape>
-"@
-    }
-
     # ---------- build the page ----------
     $byId = @{}; foreach ($s in $Shape) { $byId[$s.Id] = $s }
     $sb = [System.Text.StringBuilder]::new()

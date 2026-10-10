@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-PdfConverterExe {
     <#
         Locates an external converter executable by probing the usual install
@@ -46,41 +47,6 @@ function Convert-WithSoffice {
         return $false
     }
     finally { Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue }
-}
-
-function Convert-XlsxToPdf {
-    <#
-        Excel workbook -> PDF. Prefers Excel itself (best fidelity for the charts),
-        falls back to LibreOffice. Returns $true on success.
-    #>
-    [CmdletBinding()]
-    param([Parameter(Mandatory)][string]$XlsxPath, [Parameter(Mandatory)][string]$PdfPath)
-
-    if (-not (Test-Path $XlsxPath)) { return $false }
-    $dir = Split-Path $PdfPath -Parent
-    if ($dir -and -not (Test-Path $dir)) { New-Item -Path $dir -ItemType Directory -Force | Out-Null }
-
-    # 1) Excel COM
-    $excel = $null; $wb = $null
-    try {
-        $excel = New-Object -ComObject Excel.Application -ErrorAction Stop
-        $excel.Visible = $false; $excel.DisplayAlerts = $false
-        $wb = $excel.Workbooks.Open($XlsxPath)
-        $wb.ExportAsFixedFormat(0, $PdfPath)   # 0 = xlTypePDF
-        return (Test-Path $PdfPath)
-    }
-    catch { }
-    finally {
-        if ($wb)    { try { $wb.Close($false) } catch { }; [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($wb) }
-        if ($excel) { try { $excel.Quit() }     catch { }; [void][System.Runtime.InteropServices.Marshal]::ReleaseComObject($excel) }
-    }
-
-    # 2) LibreOffice fallback
-    $soffice = Get-PdfConverterExe -Which Soffice
-    if ($soffice) { return (Convert-WithSoffice -SrcPath $XlsxPath -PdfPath $PdfPath -Soffice $soffice) }
-
-    Write-Host "  PDF: no Excel or LibreOffice available to convert $(Split-Path $XlsxPath -Leaf)." -ForegroundColor DarkYellow
-    return $false
 }
 
 function Convert-SvgToPdf {

@@ -1,0 +1,743 @@
+{
+  "_comment": "Document text for the Word report. Each key holds the Swedish (sv) and English (en) string; the builder picks the language from the GUI. {0}, {1}, ... are placeholders the script fills with numbers/names from the data - keep them.",
+  "Cover_DocType": {
+    "sv": "Dokumenttyp",
+    "en": "Document type"
+  },
+  "Cover_SysDoc": {
+    "sv": "Systemdokumentation",
+    "en": "System documentation"
+  },
+  "Cover_Area": {
+    "sv": "Område",
+    "en": "Area"
+  },
+  "Cover_CustomerLogo": {
+    "sv": "[Kundens logo]",
+    "en": "[Customer logo]"
+  },
+  "TOC_Title": {
+    "sv": "Innehållsförteckning",
+    "en": "Table of contents"
+  },
+  "TOC_Placeholder": {
+    "sv": "Uppdatera fältet (markera allt, F9) i Word för att fylla innehållsförteckningen.",
+    "en": "Update the field (select all, F9) in Word to populate the table of contents."
+  },
+  "F_PreparedBy": {
+    "sv": "Utarbetad av",
+    "en": "Prepared by"
+  },
+  "F_DocId": {
+    "sv": "Dokument-ID",
+    "en": "Document ID"
+  },
+  "F_Date": {
+    "sv": "Datum",
+    "en": "Date"
+  },
+  "F_Version": {
+    "sv": "Version",
+    "en": "Version"
+  },
+  "F_Page": {
+    "sv": "Sida",
+    "en": "Page"
+  },
+  "DocIdDefault": {
+    "sv": "Systemdokumentation Entra ID",
+    "en": "System documentation Entra ID"
+  },
+  "FirstChangeDefault": {
+    "sv": "Första utkast",
+    "en": "First draft"
+  },
+  "ConsultantPlaceholder": {
+    "sv": "Konsultbolaget",
+    "en": "The consultancy"
+  },
+  "CustomerPlaceholder": {
+    "sv": "Kundens namn",
+    "en": "Customer name"
+  },
+  "S_KPI": {
+    "sv": "Microsoft Entra ID",
+    "en": "Microsoft Entra ID"
+  },
+  "KPI_seeExcel": {
+    "sv": "Se Excel-KPI-arbetsboken för detaljerad uppställning.",
+    "en": "See the Excel KPI workbook for the detailed breakdown."
+  },
+  "CH1_1": {
+    "sv": "Mottagare",
+    "en": "Recipients"
+  },
+  "CH1_3": {
+    "sv": "Referenser",
+    "en": "References"
+  },
+  "CH2_1": {
+    "sv": "Kontaktvägar",
+    "en": "Contact channels"
+  },
+  "CH2_2": {
+    "sv": "Helpdesk and Operations",
+    "en": "Helpdesk and Operations"
+  },
+  "CH6": {
+    "sv": "Systemkonfiguration och inställningar",
+    "en": "System configuration and settings"
+  },
+  "CH9": {
+    "sv": "Beroenden till andra system",
+    "en": "Dependencies on other systems"
+  },
+  "CH9_1": {
+    "sv": "Interna beroenden",
+    "en": "Internal dependencies"
+  },
+  "CH9_2": {
+    "sv": "Externa beroenden",
+    "en": "External dependencies"
+  },
+  "CH10": {
+    "sv": "Licenser och avtal",
+    "en": "Licenses and agreements"
+  },
+  "CH11": {
+    "sv": "Certifikat",
+    "en": "Certificates"
+  },
+  "CH11_1": {
+    "sv": "Förnyelse",
+    "en": "Renewal"
+  },
+  "CH11_2": {
+    "sv": "Ansvar",
+    "en": "Responsibility"
+  },
+  "CH11_3": {
+    "sv": "Konton och lösenord",
+    "en": "Accounts and passwords"
+  },
+  "CH11_4": {
+    "sv": "Förvaring",
+    "en": "Storage"
+  },
+  "CH12": {
+    "sv": "Användarkonton, systemkonton och lösenord",
+    "en": "User accounts, system accounts and passwords"
+  },
+  "CH12_1": {
+    "sv": "Förvaring av uppgifter",
+    "en": "Storage of credentials"
+  },
+  "CH13": {
+    "sv": "Behörighetsgrupper (RBAC)",
+    "en": "Permission groups (RBAC)"
+  },
+  "CH14": {
+    "sv": "Säkerhet",
+    "en": "Security"
+  },
+  "CH14_1": {
+    "sv": "Inloggning",
+    "en": "Sign-in"
+  },
+  "CH14_2": {
+    "sv": "Säkerhetskrav",
+    "en": "Security requirements"
+  },
+  "CH14_3": {
+    "sv": "Sekretess",
+    "en": "Confidentiality"
+  },
+  "CH14_4": {
+    "sv": "Spårbarhet",
+    "en": "Traceability"
+  },
+  "CH15": {
+    "sv": "Övervakning",
+    "en": "Monitoring"
+  },
+  "CH16": {
+    "sv": "Logghantering",
+    "en": "Log management"
+  },
+  "CH16_1": {
+    "sv": "Krav på systemet",
+    "en": "Requirements on the system"
+  },
+  "CH17": {
+    "sv": "Backup och återläsning",
+    "en": "Backup and restore"
+  },
+  "CH17_1": {
+    "sv": "Vad säkerhetskopieras",
+    "en": "What is backed up"
+  },
+  "CH17_2": {
+    "sv": "Versionshantering",
+    "en": "Versioning"
+  },
+  "CH17_3": {
+    "sv": "Pre-backup och post-backup",
+    "en": "Pre-backup and post-backup"
+  },
+  "CH17_4": {
+    "sv": "Övrigt",
+    "en": "Other"
+  },
+  "CH17_5": {
+    "sv": "Återställningsförfarande",
+    "en": "Restore procedure"
+  },
+  "CH18": {
+    "sv": "Överlämning och godkännande",
+    "en": "Handover and approval"
+  },
+  "AuthorPlaceholder": {
+    "sv": "Lägg till manuellt eller ange ditt namn i profilen (Entra\\Config\\WordReportProfile.json)",
+    "en": "Add manually or add your name in the profile (Entra\\Config\\WordReportProfile.json)"
+  },
+  "CH1_p1": {
+    "sv": "Detta dokument beskriver nuläget i organisationens Microsoft 365- och Entra ID-miljö (tenant). Innehållet är en läsbar sammanställning av de nyckeltal, diagram och tabeller som tagits fram i en json-export och omfattar licensiering, grupper, villkorsstyrd åtkomst (Conditional Access), app-registreringar och företagsapplikationer (enterprise applications).",
+    "en": "This document describes the current state of the organisation's Microsoft 365 and Entra ID environment (tenant). The content is a readable summary of the key figures, charts and tables produced in a json export, covering licensing, groups, Conditional Access, app registrations and enterprise applications."
+  },
+  "CH1_p2": {
+    "sv": "Varje avsnitt inleds med en kort sammanfattning som ska kunna läsas av alla, följt av mer tekniska detaljer för den som vill fördjupa sig. Engelska rubriker, produktnamn och etablerade tekniska termer har behållits på engelska.",
+    "en": "Each section begins with a short summary intended for all readers, followed by more technical detail for those who want to go deeper. English headings, product names and established technical terms have been kept in English."
+  },
+  "CH1_p3": {
+    "sv": "I alla uppdrag och projekt ska ett system- och driftdokument tas fram. Uppdragsledaren ansvarar för att detta blir utfört. Dokumentet ska vara ifyllt och klart i samband med att uppdraget eller projektet lämnas över i drift.",
+    "en": "A system and operations document must be produced for every assignment and project. The engagement manager is responsible for ensuring this is done. The document must be complete when the assignment or project is handed over to operations."
+  },
+  "CH1_p4": {
+    "sv": "Syftet med dokumentet är att förkorta oförutsedda avbrott i löpande drift, även när ordinarie personal inte finns på plats.",
+    "en": "The purpose of the document is to shorten unforeseen interruptions in ongoing operations, even when regular staff are unavailable."
+  },
+  "CH1_p5": {
+    "sv": "Driftpersonal och systemansvarig ska på ett säkert och systematiskt sätt kunna lokalisera fel och vidta lämpliga åtgärder för att åter sätta systemet i drift.",
+    "en": "Operations staff and the system owner should be able to locate faults safely and systematically and take appropriate action to restore the system."
+  },
+  "CH1_1_body": {
+    "sv": "{0}: Dokumentationen riktar sig till dem som har kunskap i och ansvar för systemet, samt till drift- och supportpersonal. Den ska säkerställa drift, support och övrig hantering.",
+    "en": "{0}: The documentation is aimed at those with knowledge of and responsibility for the system, and at operations and support staff. It should ensure operations, support and other handling."
+  },
+  "CH1_1_b1": {
+    "sv": "Leverantören bidrar med delar gällande systemet.",
+    "en": "The supplier contributes the parts concerning the system."
+  },
+  "CH1_1_b2": {
+    "sv": "Kunden bidrar med ansvariga inom företaget samt krav på tillgänglighet, övervakning och backup.",
+    "en": "The customer contributes the people responsible within the company, and requirements for availability, monitoring and backup."
+  },
+  "CH1_1_b3": {
+    "sv": "{0} drift bidrar med infrastrukturella delar.",
+    "en": "{0} operations contributes the infrastructure parts."
+  },
+  "CH2_1_body": {
+    "sv": "För kundens alla system ska en utsedd systemansvarig finnas.",
+    "en": "A designated system owner must exist for all of the customer's systems."
+  },
+  "Exp_Users": {
+    "sv": "Användare är identiteterna i katalogen (medlemmar och gäster) och utgör grunden för åtkomst till resurser.",
+    "en": "Users are the identities in the directory (members and guests) and form the basis for access to resources."
+  },
+  "Exp_Groups": {
+    "sv": "Grupper samlar användare för att tilldela åtkomst och licenser (säkerhets- och Microsoft 365-grupper). Syftet är att styra behörigheter effektivt.",
+    "en": "Groups collect users to assign access and licenses (security and Microsoft 365 groups). The purpose is to manage permissions efficiently."
+  },
+  "Exp_RBAC": {
+    "sv": "Rollbaserad åtkomstkontroll (RBAC) tilldelar administratörsroller i katalogen. Syftet är att ge rätt personer rätt behörighet enligt least privilege.",
+    "en": "Role-based access control (RBAC) assigns administrative roles in the directory. The purpose is to give the right people the right permissions following least privilege."
+  },
+  "Exp_PIM": {
+    "sv": "Privileged Identity Management (PIM) ger just-in-time-aktivering av privilegierade roller. Syftet är att minska stående administratörsbehörigheter.",
+    "en": "Privileged Identity Management (PIM) provides just-in-time activation of privileged roles. The purpose is to reduce standing administrator permissions."
+  },
+  "Exp_Guests": {
+    "sv": "Gästanvändare (B2B) är externa identiteter som bjudits in för samarbete i tenanten.",
+    "en": "Guest users (B2B) are external identities invited for collaboration in the tenant."
+  },
+  "Exp_CA": {
+    "sv": "Conditional Access styr åtkomst utifrån villkor (användare, plats, enhet och risk) och kan kräva t.ex. multifaktorautentisering. Syftet är att skydda åtkomsten till tenanten.",
+    "en": "Conditional Access controls access based on conditions (user, location, device and risk) and can require e.g. multi-factor authentication. The purpose is to protect access to the tenant."
+  },
+  "Exp_MFA": {
+    "sv": "Multifaktorautentisering (MFA) kräver mer än lösenord vid inloggning. Syftet är att skydda mot komprometterade lösenord.",
+    "en": "Multi-factor authentication (MFA) requires more than a password at sign-in. The purpose is to protect against compromised passwords."
+  },
+  "Exp_SSPR": {
+    "sv": "Självbetjäning för lösenordsåterställning (SSPR) låter användare återställa sina lösenord själva. Syftet är att öka tillgänglighet och minska supportärenden.",
+    "en": "Self-service password reset (SSPR) lets users reset their own passwords. The purpose is to improve availability and reduce support tickets."
+  },
+  "Exp_AppReg": {
+    "sv": "App-registreringar representerar registrerade applikationer och deras behörigheter i tenanten.",
+    "en": "App registrations represent registered applications and their permissions in the tenant."
+  },
+  "Exp_Enterprise": {
+    "sv": "Enterprise-applikationer (service principals) är instanser av applikationer i tenanten, t.ex. för single sign-on och etablering.",
+    "en": "Enterprise applications (service principals) are instances of applications in the tenant, e.g. for single sign-on and provisioning."
+  },
+  "CH3_general": {
+    "sv": "Allmän systembeskrivning",
+    "en": "General system description"
+  },
+  "CH3_gen_p1": {
+    "sv": "Microsoft Entra ID är en molnbaserad identitets- och åtkomsthanteringstjänst som ger anställda åtkomst till externa resurser. Exempelresurser är Microsoft 365, Azure-portalen och tusentals andra SaaS-program.",
+    "en": "Microsoft Entra ID is a cloud-based identity and access management service that gives employees access to external resources. Example resources include Microsoft 365, the Azure portal and thousands of other SaaS applications."
+  },
+  "CH3_gen_p2": {
+    "sv": "Microsoft Entra ID hjälper dem också att komma åt interna resurser som appar i företagets intranät och alla molnappar som har utvecklats organisationen.",
+    "en": "Microsoft Entra ID also helps them access internal resources such as apps on your corporate intranet, and any cloud apps developed for the organisation."
+  },
+  "L_Document": {
+    "sv": "Dokument",
+    "en": "Document"
+  },
+  "L_Reference": {
+    "sv": "Referens",
+    "en": "Reference"
+  },
+  "L_Role": {
+    "sv": "Roll",
+    "en": "Role"
+  },
+  "L_Phone": {
+    "sv": "Telefonnr",
+    "en": "Phone"
+  },
+  "L_Email": {
+    "sv": "E-post",
+    "en": "Email"
+  },
+  "Ref_docLabel": {
+    "sv": "Driftdokumentation",
+    "en": "Operations documentation"
+  },
+  "NoData": {
+    "sv": "Ingen data har hittats som kan stödja detta.",
+    "en": "No data found to support this."
+  },
+  "Manual": {
+    "sv": "Fylls i manuellt.",
+    "en": "To be completed manually."
+  },
+  "S1": {
+    "sv": "Inledning",
+    "en": "Introduction"
+  },
+  "S1_1": {
+    "sv": "Uppdatering av dokument",
+    "en": "Document maintenance"
+  },
+  "S1_1_body": {
+    "sv": "Systemansvarig ansvarar för att detta dokument är aktuellt och relevant. En årlig översyn ska utföras.",
+    "en": "The system owner is responsible for keeping this document current and relevant. An annual review should be performed."
+  },
+  "S1_2": {
+    "sv": "Versionshantering",
+    "en": "Version history"
+  },
+  "L_ChangedBy": {
+    "sv": "Förändrad av",
+    "en": "Changed by"
+  },
+  "L_Change": {
+    "sv": "Förändring",
+    "en": "Change"
+  },
+  "S2": {
+    "sv": "Förvaltning och support",
+    "en": "Management and support"
+  },
+  "S2_customer": {
+    "sv": "Kontaktpersoner kund",
+    "en": "Customer contacts"
+  },
+  "S3": {
+    "sv": "Arkitektur och konfiguration",
+    "en": "Architecture and configuration"
+  },
+  "S3_intro": {
+    "sv": "Arkitektur och konfiguration för tenanten.",
+    "en": "Tenant architecture and configuration."
+  },
+  "S3_1": {
+    "sv": "Tenant-struktur",
+    "en": "Tenant structure"
+  },
+  "L_Tenant": {
+    "sv": "Tenant",
+    "en": "Tenant"
+  },
+  "L_TenantId": {
+    "sv": "Tenant-ID",
+    "en": "Tenant ID"
+  },
+  "L_PrimaryDomain": {
+    "sv": "Primär domän",
+    "en": "Primary domain"
+  },
+  "L_Country": {
+    "sv": "Land",
+    "en": "Country"
+  },
+  "L_Users": {
+    "sv": "Användare",
+    "en": "Users"
+  },
+  "L_Groups": {
+    "sv": "Grupper",
+    "en": "Groups"
+  },
+  "L_AppRegs": {
+    "sv": "App-registreringar",
+    "en": "App registrations"
+  },
+  "L_Devices": {
+    "sv": "Enheter",
+    "en": "Devices"
+  },
+  "S3_1_multitenant": {
+    "sv": "Multi-tenant: {0} gästanvändare (B2B) och {1} multi-tenant app-registreringar.",
+    "en": "Multi-tenant: {0} guest users (B2B) and {1} multi-tenant app registrations."
+  },
+  "S3_2": {
+    "sv": "Hybrid-identitet",
+    "en": "Hybrid identity"
+  },
+  "S3_2_hybrid": {
+    "sv": "Miljön är hybrid ({0}). Katalogsynkronisering mot on-prem AD är aktiv; {1} användare och {2} grupper är synkade från on-prem. Vilket synkverktyg (Entra Connect eller Cloud Sync) som används framgår inte av katalogdatan.",
+    "en": "The environment is hybrid ({0}). Directory synchronisation from on-prem AD is active; {1} users and {2} groups are synced from on-prem. Which sync tool (Entra Connect or Cloud Sync) is used is not exposed by the directory data."
+  },
+  "S3_2_cloud": {
+    "sv": "Molnbaserad tenant ({0}). Ingen on-prem-synkronisering är aktiv.",
+    "en": "Cloud-only tenant ({0}). No on-prem synchronisation is active."
+  },
+  "S3_3": {
+    "sv": "Domäner",
+    "en": "Domains"
+  },
+  "L_Domain": {
+    "sv": "Domän",
+    "en": "Domain"
+  },
+  "L_Type": {
+    "sv": "Typ",
+    "en": "Type"
+  },
+  "L_Default": {
+    "sv": "Standard",
+    "en": "Default"
+  },
+  "L_Yes": {
+    "sv": "Ja",
+    "en": "Yes"
+  },
+  "S4": {
+    "sv": "Systemkarta",
+    "en": "System map"
+  },
+  "S4_intro": {
+    "sv": "Översiktskarta över tenanten (hub). Detaljerade områdeskartor finns som separata SVG- och PDF-filer.",
+    "en": "Overview map of the tenant (hub). Detailed per-area maps are available as separate SVG and PDF files."
+  },
+  "S5_1": {
+    "sv": "Användare",
+    "en": "Users"
+  },
+  "L_Category": {
+    "sv": "Category",
+    "en": "Category"
+  },
+  "L_Count": {
+    "sv": "Count",
+    "en": "Count"
+  },
+  "L_Members": {
+    "sv": "Members",
+    "en": "Members"
+  },
+  "L_GuestsB2B": {
+    "sv": "Guests (B2B)",
+    "en": "Guests (B2B)"
+  },
+  "L_Enabled": {
+    "sv": "Enabled",
+    "en": "Enabled"
+  },
+  "L_Disabled": {
+    "sv": "Disabled",
+    "en": "Disabled"
+  },
+  "S5_2": {
+    "sv": "Grupphantering",
+    "en": "Group management"
+  },
+  "L_GroupTypeSource": {
+    "sv": "Group type / source",
+    "en": "Group type / source"
+  },
+  "L_SecurityGroups": {
+    "sv": "Security groups",
+    "en": "Security groups"
+  },
+  "L_M365Groups": {
+    "sv": "Microsoft 365 groups",
+    "en": "Microsoft 365 groups"
+  },
+  "L_DynamicGroups": {
+    "sv": "Dynamic groups",
+    "en": "Dynamic groups"
+  },
+  "L_CloudGroups": {
+    "sv": "Cloud",
+    "en": "Cloud"
+  },
+  "L_OnPremSynced": {
+    "sv": "On-prem synced",
+    "en": "On-prem synced"
+  },
+  "S5_3": {
+    "sv": "Rollbaserad åtkomstkontroll (RBAC)",
+    "en": "Role-based access control (RBAC)"
+  },
+  "S5_3_body": {
+    "sv": "Aktiva rolltilldelningar: {0}. Berättigade (eligible) tilldelningar: {1}.",
+    "en": "Active role assignments: {0}. Eligible assignments: {1}."
+  },
+  "S5_4": {
+    "sv": "Privileged Identity Management (PIM)",
+    "en": "Privileged Identity Management (PIM)"
+  },
+  "S5_4_inuse": {
+    "sv": "PIM används: {0} berättigade (eligible) rolltilldelningar finns, vilket indikerar just-in-time-aktivering.",
+    "en": "PIM is in use: {0} eligible role assignments exist, indicating just-in-time activation."
+  },
+  "S5_4_none": {
+    "sv": "Inga berättigade (eligible) tilldelningar hittades. Om PIM används, dokumentera konfigurationen manuellt.",
+    "en": "No eligible assignments found. If PIM is used, document the configuration manually."
+  },
+  "S5_5": {
+    "sv": "Gästanvändare (B2B)",
+    "en": "Guest users (B2B)"
+  },
+  "S5_5_some": {
+    "sv": "{0} gästanvändare (B2B) finns i katalogen.",
+    "en": "{0} guest users (B2B) exist in the directory."
+  },
+  "S5_5_none": {
+    "sv": "Inga gästanvändare (B2B) hittades i katalogen.",
+    "en": "No guest users (B2B) were found in the directory."
+  },
+  "S6_1": {
+    "sv": "Conditional Access",
+    "en": "Conditional Access"
+  },
+  "S6_1_body": {
+    "sv": "Antal policyer: {0} (aktiva: {1}, report-only: {2}, inaktiverade: {3}).",
+    "en": "Number of policies: {0} (enabled: {1}, report-only: {2}, disabled: {3})."
+  },
+  "L_Policy": {
+    "sv": "Policy",
+    "en": "Policy"
+  },
+  "L_State": {
+    "sv": "State",
+    "en": "State"
+  },
+  "L_Name": {
+    "sv": "Namn",
+    "en": "Name"
+  },
+  "S6_3": {
+    "sv": "MFA och autentiseringsmetoder",
+    "en": "MFA and authentication methods"
+  },
+  "S6_3_body": {
+    "sv": "Sammanställning av MFA/autentiseringsmetoder kräver rapportdata som inte ingår här; dokumentera manuellt eller se användarkartan.",
+    "en": "A summary of MFA/authentication methods requires report data not included here; document manually or see the users map."
+  },
+  "S6_4": {
+    "sv": "Självbetjäning lösenordsåterställning (SSPR)",
+    "en": "Self-service password reset (SSPR)"
+  },
+  "S6_4_status": {
+    "sv": "SSPR-status: {0}.",
+    "en": "SSPR status: {0}."
+  },
+  "S6_4_present": {
+    "sv": "SSPR-konfiguration finns i exporten (se SSPR-kartan för detaljer).",
+    "en": "SSPR configuration is present in the export (see the SSPR map for details)."
+  },
+  "S7_1_body": {
+    "sv": "{0} app-registreringar. Enkel-tenant: {1}, multi-tenant: {2}. App-registreringar med utgångna inloggningsuppgifter: {3}.",
+    "en": "{0} app registrations. Single-tenant: {1}, multi-tenant: {2}. App registrations with expired credentials: {3}."
+  },
+  "S7_2": {
+    "sv": "Enterprise-applikationer (service principals)",
+    "en": "Enterprise applications (service principals)"
+  },
+  "S8_1": {
+    "sv": "Licensmodeller och tilldelning",
+    "en": "License models and assignment"
+  },
+  "L_SKU": {
+    "sv": "SKU",
+    "en": "SKU"
+  },
+  "L_LicEnabled": {
+    "sv": "Enabled",
+    "en": "Enabled"
+  },
+  "L_LicConsumed": {
+    "sv": "Consumed",
+    "en": "Consumed"
+  },
+  "L_LicFree": {
+    "sv": "Free",
+    "en": "Free"
+  },
+  "S9_body": {
+    "sv": "Loggning och diagnostik, granskningsloggar, compliance-krav och säkerhetskopiering av konfiguration dokumenteras manuellt.",
+    "en": "Logging and diagnostics, audit logs, compliance requirements and configuration backup are documented manually."
+  },
+  "S11_fed": {
+    "sv": "Federerade domäner: {0}. SAML/WS-Fed-konfiguration och certifikathantering dokumenteras manuellt.",
+    "en": "Federated domains: {0}. SAML/WS-Fed configuration and certificate management are documented manually."
+  },
+  "S11_none": {
+    "sv": "Inga federerade domäner hittades. SAML/WS-Fed, certifikat och token-livstid dokumenteras manuellt.",
+    "en": "No federated domains found. SAML/WS-Fed, certificates and token lifetime are documented manually."
+  },
+  "CH4_text_p1": {
+    "sv": "Miljön omfattar totalt {0} användare (users) och {1} enheter (devices). Av de inköpta licenserna är {2} tilldelade (assigned licences), fördelade över {3} inköpta licenstyper (purchased SKUs).",
+    "en": "The environment comprises a total of {0} users and {1} devices. Of the purchased licences, {2} are assigned across {3} purchased SKUs."
+  },
+  "CH4_text_p2": {
+    "sv": "På gruppsidan finns totalt {0} grupper, varav {1} security groups och {2} Microsoft 365 groups. På applikationssidan finns {3} app registrations, varav {4} har en tillhörande service principal. Behörighetsstyrningen bygger på {5} distinkta roller (distinct roles) med sammanlagt {6} role assignments, varav {7} är privilegierade tilldelningar (privileged assignments).",
+    "en": "On the group side there are {0} groups in total, of which {1} are security groups and {2} are Microsoft 365 groups. On the application side there are {3} app registrations, of which {4} have an associated service principal. Access governance is based on {5} distinct roles with {6} role assignments in total, of which {7} are privileged assignments."
+  },
+  "CH_LicShare": {
+    "sv": "Användare per licens och licensandel",
+    "en": "Users per licence & licence share"
+  },
+  "CH_LicShare_intro": {
+    "sv": "Licensvolymen domineras av {0} med {1} användare ({2}), följt av {3} ({4}, {5}) och {6} ({7}, {8}). Tabellen nedan visar fullständig fördelning per licens.",
+    "en": "The licence volume is dominated by {0} with {1} users ({2}), followed by {3} ({4}, {5}) and {6} ({7}, {8}). The table below shows the full distribution per licence."
+  },
+  "Lic_h": {
+    "sv": "Licenser",
+    "en": "Licences"
+  },
+  "Lic_util_h": {
+    "sv": "Utilisation % by SKU",
+    "en": "Utilisation % by SKU"
+  },
+  "Lic_util_p1": {
+    "sv": "Tabellen nedan visar hur väl varje licenstyp (SKU) faktiskt utnyttjas. Enabled är antalet tillgängliga enheter, Consumed antalet tilldelade och Free det som återstår. Utilisation % anger nyttjandegraden. Färgskalan i originalet betyder: rött 0-50 % (merparten oanvänd), gult 50-79 % (ungefär hälften till tre fjärdedelar i bruk) och grönt 80-100 % (nära fullt utnyttjad).",
+    "en": "The table below shows how well each licence type (SKU) is actually used. Enabled is the number of available units, Consumed the number assigned and Free what remains. Utilisation % indicates the usage rate. The colour scale means: red 0-50 % (mostly unused), yellow 50-79 % (roughly half to three quarters in use) and green 80-100 % (near fully used)."
+  },
+  "Lic_util_p2": {
+    "sv": "De inköpta baspaketen för personal och elever ligger genomgående högt, kring 94-98 %, och är alltså mycket väl utnyttjade. De många Free/Viral-licenserna har mycket stora enabled-tal men i praktiken försumbar användning, vilket är normalt för den licenstypen.",
+    "en": "The purchased base packages for staff and students are consistently high, around 94-98 %, and are therefore very well used. The many Free/Viral licences have very large enabled counts but in practice negligible use, which is normal for that licence type."
+  },
+  "Lic_assigned_h": {
+    "sv": "Assigned vs unused",
+    "en": "Assigned vs unused"
+  },
+  "Lic_assigned_p": {
+    "sv": "Denna vy ställer antalet tilldelade licenser mot antalet oanvända per SKU och visar var det finns störst utrymme att optimera. Framför allt Office-standardpaketen för student och personal binder oanvänd licenskapacitet i miljön, medan övriga licenstyper är effektivt utnyttjade med bara ett fåtal oanvända enheter vardera.",
+    "en": "This view sets the number of assigned licences against the unused ones per SKU and shows where there is the greatest room to optimise. Above all the Office standard packages for students and staff tie up unused licence capacity, while other licence types are efficiently used with only a few unused units each."
+  },
+  "Lic_top10_h": {
+    "sv": "Top 10 SKUs by assigned units",
+    "en": "Top 10 SKUs by assigned units"
+  },
+  "Lic_top10_p": {
+    "sv": "De tio mest tilldelade licenserna räknat i antal enheter listas nedan i fallande ordning. Dessa tio SKU:er utgör tillsammans huvuddelen av den tilldelade licensvolymen i miljön.",
+    "en": "The ten most assigned licences by number of units are listed below in descending order. Together these ten SKUs make up the bulk of the assigned licence volume in the environment."
+  },
+  "Lic_dept_h": {
+    "sv": "Licences per department",
+    "en": "Licences per department"
+  },
+  "Lic_dept_p": {
+    "sv": "Licensfördelningen per förvaltning visar tydliga verksamhetsmönster - olika förvaltningar dominerar olika licenstyper. Posten (none) - konton utan angiven förvaltning - kan vara värd att följa upp ur ett datakvalitetsperspektiv.",
+    "en": "The licence distribution per department shows clear operational patterns - different departments dominate different licence types. The (none) entry - accounts without a specified department - may be worth following up from a data-quality perspective."
+  },
+  "Lic_office_h": {
+    "sv": "Licences per office location",
+    "en": "Licences per office location"
+  },
+  "Lic_office_p": {
+    "sv": "Licenser är även fördelade per office location. En stor (none)-post tyder ofta på att fältet office location saknas för många konton. Om platsdata ska kunna användas för uppföljning bör detta fält kompletteras.",
+    "en": "Licences are also distributed per office location. A large (none) entry often indicates that the office location field is missing for many accounts. If location data is to be used for follow-up, this field should be completed."
+  },
+  "Lic_peruser_h": {
+    "sv": "Users by number of licences",
+    "en": "Users by number of licences"
+  },
+  "Lic_peruser_p": {
+    "sv": "Fördelningen av hur många licenser varje användare har visar hur licensvolymen är spridd. En stor grupp användare utan någon licens alls är väntat i en utbildningsmiljö med många vilande eller avslutade konton.",
+    "en": "The distribution of how many licences each user holds shows how the licence volume is spread. A large group of users with no licence at all is expected in an education environment with many dormant or closed accounts."
+  },
+  "Grp_types_p": {
+    "sv": "Fördelningen av grupptyper visar hur katalogen används. I de flesta miljöer dominerar security groups och Microsoft 365 groups, medan äldre distributionsgrupper är i det närmaste utfasade.",
+    "en": "The distribution of group types shows how the directory is used. In most environments security groups and Microsoft 365 groups dominate, while older distribution groups are all but phased out."
+  },
+  "Grp_size_h": {
+    "sv": "Members per group (size)",
+    "en": "Members per group (size)"
+  },
+  "Grp_size_p": {
+    "sv": "Sett till storlek är de flesta grupper små. Tomma grupper (0 medlemmar) bör gås igenom och rensas eller kompletteras med medlemmar, då de annars försvårar överblick och behörighetsstyrning.",
+    "en": "By size, most groups are small. Empty groups (0 members) should be reviewed and either removed or filled with members, as they otherwise hamper overview and access governance."
+  },
+  "Grp_dyn_h": {
+    "sv": "Dynamic vs static groups",
+    "en": "Dynamic vs static groups"
+  },
+  "Grp_dyn_p": {
+    "sv": "Nästan alla grupper har statiskt medlemskap, medan endast en liten andel är dynamic. Ökad användning av dynamic groups kan minska manuellt underhåll för grupper som följer tydliga attribut, men förutsätter licensiering och genomtänkta regler.",
+    "en": "Almost all groups have static membership, while only a small share are dynamic. Increased use of dynamic groups can reduce manual maintenance for groups that follow clear attributes, but requires licensing and well-considered rules."
+  },
+  "Grp_owner_h": {
+    "sv": "Groups per owner (top 10)",
+    "en": "Groups per owner (top 10)"
+  },
+  "Grp_owner_p": {
+    "sv": "De grupper som har en ägare är ofta koncentrerade till ett fåtal personer. De mest aktiva ägarna representerar en koncentration som är värd att känna till vid personalförändringar.",
+    "en": "Groups that have an owner are often concentrated among a few people. The most active owners represent a concentration worth being aware of during staff changes."
+  },
+  "Grp_deptown_h": {
+    "sv": "Groups owned per department & office location",
+    "en": "Groups owned per department & office location"
+  },
+  "Grp_deptown_p": {
+    "sv": "Ägarskapet för grupper fördelat per förvaltning och office location visar var det administrativa ansvaret för grupper är koncentrerat.",
+    "en": "Group ownership distributed per department and office location shows where the administrative responsibility for groups is concentrated."
+  },
+  "CA_p1": {
+    "sv": "Conditional Access styr åtkomst utifrån villkor och är en central del av identitetsskyddet. Nedan sammanfattas policyernas tillstånd, MFA-krav och villkor.",
+    "en": "Conditional Access controls access based on conditions and is a central part of identity protection. The policies' state, MFA requirements and conditions are summarised below."
+  },
+  "App_p1": {
+    "sv": "Ägarskapet för app-registreringar fördelas ofta på ett fåtal konton. Ur ett säkerhetsperspektiv är fördelningen av inloggningsuppgifter (credential expiry) central, liksom hur många registreringar som saknar credentials eller aldrig har loggat in.",
+    "en": "Ownership of app registrations is often concentrated among a few accounts. From a security perspective the distribution of credential expiry is central, as is how many registrations lack credentials or have never signed in."
+  },
+  "Ent_p1": {
+    "sv": "Vyn omfattar applikationer registrerade i tenanten (gallery-appar utan lokal app-registrering ingår inte). Sammanfattningen nedan visar SSO-konfiguration, autentiseringsprotokoll, Graph-behörigheter, klienttyp och aktivitet.",
+    "en": "The view covers applications registered in the tenant (gallery apps without a local app registration are not included). The summary below shows SSO configuration, authentication protocol, Graph permissions, client type and activity."
+  },
+  "Role_p1": {
+    "sv": "Behörighetsmodellen omfattar ett antal distinkta roller med rolltilldelningar (role assignments), varav en del klassas som privilegierade. Nedan visas fördelningen per roll, per principaltyp och per aktiveringsläge.",
+    "en": "The permission model comprises a number of distinct roles with role assignments, some of which are classed as privileged. The distribution per role, per principal type and per activation state is shown below."
+  },
+  "App_kpiRisk": {
+    "sv": "I Excel KPI-fliken \"10 App registrations\" finns appar med risker som kan behöva åtgärdas.",
+    "en": "The Excel KPI tab \"10 App registrations\" lists apps with risks that may need action."
+  }
+}

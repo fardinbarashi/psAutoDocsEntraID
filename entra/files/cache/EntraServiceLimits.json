@@ -2,7 +2,7 @@
   "source": "Microsoft Entra service limits and restrictions",
   "sourceUrl": "https://learn.microsoft.com/en-us/entra/identity/users/directory-service-limits-restrictions",
   "sourceMarkdown": "https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/main/docs/includes/entra-service-limits-include.md",
-  "retrieved": "2026-08-06",
+  "retrieved": "2026-09-24",
   "limitsSource": "live (7 of 7 refreshed from Microsoft docs)",
   "note": "Recreated on each export. Numbers refreshed from the Microsoft Entra docs when reachable; edit here to pin values or adjust to your own governance thresholds.",
   "metrics": [

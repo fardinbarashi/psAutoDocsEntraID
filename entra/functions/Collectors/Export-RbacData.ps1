@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-RbacData {
     <#
-        Section 1.6 — RBAC / PIM: active and eligible directory role assignments
+        Section 1.6 - RBAC / PIM: active and eligible directory role assignments
         plus role-assignable groups, with principals resolved to names/types.
         Requires RoleManagement.Read.Directory, Directory.Read.All and AccessReview.Read.All.
     #>

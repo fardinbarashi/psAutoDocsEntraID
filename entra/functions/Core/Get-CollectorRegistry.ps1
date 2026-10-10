@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-CollectorRegistry {
     <#
         Central manifest of collectable datasets, in run order. One entry per

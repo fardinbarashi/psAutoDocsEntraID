@@ -1,9 +1,10 @@
+# Autodoc v1.0
 function Get-LicenseSkuCategory {
     <#
         Classifies a SKU as 'Purchased' or 'Free/Viral'.
 
         Why this matters: free and viral SKUs (Stream, Power BI free, Flow Free,
-        viral PowerApps, dev/trial plans) are provisioned with enormous quotas —
+        viral PowerApps, dev/trial plans) are provisioned with enormous quotas -
         1,000,000 units is common. Charting them next to real licences makes
         every purchased SKU invisible and turns tenant-wide "utilisation" into a
         meaningless fraction of a percent. They are therefore reported separately.

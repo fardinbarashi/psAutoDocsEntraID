@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Invoke-CollectorRun {
     <#
         Runs the selected collectors (by Key) in registry order, passing the

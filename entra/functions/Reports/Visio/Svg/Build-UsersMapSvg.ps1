@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-UsersMapSvg {
     <#
         A single users overview with several sections:

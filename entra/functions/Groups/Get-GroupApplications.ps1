@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GroupApplications {
     <# App role assignments granted to the group, as resource display names. #>
     param([string]$GroupId)

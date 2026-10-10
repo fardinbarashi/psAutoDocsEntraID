@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-SafeExcelTableName {
     <# Sanitises a string into a valid Excel table name (letters/digits/underscore, tbl_ prefix). #>
     param([Parameter(Mandatory)][string]$Name)

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Resolve-PrincipalName {
     <#
         Resolves a principal ID to a display name using the supplied lookups.

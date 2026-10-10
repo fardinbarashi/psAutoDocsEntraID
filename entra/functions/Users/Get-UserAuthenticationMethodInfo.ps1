@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-UserAuthenticationMethodInfo {
     <# Returns the distinct registered auth methods for a user as a joined string + count. #>
     param([string]$UserId)

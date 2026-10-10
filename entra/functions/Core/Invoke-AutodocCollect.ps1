@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Invoke-AutodocCollect {
     <#
-        STEP 1 — Runs a full collection: module check, Graph connect, reference
+        STEP 1 - Runs a full collection: module check, Graph connect, reference
         data, then the selected collectors. Extracted from the launcher so the
         GUI can call it directly and stay open while it runs.
     #>
@@ -35,7 +36,7 @@ function Invoke-AutodocCollect {
             $licenseRef = Get-LicenseReferenceData -Path $Paths.LicenseReferenceFile
         }
         catch {
-            Write-Host "License reference not loaded — name resolution will be limited." -ForegroundColor Yellow
+            Write-Host "License reference not loaded - name resolution will be limited." -ForegroundColor Yellow
             Write-Host "  $($_.Exception.Message)" -ForegroundColor Yellow
             $licenseRef = $null
         }
@@ -53,7 +54,7 @@ function Invoke-AutodocCollect {
         # Keep the service-limits config current (in Entra\Config), live from the
         # Microsoft docs when reachable. A refresh failure must not stop a collect.
         try {
-            $limitsConfig = Join-Path (Split-Path (Split-Path $PSScriptRoot)) 'files/cache/EntraServiceLimits.json'
+            $limitsConfig = Join-Path (Split-Path (Split-Path $PSScriptRoot)) 'Config/EntraServiceLimits.json'
             Update-EntraServiceLimits -OutputPath $limitsConfig | Out-Null
         }
         catch { Write-Host "  Service limits: refresh skipped ($($_.Exception.Message))." -ForegroundColor DarkYellow }

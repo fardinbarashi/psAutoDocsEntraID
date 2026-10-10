@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-PasswordResetMapSvg {
     <#
         SVG card of the tenant's Self-Service Password Reset (SSPR) configuration:

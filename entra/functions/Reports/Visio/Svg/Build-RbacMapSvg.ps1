@@ -1,9 +1,10 @@
+# Autodoc v1.0
 function Build-RbacMapSvg {
     <#
         RBAC as six category sections. Each section has a coloured header and the
         roles in that category as cards; each card lists the people who hold the
         role (filled dot = active, hollow dot = eligible), capped for readability.
-        Privileged roles are marked "P" (and a red border), read-only roles "R" —
+        Privileged roles are marked "P" (and a red border), read-only roles "R" -
         symbols are always paired with text so nothing depends on colour alone.
     #>
     [CmdletBinding()]
@@ -156,7 +157,7 @@ function Build-RbacMapSvg {
         # section header (full width, large, category colour)
         $headCy = $curTop - $headerH / 2
         $shapes += @{ Id="sec$si"; Kind='Rectangle'
-                      Lines=@(@{ Text = "$($sec.Name)   —   $($sec.Roles) roles, $($sec.Assignments) assignments"; Bold = $true; Align = 'start' })
+                      Lines=@(@{ Text = "$($sec.Name)   -   $($sec.Roles) roles, $($sec.Assignments) assignments"; Bold = $true; Align = 'start' })
                       LinesTop=$true; TopInset=0.12
                       X=$pageW/2; Y=$headCy; W=$gridW; H=$headerH; Fill=$pal.Head; Line=$pal.Line; FontSize=$fsCat }
         $cardsTop = $curTop - $headerH - $gapY

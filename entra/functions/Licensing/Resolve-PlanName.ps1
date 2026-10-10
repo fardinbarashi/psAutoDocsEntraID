@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Resolve-PlanName {
     <# Resolves a service plan ID to a friendly name, optionally dropping RETIRED plans. (Original.) #>
     param(

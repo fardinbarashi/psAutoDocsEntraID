@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-MapIconSet {
     <#
         Indexes the icon folder once. Returns @{ Files = <FileInfo[]>; ByName = @{} }

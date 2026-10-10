@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-AllGroupOwners {
     <# Returns the owners of a group as simple objects (id / name / UPN / mail). #>
     param([string]$GroupId)

@@ -1,6 +1,7 @@
+# Autodoc v1.0
 function Export-EnterpriseAppData {
     <#
-        Section 1.5 — Enterprise applications (service principals) in their own
+        Section 1.5 - Enterprise applications (service principals) in their own
         right: EVERY service principal in the tenant, including gallery apps and
         managed identities that have no app registration. Captures type, origin,
         owners, SSO configuration, assignment requirement, credentials and

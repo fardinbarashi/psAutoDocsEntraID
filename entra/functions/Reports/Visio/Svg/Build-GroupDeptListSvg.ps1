@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-GroupDeptListSvg {
     <#
         View 1 of group -> department: one card per group with its departments

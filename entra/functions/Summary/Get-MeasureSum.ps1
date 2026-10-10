@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-MeasureSum {
     <# Sums a numeric property across a dataset, returning 0 for null/empty input. #>
     param(

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Initialize-Modules {
     <#
         Checks, installs (with prompt for Graph version pinning) and imports

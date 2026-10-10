@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GraphSkuData {
     <#
         Loads subscribed SKUs from Microsoft Graph and builds lookup tables

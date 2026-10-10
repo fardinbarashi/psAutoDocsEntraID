@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Resolve-PrincipalType {
     <#
         Classifies a principal ID as User / Group / ServicePrincipal using the

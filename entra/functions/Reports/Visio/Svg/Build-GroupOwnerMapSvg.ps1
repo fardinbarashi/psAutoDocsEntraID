@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-GroupOwnerMapSvg {
     <#
         SVG map of group ownership: one card per owner, listing the groups they

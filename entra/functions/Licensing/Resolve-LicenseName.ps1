@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Resolve-LicenseName {
     <# Resolves a SKU GUID to a friendly name, falling back to the GUID. (Original.) #>
     param(

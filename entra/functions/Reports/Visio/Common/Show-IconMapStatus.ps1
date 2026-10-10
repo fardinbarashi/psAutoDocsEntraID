@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Show-IconMapStatus {
     <#
         Reports how the tenant's SKUs line up with the icons on disk: which SKUs

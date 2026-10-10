@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-ConditionalAccessMapSvg {
     <#
         SVG map of Conditional Access policies. One card per policy, coloured by
@@ -117,7 +118,7 @@ function Build-ConditionalAccessMapSvg {
     # Long values wrap to the card's usable width so nothing spills outside.
     $cards = @()
     foreach ($p in $policies) {
-        # WHO: users, roles, groups (include / exclude) — rendered as a readable
+        # WHO: users, roles, groups (include / exclude) - rendered as a readable
         # block below (each user = bold name + UPN line) via Get-CaWhoLines
         $roles = Join-IncExc $p.IncludeRoles  $p.ExcludeRoles
         $grp   = Join-IncExc $p.IncludeGroups $p.ExcludeGroups

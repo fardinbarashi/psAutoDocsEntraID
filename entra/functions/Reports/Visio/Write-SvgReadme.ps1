@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Write-SvgReadme {
     <#
         Writes a README.md into the SVG output folder describing each generated
@@ -81,7 +82,7 @@ A PDF copy of every map is written to the `../pdf` folder.
   directory objects, Conditional Access policies, domains, licence subscriptions,
   dynamic and role-assignable groups) shown against the documented Microsoft
   Entra limits, colour-coded by how close each is to its limit. Source: several
-  JSON files + `../EntraServiceLimits.json`.
+  JSON files + `Config/EntraServiceLimits.json`.
 
 - **Organization Department Officelocation chart** - users arranged by manager relationships.
   Source: `UserInformation`.

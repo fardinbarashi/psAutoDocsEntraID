@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GroupMemberOfInfo {
     <# Splits a group's memberOf into group / AU / directory-role name lists. #>
     param([string]$GroupId)

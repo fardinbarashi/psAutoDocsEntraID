@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-AppRiskFinding {
     <#
         Scores one application against the risk signals we actually collect and

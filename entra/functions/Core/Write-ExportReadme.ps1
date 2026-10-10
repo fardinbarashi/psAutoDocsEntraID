@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Write-ExportReadme {
     <#
         Writes a README.md at the root of an export folder describing what every

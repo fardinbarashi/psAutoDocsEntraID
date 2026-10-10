@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Resolve-IncludeTarget {
     <#
         Interprets an authentication-method includeTargets collection into a

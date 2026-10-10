@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-OverviewMapSvg {
     <#
         A single combined overview. Two styles via -Style:
@@ -185,7 +186,7 @@ function Build-OverviewTree {
         $caFull = Get-CaFullData -SourceFolder $SourceFolder
         $items = if ($caFull) {
             foreach ($p in $caFull.Policies) {
-                # everything except the who-parts (users/roles/groups) — those are
+                # everything except the who-parts (users/roles/groups) - those are
                 # rendered as a readable WHO block (bold name + UPN) in the item loop
                 $rest = @(Get-CaDetailLines -Policy $p | Where-Object { $_ -notmatch '^(Include|Exclude) (users|roles|groups)\b' })
                 $state = "$($p.State)".Trim()

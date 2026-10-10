@@ -1,9 +1,10 @@
+# Autodoc v1.0
 function Build-KpiDashboardSvg {
     <#
-        A one-page "Key metrics" dashboard: the same breakdowns the Excel KPI
-        charts show, drawn as doughnut charts in self-contained SVG (no external
-        libraries). Because it is a normal map it flows into the SVG, PDF and HTML
-        reports automatically. Values come from the shared resolver.
+        A one-page dashboard of the tenant, drawn as doughnut charts in
+        self-contained SVG (no external libraries). Because it is a normal map it
+        flows into the SVG, PDF and HTML reports automatically. Values come from
+        the shared resolver.
     #>
     [CmdletBinding()]
     param(
@@ -36,7 +37,7 @@ function Build-KpiDashboardSvg {
     $cellW = [math]::Round(($W - 2 * $margin) / $cols); $rowH = 360
     $rows = [math]::Ceiling($charts.Count / $cols)
     $noteH = 70
-    $H = $gridTop + $rows * $rowH + 24 + $noteH + $margin
+    $H = $gridTop + $rows * $rowH + 24 + $margin
 
     $sb = [System.Text.StringBuilder]::new()
     [void]$sb.AppendLine("<svg xmlns='http://www.w3.org/2000/svg' width='$W' height='$H' viewBox='0 0 $W $H' font-family='Segoe UI, sans-serif'>")
@@ -47,13 +48,13 @@ function Build-KpiDashboardSvg {
     [void]$sb.AppendLine("<rect x='$margin' y='$headTop' width='$hw' height='$headH' rx='6' fill='#0F6CBD' stroke='#0B4C87'/>")
     $hx = $margin + 28; $hy = $headTop + 40
     [void]$sb.AppendLine("<text x='$hx' y='$hy' font-size='20' font-weight='bold' fill='#ffffff'>$([System.Net.WebUtility]::HtmlEncode($tName))</text>")
-    foreach ($ln in @($tDom, "Environment: $tEnv", 'Key metrics', "Generated $today")) {
+    foreach ($ln in @($tDom, "Environment: $tEnv", 'Microsoft Entra ID', "Generated $today")) {
         $hy += 24
-        $wt = if ($ln -eq 'Key metrics') { "font-weight='bold'" } else { '' }
+        $wt = if ($ln -eq 'Microsoft Entra ID') { "font-weight='bold'" } else { '' }
         [void]$sb.AppendLine("<text x='$hx' y='$hy' font-size='13' fill='#ffffff' $wt>$([System.Net.WebUtility]::HtmlEncode($ln))</text>")
     }
 
-    # doughnut helper
+    # doughnut
     function Pt($cx, $cy, $r, $deg) {
         $a = ($deg - 90) * [math]::PI / 180
         "$([math]::Round($cx + $r * [math]::Cos($a), 1)) $([math]::Round($cy + $r * [math]::Sin($a), 1))"
@@ -99,17 +100,14 @@ function Build-KpiDashboardSvg {
         }
     }
 
-    # source note
-    $ny = $gridTop + $rows * $rowH + 12
-    [void]$sb.AppendLine("<rect x='$margin' y='$ny' width='$hw' height='$noteH' rx='4' fill='#F7F7F7' stroke='#CCCCCC'/>")
-    [void]$sb.AppendLine("<text x='$($margin+16)' y='$($ny+26)' font-size='11' fill='#333333'><tspan font-weight='bold'>Key metrics: </tspan>the same breakdowns as the Excel KPI charts, drawn from the exported JSON for this tenant.</text>")
-    [void]$sb.AppendLine("<text x='$($margin+16)' y='$($ny+46)' font-size='11' fill='#333333'>Doughnut centre = total; slices are coloured per category.</text>")
     [void]$sb.AppendLine('</svg>')
 
     $stamp = Get-Date -Format 'yyyy-MM-dd_HH.mm.ss'
     $svgDir = Join-Path $SourceFolder 'Report\svg'
     if (-not (Test-Path $svgDir)) { New-Item -Path $svgDir -ItemType Directory -Force | Out-Null }
-    $svg = Join-Path $svgDir "Entra ID - Key metrics dashboard $stamp.svg"
+    # remove any earlier dashboard file so no stale copy lingers
+    Get-ChildItem -Path $svgDir -Filter '*ashboard*.svg' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    $svg = Join-Path $svgDir "Entra ID - Dashboard $stamp.svg"
     Set-Content -LiteralPath $svg -Value $sb.ToString() -Encoding UTF8
     Write-Host "  SVG: KPI dashboard ($($charts.Count) charts)" -ForegroundColor DarkGray
     return $svg

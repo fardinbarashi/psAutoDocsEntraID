@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function New-AutodocPaths {
     <#
         Builds every path the script uses for a single run and creates the
@@ -32,7 +33,7 @@ function New-AutodocPaths {
 
         # Reference / settings files
         LicenseReferenceFile = Join-Path $filesRoot 'cache\ms-licensing-reference.csv'
-        MsLearnConfig        = Join-Path $Root 'Settings\scriptSettings\AzureDocs.json'
+        MsLearnConfig        = Join-Path $Root 'Config\AzureDocs.json'
     }
 
     # Consolidated summary output files

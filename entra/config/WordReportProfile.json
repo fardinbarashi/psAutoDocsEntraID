@@ -1,0 +1,13 @@
+{
+  "_comment": "Real values, filled once per engagement (shared across languages). Leave a field blank to show the language default/placeholder from wordText.psd1. ConsultantLogo/CustomerLogo take a PNG path (or set them via Browse in the GUI). ContactConsultant/ContactCustomer are free text, one line each.",
+  "ConsultantCompany": "",
+  "Author": "",
+  "CustomerName": "",
+  "DocumentId": "",
+  "Version": "1.0",
+  "FirstChange": "",
+  "ConsultantLogo": "",
+  "CustomerLogo": "",
+  "ContactConsultant": "",
+  "ContactCustomer": ""
+}

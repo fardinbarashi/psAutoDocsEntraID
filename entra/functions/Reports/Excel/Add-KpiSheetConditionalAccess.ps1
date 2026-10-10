@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Add-KpiSheetConditionalAccess {
     <#
         Conditional Access overview: policy states, targeting, MFA usage and
@@ -6,7 +7,7 @@ function Add-KpiSheetConditionalAccess {
         Note on "policies with no hits": the image this sheet is modelled on
         shows unused policies, which requires CA sign-in insights from the
         reporting API. That data is not collected, so this sheet reports
-        exclusion counts instead — the closest thing we can prove from what we
+        exclusion counts instead - the closest thing we can prove from what we
         actually export.
     #>
     [CmdletBinding()]
@@ -164,7 +165,7 @@ function Add-KpiSheetConditionalAccess {
     Close-ExcelPackage $xl
 
     # Widths last: this makes the chart anchors land predictably and hides the
-    # label helper columns (4th of each strip).
+    # label columns (4th of each strip).
     Set-KpiChartColors -Path $ReportPath -WorksheetName $SheetName
     Set-KpiSheetLayout -Path $ReportPath -WorksheetName $SheetName
     # Policy name / MFA required / Include / Exclude hold long text; the layout

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-OrgMapSvg {
     <#
         Builds ONLY the SVG organisation map. Independent of the Visio builder.

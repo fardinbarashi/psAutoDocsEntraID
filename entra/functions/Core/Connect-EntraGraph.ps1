@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Connect-EntraGraph {
     <#
         Connects to Microsoft Graph with the given scopes.

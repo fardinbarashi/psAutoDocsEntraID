@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-EnterpriseAppMapSvg {
     <#
         SVG map of enterprise apps (service principals) as detail cards in a

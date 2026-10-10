@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Export-InventoryData {
     <#
         Writes a dataset to CSV, JSON and Excel in one call.

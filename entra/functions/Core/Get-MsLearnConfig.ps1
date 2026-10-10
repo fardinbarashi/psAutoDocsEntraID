@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-MsLearnConfig {
     <#
         Reads AzureDocs.json and downloads each data source into the cache

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-AppRegMapSvg {
     <#
         SVG map of app registrations as detail cards in a masonry layout. Each
@@ -21,7 +22,7 @@ function Build-AppRegMapSvg {
     if (-not $data -or -not $full) { Write-Host "No app registration data in this export." -ForegroundColor Yellow; return }
     $tenant = $data.Tenant
 
-    # map health + over-priv from the trimmed helper, keyed by app name
+    # map health + over-priv from the trimmed data, keyed by app name
     $meta = @{}
     foreach ($aud in $data.Audiences) { foreach ($a in $aud.Group) { $meta[$a.Name] = $a } }
 

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Update-EntraServiceLimits {
     <#
         (Re)creates the Entra service-limits config. It starts from a built-in

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Get-GroupRoleAssignments {
     <# Directory role assignments where the group is the principal, resolved to role names. #>
     param([string]$GroupId)

@@ -1,3 +1,4 @@
+# Autodoc v1.0
 function Build-LicenceMapVisio {
     <#
         Builds ONLY the Visio (.vsdx) licence map. Nothing here touches the SVG
