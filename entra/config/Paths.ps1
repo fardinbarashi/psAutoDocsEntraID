@@ -6,14 +6,16 @@ function New-AutodocPaths {
     #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)][string]$Root
+        [Parameter(Mandatory)][string]$Root,
+        # write into this existing export folder instead of a new one
+        [string]$ExportFolder
     )
 
     $runStamp = Get-Date -Format 'yyyy-MM-dd_HH.mm.ss'   # per-run export folder
     $fileDate = Get-Date -Format 'yyyy-MM-dd'            # used in file names
 
     $filesRoot  = Join-Path $Root      'files'
-    $exportRoot = Join-Path $filesRoot "exports\$runStamp"
+    $exportRoot = if ($ExportFolder) { $ExportFolder } else { Join-Path $filesRoot "exports\$runStamp" }
     $summary    = Join-Path $exportRoot 'rawDataTenantSummary'
 
     $paths = @{

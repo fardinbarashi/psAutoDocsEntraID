@@ -1,0 +1,753 @@
+{
+  "About": "Texts and rules for the 'Security and improvements' report (Word, Excel and map). Each entry under Rules is checked against the export; {0} is the number of objects found and {1} an extra value (share, threshold). Edit the texts freely; Severity is CRITICAL, HIGH, MEDIUM or INFO.",
+  "Text": {
+    "FileName": {
+      "sv": "Säkerhet och förbättringar",
+      "en": "Security and improvements"
+    },
+    "DocType": {
+      "sv": "Säkerhetsgenomgång",
+      "en": "Security review"
+    },
+    "Intro_H": {
+      "sv": "Inledning",
+      "en": "Introduction"
+    },
+    "Intro_p1": {
+      "sv": "Detta dokument samlar säkerhetsfynd och förbättringsförslag för Microsoft Entra ID i {0}. Underlaget kommer från samma export som systemdokumentationen och, om den har körts, från jakten efter missbrukade app-credentials (workload identity hunt).",
+      "en": "This document collects security findings and improvement proposals for Microsoft Entra ID in {0}. The input is the same export as the system documentation and, when it has been run, the workload identity hunt for abused app credentials."
+    },
+    "Intro_p2": {
+      "sv": "Förslagen är prioriterade efter allvarlighetsgrad. Varje förslag har ett fynd, en rekommendation och en referens till Microsoft Learn. Detaljerna (alla objekt) finns i Excel-filen med samma namn.",
+      "en": "The proposals are ranked by severity. Each one has a finding, a recommendation and a reference to Microsoft Learn. The details (every object) are in the Excel file with the same name."
+    },
+    "Intro_p3": {
+      "sv": "Exporten: {0}. Genererad: {1}.",
+      "en": "Export: {0}. Generated: {1}."
+    },
+    "Summary_H": {
+      "sv": "Sammanfattning",
+      "en": "Summary"
+    },
+    "Summary_p": {
+      "sv": "Antal förslag och fynd per allvarlighetsgrad.",
+      "en": "Number of proposals and findings per severity."
+    },
+    "Summary_Area": {
+      "sv": "Antal förslag per område.",
+      "en": "Number of proposals per area."
+    },
+    "Prio_H": {
+      "sv": "Prioriterade åtgärder",
+      "en": "Priority actions"
+    },
+    "Prio_p": {
+      "sv": "Förslag med allvarlighetsgrad Kritisk eller Hög. Börja här.",
+      "en": "Proposals with severity Critical or High. Start here."
+    },
+    "Prio_None": {
+      "sv": "Inga förslag med allvarlighetsgrad Kritisk eller Hög hittades.",
+      "en": "No proposals with severity Critical or High were found."
+    },
+    "Impr_H": {
+      "sv": "Förbättringsförslag",
+      "en": "Improvement proposals"
+    },
+    "Impr_p": {
+      "sv": "Alla förslag, grupperade per område.",
+      "en": "All proposals, grouped by area."
+    },
+    "Finding": {
+      "sv": "Fynd",
+      "en": "Finding"
+    },
+    "Recommendation": {
+      "sv": "Rekommendation",
+      "en": "Recommendation"
+    },
+    "Reference": {
+      "sv": "Referens",
+      "en": "Reference"
+    },
+    "Severity": {
+      "sv": "Allvarlighetsgrad",
+      "en": "Severity"
+    },
+    "Area": {
+      "sv": "Område",
+      "en": "Area"
+    },
+    "Count": {
+      "sv": "Antal",
+      "en": "Count"
+    },
+    "Proposal": {
+      "sv": "Förslag",
+      "en": "Proposal"
+    },
+    "Total": {
+      "sv": "Totalt",
+      "en": "Total"
+    },
+    "Hunt_H": {
+      "sv": "Workload identity hunt",
+      "en": "Workload identity hunt"
+    },
+    "Hunt_p": {
+      "sv": "Jakten letar efter tecken på stulna eller missbrukade app-credentials: inloggningar från IoC-adresser, kontotriage, felaktiga secrets, token-svep över flera resurser, credential-inventering, ändringar i auditloggen och skydd i Conditional Access.",
+      "en": "The hunt looks for signs of stolen or abused app credentials: sign-ins from IoC addresses, account triage, invalid secrets, token sweeps across resources, credential inventory, audit log changes and Conditional Access protection."
+    },
+    "Hunt_NotRun": {
+      "sv": "Jakten har inte körts för denna export. Kör den under fliken Tools (med denna export vald), eller med .\\Autodoc.ps1 -Mode Hunt -ExportFolder <exportmapp>.",
+      "en": "The hunt has not been run for this export. Run it on the Tools tab (with this export selected), or with .\\Autodoc.ps1 -Mode Hunt -ExportFolder <export folder>."
+    },
+    "Hunt_Sum_H": {
+      "sv": "Fynd per kategori",
+      "en": "Findings per category"
+    },
+    "Hunt_Top_H": {
+      "sv": "Kritiska och höga fynd",
+      "en": "Critical and high findings"
+    },
+    "Hunt_Top_More": {
+      "sv": "Visar {0} av {1}. Alla fynd finns i Excel-filen och i jaktens HTML-rapport.",
+      "en": "Showing {0} of {1}. All findings are in the Excel file and in the hunt HTML report."
+    },
+    "Hunt_Triage_H": {
+      "sv": "Kontotriage",
+      "en": "Account triage"
+    },
+    "Hunt_Triage_p": {
+      "sv": "Konton med inloggningar från IoC-adresser och domen per konto. COMPROMISED och PASSWORD_KNOWN kräver åtgärd direkt.",
+      "en": "Accounts with sign-ins from IoC addresses and the verdict per account. COMPROMISED and PASSWORD_KNOWN need action now."
+    },
+    "Hunt_Cred_H": {
+      "sv": "Credentials",
+      "en": "Credentials"
+    },
+    "Hunt_Cred_p": {
+      "sv": "Secrets, certifikat och federated credentials på appar och service principals.",
+      "en": "Secrets, certificates and federated credentials on apps and service principals."
+    },
+    "Hunt_NoFindings": {
+      "sv": "Jakten gav inga fynd.",
+      "en": "The hunt produced no findings."
+    },
+    "Hunt_Html": {
+      "sv": "Jaktens egen HTML-rapport (med sök och filter) ligger i exportmappen under WorkloadIdentityHunt.",
+      "en": "The hunt's own HTML report (with search and filters) is in the export folder under WorkloadIdentityHunt."
+    },
+    "Next_H": {
+      "sv": "Nästa steg",
+      "en": "Next steps"
+    },
+    "Next_p1": {
+      "sv": "Gå igenom de prioriterade åtgärderna och utse en ansvarig för varje förslag.",
+      "en": "Go through the priority actions and name an owner for each proposal."
+    },
+    "Next_p2": {
+      "sv": "Kör Autodoc igen efter åtgärderna och jämför med detta dokument.",
+      "en": "Run Autodoc again after the changes and compare with this document."
+    },
+    "Next_p3": {
+      "sv": "Förslagen bygger på den data som exporten innehåller. Kontroller som kräver mer behörighet eller licens (till exempel Identity Protection) visas bara när datan finns.",
+      "en": "The proposals are based on the data in the export. Checks that need more permissions or licences (for example Identity Protection) only show when the data is there."
+    },
+    "NoData": {
+      "sv": "Ingen data i exporten för detta område.",
+      "en": "No data in the export for this area."
+    },
+    "Map_Title": {
+      "sv": "Säkerhet och förbättringar",
+      "en": "Security and improvements"
+    },
+    "Map_Legend": {
+      "sv": "Färg = högsta allvarlighetsgrad i området.",
+      "en": "Colour = highest severity in the area."
+    },
+    "Sev_CRITICAL": {
+      "sv": "Kritisk",
+      "en": "Critical"
+    },
+    "Sev_HIGH": {
+      "sv": "Hög",
+      "en": "High"
+    },
+    "Sev_MEDIUM": {
+      "sv": "Medel",
+      "en": "Medium"
+    },
+    "Sev_INFO": {
+      "sv": "Info",
+      "en": "Info"
+    },
+    "Sev_OK": {
+      "sv": "Inga förslag",
+      "en": "No proposals"
+    },
+    "Console_Done": {
+      "sv": "Säkerhet och förbättringar är klar: Word, Excel och karta.",
+      "en": "Security and improvements is ready: Word, Excel and map."
+    },
+    "Object": {
+      "sv": "Objekt",
+      "en": "Object"
+    },
+    "Detail": {
+      "sv": "Detalj",
+      "en": "Detail"
+    },
+    "HuntFindings": {
+      "sv": "Fynd från jakten",
+      "en": "Hunt findings"
+    },
+    "Sheet_Summary": {
+      "sv": "Sammanfattning",
+      "en": "Summary"
+    },
+    "Sheet_Proposals": {
+      "sv": "Förslag",
+      "en": "Proposals"
+    },
+    "Sheet_Objects": {
+      "sv": "Berörda objekt",
+      "en": "Affected objects"
+    },
+    "Sheet_HuntFindings": {
+      "sv": "Hunt fynd",
+      "en": "Hunt findings"
+    },
+    "Sheet_HuntTriage": {
+      "sv": "Hunt kontotriage",
+      "en": "Hunt account triage"
+    },
+    "Sheet_HuntCreds": {
+      "sv": "Hunt credentials",
+      "en": "Hunt credentials"
+    },
+    "Chart_Areas": {
+      "sv": "Förslag per område och allvarlighetsgrad",
+      "en": "Proposals per area and severity"
+    },
+    "Excel_Note": {
+      "sv": "Underlag: export {0}. Regler och texter: Entra\\Config\\SecurityImprovements.json.",
+      "en": "Source: export {0}. Rules and texts: Entra\\Config\\SecurityImprovements.json."
+    }
+  },
+  "Areas": {
+    "Users": {
+      "sv": "Användare och MFA",
+      "en": "Users and MFA"
+    },
+    "PrivilegedAccess": {
+      "sv": "Privilegierad åtkomst",
+      "en": "Privileged access"
+    },
+    "ConditionalAccess": {
+      "sv": "Conditional Access",
+      "en": "Conditional Access"
+    },
+    "AppRegistrations": {
+      "sv": "App registrations",
+      "en": "App registrations"
+    },
+    "EnterpriseApps": {
+      "sv": "Enterprise apps",
+      "en": "Enterprise apps"
+    },
+    "PasswordReset": {
+      "sv": "Lösenordsåterställning (SSPR)",
+      "en": "Password reset (SSPR)"
+    },
+    "Groups": {
+      "sv": "Grupper",
+      "en": "Groups"
+    },
+    "Licenses": {
+      "sv": "Licenser",
+      "en": "Licenses"
+    },
+    "WorkloadIdentities": {
+      "sv": "Workload identities",
+      "en": "Workload identities"
+    }
+  },
+  "Rules": {
+    "MFA_PASSWORD_ONLY": {
+      "Area": "Users",
+      "Severity": "HIGH",
+      "Title": {
+        "sv": "Användare utan MFA-metod",
+        "en": "Users without an MFA method"
+      },
+      "Finding": {
+        "sv": "{0} aktiva medlemskonton har bara lösenord registrerat ({1} av de aktiva medlemmarna).",
+        "en": "{0} enabled member accounts have only a password registered ({1} of the enabled members)."
+      },
+      "Recommendation": {
+        "sv": "Kräv registrering av en stark metod (Microsoft Authenticator, FIDO2/passkey) och tvinga MFA med Conditional Access för alla användare.",
+        "en": "Require registration of a strong method (Microsoft Authenticator, FIDO2/passkey) and enforce MFA with Conditional Access for all users."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-methods-manage"
+    },
+    "USERS_DISABLED_LICENSED": {
+      "Area": "Users",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Inaktiverade konton med licens",
+        "en": "Disabled accounts with licences"
+      },
+      "Finding": {
+        "sv": "{0} inaktiverade konton har fortfarande licenser tilldelade.",
+        "en": "{0} disabled accounts still have licences assigned."
+      },
+      "Recommendation": {
+        "sv": "Ta bort licenserna från inaktiverade konton (gärna via gruppbaserad licensiering) och radera konton som inte längre behövs.",
+        "en": "Remove the licences from disabled accounts (preferably through group-based licensing) and delete accounts that are no longer needed."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/fundamentals/license-users-groups"
+    },
+    "GUESTS_REVIEW": {
+      "Area": "Users",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Gästkonton att granska",
+        "en": "Guest accounts to review"
+      },
+      "Finding": {
+        "sv": "Det finns {0} gästkonton ({1} av alla konton).",
+        "en": "There are {0} guest accounts ({1} of all accounts)."
+      },
+      "Recommendation": {
+        "sv": "Inför återkommande åtkomstgranskningar (access reviews) för gäster och ta bort gäster som inte används.",
+        "en": "Set up recurring access reviews for guests and remove guests that are not in use."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview"
+    },
+    "GA_TOO_MANY": {
+      "Area": "PrivilegedAccess",
+      "Severity": "HIGH",
+      "Title": {
+        "sv": "För många globala administratörer",
+        "en": "Too many Global Administrators"
+      },
+      "Finding": {
+        "sv": "{0} aktiva tilldelningar av rollen Global Administrator (Microsoft rekommenderar färre än {1}).",
+        "en": "{0} active Global Administrator assignments (Microsoft recommends fewer than {1})."
+      },
+      "Recommendation": {
+        "sv": "Minska antalet globala administratörer, använd mindre privilegierade roller för det dagliga arbetet och behåll två nödkonton (break glass).",
+        "en": "Reduce the number of Global Administrators, use less privileged roles for daily work and keep two emergency access (break glass) accounts."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices"
+    },
+    "GA_TOO_FEW": {
+      "Area": "PrivilegedAccess",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "För få globala administratörer",
+        "en": "Too few Global Administrators"
+      },
+      "Finding": {
+        "sv": "Bara {0} aktiv tilldelning av rollen Global Administrator.",
+        "en": "Only {0} active Global Administrator assignment."
+      },
+      "Recommendation": {
+        "sv": "Ha minst två globala administratörer, varav nödkonton (break glass) som är undantagna från vanliga CA-policyer.",
+        "en": "Keep at least two Global Administrators, including emergency access (break glass) accounts excluded from regular CA policies."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    "PIM_NOT_USED": {
+      "Area": "PrivilegedAccess",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Privilegierade roller är permanent aktiva",
+        "en": "Privileged roles are permanently active"
+      },
+      "Finding": {
+        "sv": "{0} privilegierade rolltilldelningar är permanent aktiva, mot {1} berättigade (eligible) i PIM.",
+        "en": "{0} privileged role assignments are permanently active, against {1} eligible in PIM."
+      },
+      "Recommendation": {
+        "sv": "Gör privilegierade roller berättigade (eligible) i Privileged Identity Management med aktivering vid behov, MFA och godkännande.",
+        "en": "Make privileged roles eligible in Privileged Identity Management with just-in-time activation, MFA and approval."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"
+    },
+    "PRIV_SERVICE_PRINCIPAL": {
+      "Area": "PrivilegedAccess",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Service principals med privilegierade roller",
+        "en": "Service principals with privileged roles"
+      },
+      "Finding": {
+        "sv": "{0} privilegierade rolltilldelningar går till service principals.",
+        "en": "{0} privileged role assignments are held by service principals."
+      },
+      "Recommendation": {
+        "sv": "Kontrollera att varje app behöver rollen, begränsa med administrativa enheter eller smalare roller och skydda appens credentials.",
+        "en": "Check that each app needs the role, narrow it with administrative units or smaller roles, and protect the app's credentials."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices"
+    },
+    "CA_NO_MFA_ALL": {
+      "Area": "ConditionalAccess",
+      "Severity": "HIGH",
+      "Title": {
+        "sv": "Ingen CA-policy kräver MFA för alla användare",
+        "en": "No CA policy requires MFA for all users"
+      },
+      "Finding": {
+        "sv": "Ingen aktiverad Conditional Access-policy kräver MFA eller autentiseringsstyrka för alla användare.",
+        "en": "No enabled Conditional Access policy requires MFA or an authentication strength for all users."
+      },
+      "Recommendation": {
+        "sv": "Skapa en policy som kräver MFA (helst phishing-resistent autentiseringsstyrka) för alla användare och alla appar, med undantag bara för nödkonton.",
+        "en": "Create a policy that requires MFA (preferably a phishing-resistant authentication strength) for all users and all apps, excluding only emergency accounts."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-mfa-strength"
+    },
+    "CA_LEGACY_AUTH": {
+      "Area": "ConditionalAccess",
+      "Severity": "HIGH",
+      "Title": {
+        "sv": "Äldre autentisering blockeras inte",
+        "en": "Legacy authentication is not blocked"
+      },
+      "Finding": {
+        "sv": "Ingen aktiverad Conditional Access-policy blockerar äldre autentisering (Exchange ActiveSync och andra klienter).",
+        "en": "No enabled Conditional Access policy blocks legacy authentication (Exchange ActiveSync and other clients)."
+      },
+      "Recommendation": {
+        "sv": "Blockera äldre autentisering med en Conditional Access-policy. Äldre protokoll kan inte göra MFA.",
+        "en": "Block legacy authentication with a Conditional Access policy. Legacy protocols cannot do MFA."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-block-legacy-authentication"
+    },
+    "CA_RISK_POLICIES": {
+      "Area": "ConditionalAccess",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Inga riskbaserade policyer",
+        "en": "No risk-based policies"
+      },
+      "Finding": {
+        "sv": "Ingen aktiverad Conditional Access-policy använder inloggningsrisk eller användarrisk.",
+        "en": "No enabled Conditional Access policy uses sign-in risk or user risk."
+      },
+      "Recommendation": {
+        "sv": "Om licensen finns (Entra ID P2): kräv MFA vid medel/hög inloggningsrisk och säkert lösenordsbyte vid hög användarrisk.",
+        "en": "When licensed (Entra ID P2): require MFA for medium/high sign-in risk and a secure password change for high user risk."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies"
+    },
+    "CA_REPORT_ONLY": {
+      "Area": "ConditionalAccess",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Policyer i report-only",
+        "en": "Policies in report-only"
+      },
+      "Finding": {
+        "sv": "{0} policyer står i report-only och skyddar inte.",
+        "en": "{0} policies are in report-only mode and do not protect."
+      },
+      "Recommendation": {
+        "sv": "Utvärdera report-only-policyerna i inloggningsloggarna och aktivera dem, eller ta bort dem.",
+        "en": "Evaluate the report-only policies in the sign-in logs and enable or remove them."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-conditional-access-report-only"
+    },
+    "CA_DISABLED": {
+      "Area": "ConditionalAccess",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Avstängda policyer",
+        "en": "Disabled policies"
+      },
+      "Finding": {
+        "sv": "{0} policyer är avstängda.",
+        "en": "{0} policies are disabled."
+      },
+      "Recommendation": {
+        "sv": "Ta bort avstängda policyer som inte ska användas, så att policylistan blir lätt att granska.",
+        "en": "Remove disabled policies that will not be used, so the policy list stays easy to review."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access"
+    },
+    "CA_EXCLUSIONS": {
+      "Area": "ConditionalAccess",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Policyer med undantag",
+        "en": "Policies with exclusions"
+      },
+      "Finding": {
+        "sv": "{0} aktiverade policyer har undantag (användare, grupper, roller, appar eller platser).",
+        "en": "{0} enabled policies have exclusions (users, groups, roles, apps or locations)."
+      },
+      "Recommendation": {
+        "sv": "Granska undantagen regelbundet, till exempel med åtkomstgranskning av undantagsgrupperna.",
+        "en": "Review the exclusions regularly, for example with access reviews of the exclusion groups."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/plan-conditional-access"
+    },
+    "APP_HIGH_RISK": {
+      "Area": "AppRegistrations",
+      "Severity": "HIGH",
+      "Title": {
+        "sv": "Appar med hög risk",
+        "en": "High-risk apps"
+      },
+      "Finding": {
+        "sv": "{0} app registrations har hög risk (utgångna credentials eller saknar ägare men har Graph-behörigheter).",
+        "en": "{0} app registrations are high risk (expired credentials, or no owner while holding Graph permissions)."
+      },
+      "Recommendation": {
+        "sv": "Utse ägare, ta bort utgångna credentials och minska behörigheterna till det som behövs.",
+        "en": "Assign owners, remove expired credentials and reduce permissions to what is needed."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity-platform/security-best-practices-for-app-registration"
+    },
+    "APP_NO_OWNER": {
+      "Area": "AppRegistrations",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "App registrations utan ägare",
+        "en": "App registrations without an owner"
+      },
+      "Finding": {
+        "sv": "{0} app registrations saknar ägare.",
+        "en": "{0} app registrations have no owner."
+      },
+      "Recommendation": {
+        "sv": "Utse minst två ägare per app så att någon ansvarar för credentials och behörigheter.",
+        "en": "Assign at least two owners per app so someone is responsible for credentials and permissions."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity-platform/security-best-practices-for-app-registration"
+    },
+    "APP_CRED_EXPIRED": {
+      "Area": "AppRegistrations",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Utgångna credentials",
+        "en": "Expired credentials"
+      },
+      "Finding": {
+        "sv": "{0} app registrations har utgångna secrets eller certifikat.",
+        "en": "{0} app registrations have expired secrets or certificates."
+      },
+      "Recommendation": {
+        "sv": "Ta bort utgångna credentials. Ta bort appen om den inte används.",
+        "en": "Remove expired credentials. Remove the app if it is not in use."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity-platform/security-best-practices-for-app-registration"
+    },
+    "APP_CRED_EXPIRING": {
+      "Area": "AppRegistrations",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Credentials som går ut inom 30 dagar",
+        "en": "Credentials expiring within 30 days"
+      },
+      "Finding": {
+        "sv": "{0} app registrations har credentials som går ut inom 30 dagar.",
+        "en": "{0} app registrations have credentials expiring within 30 days."
+      },
+      "Recommendation": {
+        "sv": "Förnya i tid och meddela ägarna, annars slutar integrationerna fungera.",
+        "en": "Renew in time and notify the owners, otherwise the integrations stop working."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity-platform/security-best-practices-for-app-registration"
+    },
+    "APP_SECRETS": {
+      "Area": "AppRegistrations",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Appar som använder client secrets",
+        "en": "Apps using client secrets"
+      },
+      "Finding": {
+        "sv": "{0} app registrations använder client secrets.",
+        "en": "{0} app registrations use client secrets."
+      },
+      "Recommendation": {
+        "sv": "Gå över till managed identity, workload identity federation eller certifikat. Blockera sedan nya secrets med en app management policy.",
+        "en": "Move to managed identities, workload identity federation or certificates. Then block new secrets with an app management policy."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview"
+    },
+    "EAPP_INACTIVE": {
+      "Area": "EnterpriseApps",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Oanvända appar med giltiga credentials",
+        "en": "Unused apps with valid credentials"
+      },
+      "Finding": {
+        "sv": "{0} enterprise apps från denna tenant har credentials men ingen inloggning på {1} dagar.",
+        "en": "{0} enterprise apps from this tenant have credentials but no sign-in for {1} days."
+      },
+      "Recommendation": {
+        "sv": "Ta bort credentials eller hela appen om den inte används. Oanvända credentials är ett vanligt mål.",
+        "en": "Remove the credentials, or the whole app, when it is not in use. Unused credentials are a common target."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity-platform/security-best-practices-for-app-registration"
+    },
+    "EAPP_ASSIGNMENT_NOT_REQUIRED": {
+      "Area": "EnterpriseApps",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "SSO-appar utan krav på tilldelning",
+        "en": "SSO apps without required assignment"
+      },
+      "Finding": {
+        "sv": "{0} SSO-appar från denna tenant kräver inte tilldelning, så alla användare kan logga in.",
+        "en": "{0} SSO apps from this tenant do not require assignment, so every user can sign in."
+      },
+      "Recommendation": {
+        "sv": "Slå på \"Assignment required\" och tilldela appen till grupper.",
+        "en": "Turn on \"Assignment required\" and assign the app to groups."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/assign-user-or-group-access-portal"
+    },
+    "SSPR_NOT_ALL": {
+      "Area": "PasswordReset",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "SSPR är inte påslaget för alla",
+        "en": "SSPR is not enabled for everyone"
+      },
+      "Finding": {
+        "sv": "Självbetjäning för lösenordsåterställning gäller: {1}.",
+        "en": "Self-service password reset scope: {1}."
+      },
+      "Recommendation": {
+        "sv": "Slå på SSPR för alla användare och använd den kombinerade registreringen för MFA och SSPR.",
+        "en": "Enable SSPR for all users and use combined registration for MFA and SSPR."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+    },
+    "SSPR_FEW_METHODS": {
+      "Area": "PasswordReset",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Få metoder för lösenordsåterställning",
+        "en": "Few password reset methods"
+      },
+      "Finding": {
+        "sv": "Bara {0} metod är tillgänglig för användarna: {1}.",
+        "en": "Only {0} method is available to users: {1}."
+      },
+      "Recommendation": {
+        "sv": "Erbjud minst två metoder, med Microsoft Authenticator som förstahandsval.",
+        "en": "Offer at least two methods, with Microsoft Authenticator as the first choice."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+    },
+    "SSPR_SECURITY_QUESTIONS": {
+      "Area": "PasswordReset",
+      "Severity": "MEDIUM",
+      "Title": {
+        "sv": "Säkerhetsfrågor är påslagna",
+        "en": "Security questions are enabled"
+      },
+      "Finding": {
+        "sv": "Säkerhetsfrågor kan användas för att återställa lösenord.",
+        "en": "Security questions can be used to reset passwords."
+      },
+      "Recommendation": {
+        "sv": "Stäng av säkerhetsfrågor. De är den svagaste metoden.",
+        "en": "Turn off security questions. They are the weakest method."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-howitworks"
+    },
+    "GROUPS_NO_OWNER": {
+      "Area": "Groups",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Molngrupper utan ägare",
+        "en": "Cloud groups without an owner"
+      },
+      "Finding": {
+        "sv": "{0} molngrupper saknar ägare.",
+        "en": "{0} cloud groups have no owner."
+      },
+      "Recommendation": {
+        "sv": "Utse ägare så att medlemskap kan granskas, eller ta bort grupper som inte används.",
+        "en": "Assign owners so memberships can be reviewed, or remove groups that are not in use."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview"
+    },
+    "GROUPS_EMPTY": {
+      "Area": "Groups",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Tomma grupper",
+        "en": "Empty groups"
+      },
+      "Finding": {
+        "sv": "{0} grupper har inga medlemmar.",
+        "en": "{0} groups have no members."
+      },
+      "Recommendation": {
+        "sv": "Ta bort tomma grupper som inte används för behörigheter eller policyer.",
+        "en": "Remove empty groups that are not used for permissions or policies."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/identity/users/groups-lifecycle"
+    },
+    "LICENSE_UNUSED": {
+      "Area": "Licenses",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Oanvända licenser",
+        "en": "Unused licences"
+      },
+      "Finding": {
+        "sv": "{0} köpta licenser är inte tilldelade.",
+        "en": "{0} purchased licences are not assigned."
+      },
+      "Recommendation": {
+        "sv": "Justera antalet vid nästa förnyelse eller tilldela licenserna.",
+        "en": "Adjust the quantity at the next renewal or assign the licences."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/fundamentals/license-users-groups"
+    },
+    "HUNT_NOT_RUN": {
+      "Area": "WorkloadIdentities",
+      "Severity": "INFO",
+      "Title": {
+        "sv": "Workload identity hunt är inte körd",
+        "en": "Workload identity hunt has not been run"
+      },
+      "Finding": {
+        "sv": "Exporten saknar resultat från jakten efter missbrukade app-credentials.",
+        "en": "The export has no results from the hunt for abused app credentials."
+      },
+      "Recommendation": {
+        "sv": "Kör jakten under fliken Tools och ange era egna IP-adresser där (sparas i Entra\\Config\\WorkloadIdentityHunt.json).",
+        "en": "Run the hunt on the Tools tab and enter your own IP addresses there (saved to Entra\\Config\\WorkloadIdentityHunt.json)."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview"
+    },
+    "HUNT_FINDINGS": {
+      "Area": "WorkloadIdentities",
+      "Severity": "HIGH",
+      "Title": {
+        "sv": "Fynd från workload identity hunt",
+        "en": "Workload identity hunt findings"
+      },
+      "Finding": {
+        "sv": "Jakten hittade {0} kritiska eller höga fynd ({1}).",
+        "en": "The hunt found {0} critical or high findings ({1})."
+      },
+      "Recommendation": {
+        "sv": "Gå igenom kapitlet Workload identity hunt. Vid komprometterade konton: återställ lösenord och återkalla sessioner. Vid appar: ta bort alla credentials och rotera hemligheter som appen kunde läsa.",
+        "en": "Go through the Workload identity hunt chapter. For compromised accounts: reset passwords and revoke sessions. For apps: remove all credentials and rotate secrets the app could read."
+      },
+      "Reference": "https://learn.microsoft.com/en-us/entra/workload-id/workload-identities-overview"
+    }
+  }
+}

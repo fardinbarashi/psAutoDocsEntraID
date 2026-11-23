@@ -250,6 +250,7 @@
                                 <CheckBox x:Name="DocSvg"   Content="SVG maps" Margin="0,0,0,8"/>
                                 <CheckBox x:Name="DocHtml"  Margin="0,0,0,8"><TextBlock TextWrapping="Wrap"><Run Text="HTML report"/><Run Text="  (Builds the SVG maps automatically if they aren't made yet)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
                                 <CheckBox x:Name="DocWord"  Margin="0,0,0,8"><TextBlock><Run Text="Word report"/></TextBlock></CheckBox>
+                                <CheckBox x:Name="DocSecurity" Margin="0,0,0,8"><TextBlock TextWrapping="Wrap"><Run Text="Security and improvements"/><Run Text="  (Word, Excel and map with the same name. Uses the Word language)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
                                 <StackPanel Orientation="Horizontal" Margin="26,0,0,2">
                                     <TextBlock Text="Language:" VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}" Width="105" Margin="0,0,12,0"/>
                                     <ComboBox x:Name="WordLanguage" Width="170" Height="26" VerticalContentAlignment="Center"/>
@@ -262,7 +263,7 @@
                                             <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Text, ElementName=WordCompanyLogo}" Value=""><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                                         </TextBlock>
                                     </Grid>
-                                    <Button x:Name="BtnCompanyLogo" Content="Browse…" Height="26" Margin="8,0,0,0" Padding="10,0"/>
+                                    <Button x:Name="BtnCompanyLogo" Content="Browse..." Height="26" Margin="8,0,0,0" Padding="10,0"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="26,2,0,2">
                                     <TextBlock Text="Client logo:" VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}" Width="105" Margin="0,0,12,0"/>
@@ -272,7 +273,7 @@
                                             <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Text, ElementName=WordClientLogo}" Value=""><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                                         </TextBlock>
                                     </Grid>
-                                    <Button x:Name="BtnClientLogo" Content="Browse…" Height="26" Margin="8,0,0,0" Padding="10,0"/>
+                                    <Button x:Name="BtnClientLogo" Content="Browse..." Height="26" Margin="8,0,0,0" Padding="10,0"/>
                                 </StackPanel>
                                 <TextBlock Foreground="#666666" FontSize="11" Margin="26,4,0,4" TextWrapping="Wrap"
                                            Text="Copies the selected file to cache\wordTemplates\template\img (companylogo / clientlogo). Word reads the logos from there."/>
@@ -281,13 +282,58 @@
                     </DockPanel>
                 </TabItem>
 
+                <!-- Tools: functions outside the normal collection. First tool: the workload identity hunt -->
+                <TabItem Header="Tools">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <DockPanel Margin="4,14,4,4">
+                        <TextBlock DockPanel.Dock="Top" Text="Workload identity hunt"
+                                   FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" Margin="2,0,0,6"/>
+                        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Foreground="{StaticResource TextSecondary}" Margin="2,0,0,12">
+                            <Run Text="Read-only hunt for stolen or abused app credentials: sign-ins from the IoC addresses, account triage, secret failures, token sweeps, credential inventory, audit changes and Conditional Access posture."/>
+                            <Run Text=" The results are saved as JSON in the export folder chosen below. Asks for IdentityRiskyUser.Read.All in addition to the usual read scopes." FontSize="11" Foreground="#666666"/>
+                        </TextBlock>
+                        <Border Style="{StaticResource Card}" Padding="16" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="Settings  (saved to Entra\Config\WorkloadIdentityHunt.json)" FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <TextBlock Text="Days back:" VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}" Width="170"/>
+                                    <TextBox x:Name="HuntDays" Width="70" Height="26" VerticalContentAlignment="Center"/>
+                                    <TextBlock Text="  (sign-in log retention is normally 30 days)" VerticalAlignment="Center" FontSize="11" Foreground="#666666"/>
+                                </StackPanel>
+                                <DockPanel Margin="0,0,0,8">
+                                    <TextBlock Text="IoC IP addresses:" VerticalAlignment="Top" Margin="0,4,0,0" Foreground="{StaticResource TextSecondary}" Width="170"/>
+                                    <TextBox x:Name="HuntIocIPs" Height="26" VerticalContentAlignment="Center" ToolTip="Comma separated"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,0,0,8">
+                                    <TextBlock Text="High-confidence IoC IPs:" VerticalAlignment="Top" Margin="0,4,0,0" Foreground="{StaticResource TextSecondary}" Width="170"/>
+                                    <TextBox x:Name="HuntHighIPs" Height="26" VerticalContentAlignment="Center" ToolTip="Comma separated. Hits from these are CRITICAL, the rest HIGH."/>
+                                </DockPanel>
+                                <DockPanel Margin="0,0,0,8">
+                                    <TextBlock Text="Own IPs / CIDRs:" VerticalAlignment="Top" Margin="0,4,0,0" Foreground="{StaticResource TextSecondary}" Width="170"/>
+                                    <TextBox x:Name="HuntKnownIPs" Height="26" VerticalContentAlignment="Center" ToolTip="Comma separated, e.g. 203.0.113.10, 198.51.100.0/24. Excluded from the unknown-IP checks."/>
+                                </DockPanel>
+                                <DockPanel Margin="0,0,0,8">
+                                    <TextBlock Text="Extra accounts to triage:" VerticalAlignment="Top" Margin="0,4,0,0" Foreground="{StaticResource TextSecondary}" Width="170"/>
+                                    <TextBox x:Name="HuntTriageUsers" Height="26" VerticalContentAlignment="Center" ToolTip="Comma separated UPNs. Their full sign-in history in the window is read even without an IoC hit."/>
+                                </DockPanel>
+                                <TextBlock Foreground="#666666" FontSize="11" Margin="170,0,0,10" TextWrapping="Wrap"
+                                           Text="Separate several values with commas. Fill in your own IPs before the first run, otherwise your own egress addresses can show up as findings."/>
+                                <CheckBox x:Name="HuntSaveRaw" Margin="0,0,0,8"><TextBlock TextWrapping="Wrap"><Run Text="Save raw sign-in rows"/><Run Text="  (every service principal sign-in and every sign-in of the triaged accounts - large and personal data)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
+                                <CheckBox x:Name="HuntNewFolder" Margin="0,0,0,8"><TextBlock TextWrapping="Wrap"><Run Text="Save into a new export folder"/><Run Text="  (instead of the export selected below)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
+                                <CheckBox x:Name="HuntBuildReport" IsChecked="True" Margin="0,0,0,2"><TextBlock TextWrapping="Wrap"><Run Text="Build Security and improvements afterwards"/><Run Text="  (Word, Excel and map - language and logos from Generate Documents)" FontSize="11" Foreground="#666666"/></TextBlock></CheckBox>
+                            </StackPanel>
+                        </Border>
+                    </DockPanel>
+                    </ScrollViewer>
+                </TabItem>
+
             </TabControl>
         </Grid>
 
         <!-- Report source folder (used by the report tabs only) -->
         <Border x:Name="ReportSourcePanel" Grid.Row="2" Background="White" BorderBrush="{StaticResource CardBorder}" BorderThickness="0,1,0,0" Padding="16,10">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Left" Text="Report source" VerticalAlignment="Center"
+                <TextBlock x:Name="SourceLabel" DockPanel.Dock="Left" Text="Report source" VerticalAlignment="Center"
                            Foreground="{StaticResource TextSecondary}" FontSize="12" Margin="0,0,10,0"/>
                 <Button x:Name="BtnBrowse" DockPanel.Dock="Right" Content="Browse..." Width="90" Height="28"
                         Margin="8,0,0,0" Style="{StaticResource SecondaryButton}"/>

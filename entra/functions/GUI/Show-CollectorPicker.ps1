@@ -8,6 +8,7 @@ function Show-CollectorPicker {
         The active tab decides the action passed to -OnRun:
           Download Data       -> @{ Action='Collect'; Collectors=@(); Formats=@() }
           Generate Documents  -> @{ Action='ReportDocs'; Formats=@(ticked); SourceFolder=... }
+          Tools               -> @{ Action='Hunt'; TargetFolder=...; HuntSettings=@{...}; ... }
 
         NOTE: the work runs on the UI thread, so the window is unresponsive while
         a job is running (progress is written to the console). It becomes usable
@@ -32,7 +33,7 @@ function Show-CollectorPicker {
     }
     if (-not (Test-Path $XamlPath)) { throw "XAML layout not found: $XamlPath" }
 
-    [xml]$xaml = Get-Content -Path $XamlPath -Raw
+    [xml]$xaml = Get-Content -Path $XamlPath -Raw -Encoding UTF8   # Windows PowerShell 5.1 would read it as ANSI
     $reader = New-Object System.Xml.XmlNodeReader $xaml
     $window = [Windows.Markup.XamlReader]::Load($reader)
 
@@ -98,8 +99,11 @@ function Show-CollectorPicker {
     # Download Data (which collects fresh data). Hide the panel on that tab.
     $actionTabs        = $window.FindName('ActionTabs')
     $reportSourcePanel = $window.FindName('ReportSourcePanel')
+    $sourceLabel       = $window.FindName('SourceLabel')
     $updateSourceVisibility = {
         $header = "$($actionTabs.SelectedItem.Header)"
+        # on the hunt tab the same folder is where the results are written
+        $sourceLabel.Text = if ($header -eq 'Tools') { 'Export folder' } else { 'Report source' }
         if ($header -eq 'Download Data') {
             $reportSourcePanel.Visibility = [System.Windows.Visibility]::Collapsed
         } else {
@@ -118,6 +122,7 @@ function Show-CollectorPicker {
     $docSvg   = $window.FindName('DocSvg')
     $docWord  = $window.FindName('DocWord')
     $docHtml  = $window.FindName('DocHtml')
+    $docSecurity = $window.FindName('DocSecurity')
 
     # Populate the Word language list from the folders under wordTemplates, so
     # adding a language folder (en, sv, es, ...) makes it selectable here.
@@ -153,6 +158,25 @@ function Show-CollectorPicker {
     $window.FindName('BtnCompanyLogo').Add_Click({ & $pickLogo $wordCompanyLogo 'companylogo' })
     $window.FindName('BtnClientLogo').Add_Click({ & $pickLogo $wordClientLogo 'clientlogo' })
 
+    # --- Tools tab, workload identity hunt: fields filled from Entra\Config\WorkloadIdentityHunt.json ---
+    $huntConfig = Join-Path (Split-Path (Split-Path $PSScriptRoot)) 'Config\WorkloadIdentityHunt.json'
+    $huntDays   = $window.FindName('HuntDays')
+    $huntIoc    = $window.FindName('HuntIocIPs')
+    $huntHigh   = $window.FindName('HuntHighIPs')
+    $huntKnown  = $window.FindName('HuntKnownIPs')
+    $huntUsers  = $window.FindName('HuntTriageUsers')
+    $huntRaw    = $window.FindName('HuntSaveRaw')
+    $huntNew    = $window.FindName('HuntNewFolder')
+    $huntReport = $window.FindName('HuntBuildReport')
+    $hcfg = Get-HuntSettings -Path $huntConfig
+    $huntDays.Text  = if ($hcfg['DaysBack']) { "$($hcfg['DaysBack'])" } else { '30' }
+    $huntIoc.Text   = (@($hcfg['IocIPs']) | Where-Object { $_ }) -join ', '
+    $huntHigh.Text  = (@($hcfg['HighConfidenceIPs']) | Where-Object { $_ }) -join ', '
+    $huntKnown.Text = (@($hcfg['KnownIPs']) | Where-Object { $_ }) -join ', '
+    $huntUsers.Text = (@($hcfg['TriageUsers']) | Where-Object { $_ }) -join ', '
+    $huntRaw.IsChecked = [bool]$hcfg['SaveRawSignIns']
+    $splitList = { param($text) @("$text" -split '[,;\s]+' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+
     $btnRun      = $window.FindName('BtnRun')
 
     $window.FindName('BtnAll').Add_Click( { foreach ($c in $list.Children) { $c.IsChecked = $true } } )
@@ -182,7 +206,22 @@ function Show-CollectorPicker {
                 if ($docSvg.IsChecked)   { $formats += 'Svg' }
                 if ($docWord.IsChecked)  { $formats += 'Word' }
                 if ($docHtml.IsChecked)  { $formats += 'Html' }
+                if ($docSecurity.IsChecked) { $formats += 'Security' }
                 [pscustomobject]@{ Action = 'ReportDocs'; Formats = $formats; SourceFolder = $chosen; WordLanguage = [string]$wordLang.SelectedItem; WordCompanyLogo = [string]$wordCompanyLogo.Text; WordClientLogo = [string]$wordClientLogo.Text }
+            }
+            'Tools' {
+                $days = 30; [void][int]::TryParse("$($huntDays.Text)", [ref]$days); if ($days -lt 1) { $days = 30 }
+                $values = @{
+                    DaysBack          = $days
+                    IocIPs            = @(& $splitList $huntIoc.Text)
+                    HighConfidenceIPs = @(& $splitList $huntHigh.Text)
+                    KnownIPs          = @(& $splitList $huntKnown.Text)
+                    TriageUsers       = @(& $splitList $huntUsers.Text)
+                    SaveRawSignIns    = [bool]$huntRaw.IsChecked
+                }
+                [pscustomobject]@{ Action = 'Hunt'; TargetFolder = $chosen; NewFolder = ([bool]$huntNew.IsChecked -or -not $chosen)
+                                   HuntSettings = $values; BuildReport = [bool]$huntReport.IsChecked
+                                   Language = [string]$wordLang.SelectedItem; WordCompanyLogo = [string]$wordCompanyLogo.Text; WordClientLogo = [string]$wordClientLogo.Text }
             }
             default {
                 $selectedCollectors = @(foreach ($c in $list.Children) { if ($c.IsChecked) { [string]$c.Tag } })
@@ -199,7 +238,7 @@ function Show-CollectorPicker {
         # Let WPF paint the disabled state before the (blocking) work starts
         $window.Dispatcher.Invoke([action]{}, [Windows.Threading.DispatcherPriority]::Render)
 
-        try   { & $OnRun $request; $status.Text = "Finished: $header at $(Get-Date -Format 'HH:mm:ss')" }
+        try   { & $OnRun $request; $status.Text = "Finished: $header at $(Get-Date -Format 'HH:mm:ss')"; if ($request.Action -eq 'Hunt') { & $populateSource } }
         catch { $status.Text = "Failed: $($_.Exception.Message)" ; Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red }
         finally { $btnRun.IsEnabled = $true }
     })

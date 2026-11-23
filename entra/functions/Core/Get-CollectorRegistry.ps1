@@ -16,6 +16,8 @@ function Get-CollectorRegistry {
                         LicenseRef, GraphRef, Collected) and returning its
                         dataset hashtable.
         The registry is the single place to add/remove/reorder datasets.
+        The workload identity hunt is not here: it has its own tab and run
+        (Invoke-AutodocHunt) and writes into an existing export.
     #>
     @(
         [pscustomobject]@{

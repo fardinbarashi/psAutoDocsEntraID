@@ -41,4 +41,18 @@
         'User.Read.All'
         'UserAuthenticationMethod.Read.All'
     )
+
+    # Workload identity hunt (Tools tab / -Mode Hunt): its own module
+    # list and scopes, so a normal collection never asks for IdentityRiskyUser.
+    HuntModules = @(
+        'ImportExcel'
+        'Microsoft.Graph.Authentication'
+    )
+    HuntScopes = @(
+        'AuditLog.Read.All'
+        'Directory.Read.All'
+        'Application.Read.All'
+        'Policy.Read.All'
+        'IdentityRiskyUser.Read.All'
+    )
 }

@@ -1,0 +1,27 @@
+{
+  "About": "Settings for the workload identity hunt. The hunt is read-only and separate from the normal collection: run it on the Tools tab (which edits this file) or with .\\Autodoc.ps1 -Mode Hunt [-ExportFolder <path>]. Results are saved as JSON datasets in the export's rawDataJson (WorkloadIdentityHunt, HuntAccountTriage, HuntCredentials, HuntAuditChanges, HuntIocSpSignIns, HuntIocUserSignIns, HuntSecretFailures). SaveRawSignIns also saves every service principal sign-in and every sign-in of the triaged accounts (HuntSpSignIns, HuntTriageSignIns) - large and personal data, so it is off by default.",
+  "DaysBack": 30,
+  "IocIPs": [
+    "199.19.77.84",
+    "199.19.77.18",
+    "65.87.223.26"
+  ],
+  "HighConfidenceIPs": [
+    "199.19.77.84"
+  ],
+  "KnownIPs": [],
+  "TriageUsers": [],
+  "SpThreshold": 3,
+  "TokenWindowMinutes": 60,
+  "MaxSignIns": 250000,
+  "MaxUserSignIns": 20000,
+  "NewCredentialDays": 30,
+  "UnusedDays": 90,
+  "SliceHours": 24,
+  "SkipInventory": false,
+  "SkipFederatedCredentials": false,
+  "Quiet": false,
+  "HtmlMaxRows": 20000,
+  "NoHtml": false,
+  "SaveRawSignIns": false
+}

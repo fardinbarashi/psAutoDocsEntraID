@@ -30,6 +30,15 @@ function Write-ExportReadme {
         'EnterpriseApps'          = 'Enterprise applications (service principals): single sign-on, Microsoft Graph usage and client type.'
         'RBAC'                    = 'Directory role assignments (active and eligible) with the principal that holds each role.'
         'PasswordReset'           = 'Self-service password reset (SSPR) configuration for the tenant.'
+        'WorkloadIdentityHunt'    = 'Workload identity hunt findings, sorted by severity: IoC sign-ins, account triage verdicts, secret failures, token sweeps, credentials and posture.'
+        'HuntAccountTriage'       = 'Workload identity hunt: one row per account with sign-ins from IoC addresses - verdict, error codes and action.'
+        'HuntCredentials'         = 'Workload identity hunt: every client secret, certificate and federated credential on apps and service principals.'
+        'HuntAuditChanges'        = 'Workload identity hunt: audit log changes to app credentials, owners and consents.'
+        'HuntIocSpSignIns'        = 'Workload identity hunt: service principal sign-ins from the IoC addresses.'
+        'HuntIocUserSignIns'      = 'Workload identity hunt: user and managed identity sign-ins from the IoC addresses.'
+        'HuntSecretFailures'      = 'Workload identity hunt: invalid / expired secret errors (AADSTS7000215 / 7000222) from unknown addresses.'
+        'HuntSpSignIns'           = 'Workload identity hunt raw data (only with SaveRawSignIns): every service principal sign-in in the window.'
+        'HuntTriageSignIns'       = 'Workload identity hunt raw data (only with SaveRawSignIns): every sign-in of the triaged accounts.'
     }
 
     # short description of each output sub-folder
@@ -37,10 +46,12 @@ function Write-ExportReadme {
         @{ N = 'rawDataJson';          D = 'Raw data pulled from Microsoft Graph, one file per area (each file is documented below).' }
         @{ N = 'rawDataCsv';           D = 'The same data as CSV - one file per area, opens directly in Excel or a text editor.' }
         @{ N = 'rawDataExcel';         D = 'Per-area Excel workbooks (one sheet of raw data each).' }
+        @{ N = 'WorkloadIdentityHunt'; D = 'Workload identity hunt (only after a hunt run on the Tools tab): one CSV per data set and a self-contained HTML report with search, filters and CSV export.' }
         @{ N = 'rawDataTenantSummary'; D = 'A short, high-level summary of the tenant.' }
         @{ N = 'Report\excelkpi';      D = 'The KPI workbook "KPI <stamp>.xlsx": dashboard, charts and one analysed sheet per area.' }
         @{ N = 'Report\svg';           D = 'Vector maps of the tenant (open in a web browser). That folder has its own README.' }
         @{ N = 'Report\pdf';           D = 'PDF copies of every SVG map, gathered in one place for sharing or printing.' }
+        @{ N = 'Report\security';     D = 'Security and improvements: a JSON file with the proposals, and the Word document, Excel workbook and map (SVG + PDF) built from it, all with the same name.' }
         @{ N = 'Report\word';          D = 'The Word system-documentation report (.docx).' }
     )
 

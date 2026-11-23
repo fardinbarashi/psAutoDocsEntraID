@@ -8,7 +8,7 @@ function Invoke-AutodocReport {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][string]$EntraRoot,
-        [Parameter(Mandatory)][ValidateSet('Excel','Svg','Word','Html')][string]$Kind,
+        [Parameter(Mandatory)][ValidateSet('Excel','Svg','Word','Html','Security')][string]$Kind,
         [string]$SourceFolder,
         [string]$WordLanguage,
         [string]$WordCompanyLogo,
@@ -74,6 +74,18 @@ function Invoke-AutodocReport {
                 if ($WordClientLogo)  { $wx['CustomerLogo'] = $WordClientLogo }
                 Build-EntraWordReport -ExportsRoot $exportsRoot @extra @wx
                 if ($src) { $outFolder = Join-Path $src 'Report\word' }
+            }
+            'Security' {
+                if (-not $src) {
+                    Write-Host "No export folder to build the security report from - run a collection first." -ForegroundColor Yellow
+                } else {
+                    $sx = @{}
+                    if ($WordLanguage)    { $sx['Language'] = $WordLanguage }
+                    if ($WordCompanyLogo) { $sx['ConsultantLogo'] = $WordCompanyLogo }
+                    if ($WordClientLogo)  { $sx['CustomerLogo'] = $WordClientLogo }
+                    Build-EntraSecurityReport -SourceFolder $src @sx | Out-Null
+                    $outFolder = Join-Path $src 'Report\security'
+                }
             }
             'Html'  {
                 if (-not $src) {
