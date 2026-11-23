@@ -156,7 +156,7 @@ function Export-TenantSummary {
             SummaryExcelPath = $Paths.SummaryExcel
             DataSetSummary   = $summaryIndexData
             DashboardSummary = $summaryDashboard
-        } | ConvertTo-Json -Depth 20 | Out-File -Path $Paths.SummaryJson -Encoding UTF8 -Force
+        } | ConvertTo-Json -Depth 20 | Out-File -FilePath $Paths.SummaryJson -Encoding UTF8 -Force
 
         Write-Host "Done. Consolidated TenantSummary workbook created:" -ForegroundColor DarkGreen
         Write-Host $Paths.SummaryExcel -ForegroundColor DarkGreen

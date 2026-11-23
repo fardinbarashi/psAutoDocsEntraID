@@ -34,6 +34,6 @@ function Export-InventoryData {
     if (-not $formats) { $formats = @('Csv','Json','Excel') }   # default: all three
 
     if ($formats -contains 'Csv')   { $Data     | Export-Csv -Path $csvFile -NoTypeInformation -Encoding UTF8 -Force }
-    if ($formats -contains 'Json')  { $JsonData | ConvertTo-Json -Depth $JsonDepth | Out-File -Path $jsonFile -Force }
+    if ($formats -contains 'Json')  { $JsonData | ConvertTo-Json -Depth $JsonDepth | Out-File -FilePath $jsonFile -Force }
     if ($formats -contains 'Excel') { $Data     | Export-Excel -Path $excelFile -WorksheetName $WorksheetName -AutoSize -TableName $WorksheetName }
 }

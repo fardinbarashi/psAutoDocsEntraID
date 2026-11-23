@@ -1,8 +1,19 @@
 # Autodoc v1.0
 function Initialize-Modules {
     <#
-        Checks, installs (with prompt for Graph version pinning) and imports
-        every module the script needs. Behaviour matches the original loop.
+        Makes sure every module the script needs is installed, then imports them.
+
+        1. Check: every module is checked first, without installing anything.
+           Microsoft.Graph* modules must be exactly -TargetGraphVersion; other
+           modules only need to be installed.
+        2. Ask once: if something is missing or has the wrong version, the list is
+           shown and you choose
+             [A] install all
+             [S] select - answer Y/N per module
+             [N] install nothing and continue
+        3. Install what was chosen (CurrentUser scope). A Graph module with the
+           wrong version has its other versions uninstalled first.
+        4. Import every module.
     #>
     [CmdletBinding()]
     param(
@@ -10,67 +21,98 @@ function Initialize-Modules {
         [Parameter(Mandatory)][version]$TargetGraphVersion
     )
 
-    Write-Host "-> Start checking required modules..."
+    Write-Host "-> Checking required modules..."
 
+    # ---- 1. check everything first ----
+    $todo = [System.Collections.Generic.List[object]]::new()
     foreach ($module in $RequiredModules) {
-        Write-Host "`nChecking module: $module" -ForegroundColor DarkGray
-
-        $installedModules = @(Get-Module -ListAvailable -Name $module | Sort-Object Version -Descending)
-        $isGraphModule    = $module -like 'Microsoft.Graph*'
-
-        if ($isGraphModule) {
-            $hasCorrectVersion = $installedModules | Where-Object { $_.Version -eq $TargetGraphVersion }
-            if (-not $hasCorrectVersion) {
-                if ($installedModules.Count -gt 0) {
-                    Write-Host "---> Microsoft Graph module found, but not version $TargetGraphVersion." -ForegroundColor Yellow
-                    Write-Host "     Installed version(s): $($installedModules.Version -join ', ')" -ForegroundColor Yellow
-                }
-                else { Write-Host "---> Microsoft Graph module not found." -ForegroundColor Red }
-
-                $answer = Read-Host "Do you want to uninstall existing versions and install $module version $TargetGraphVersion? (Y/N)"
-                if ($answer -match '^(Y|y|J|j)$') {
-                    Write-Host "---> Installing correct version for $module..." -ForegroundColor Yellow
-                    try {
-                        if (Get-Module -Name $module) { Remove-Module -Name $module -Force -ErrorAction SilentlyContinue }
-                        if ($installedModules.Count -gt 0) {
-                            Get-InstalledModule -Name $module -AllVersions -ErrorAction SilentlyContinue |
-                                Uninstall-Module -Force -ErrorAction SilentlyContinue
-                        }
-                        Install-Module -Name $module -RequiredVersion $TargetGraphVersion -Scope CurrentUser -Force -AllowClobber
-                        Write-Host "----> $module version $TargetGraphVersion installed." -ForegroundColor DarkGreen
-                    }
-                    catch {
-                        Write-Host "----> Failed to install $module version $TargetGraphVersion." -ForegroundColor Red
-                        Write-Host "     Error: $($_.Exception.Message)" -ForegroundColor Red
-                        Write-Host "     Continuing script..." -ForegroundColor Yellow
-                    }
-                }
-                else { Write-Host "---> Skipping installation of correct version. Continuing script..." -ForegroundColor Yellow }
-            }
-            else { Write-Host "---> Correct Microsoft Graph module version found: $TargetGraphVersion" -ForegroundColor Green }
+        $installed = @(Get-Module -ListAvailable -Name $module | Sort-Object Version -Descending)
+        $isGraph   = $module -like 'Microsoft.Graph*'
+        $status = if (-not $installed) { 'Missing' }
+                  elseif ($isGraph -and -not ($installed | Where-Object { $_.Version -eq $TargetGraphVersion })) { 'WrongVersion' }
+                  else { 'OK' }
+        if ($status -eq 'OK') {
+            Write-Host ("   {0,-55} OK ({1})" -f $module, $installed[0].Version) -ForegroundColor DarkGreen
+            continue
         }
-        else {
-            if (-not $installedModules) {
-                Write-Host "---> Module not found! Installing..." -ForegroundColor Red
-                try { Install-Module -Name $module -Scope CurrentUser -Force -AllowClobber }
-                catch {
-                    Write-Host "----> Failed to install $module." -ForegroundColor Red
-                    Write-Host "     Error: $($_.Exception.Message)" -ForegroundColor Red
-                    Write-Host "     Continuing script..." -ForegroundColor Yellow
-                }
-            }
-            else { Write-Host "---> Module found." -ForegroundColor Green }
+        $todo.Add([pscustomobject]@{
+            Module    = $module
+            IsGraph   = $isGraph
+            Status    = $status
+            Installed = (@($installed.Version | Select-Object -Unique) -join ', ')
+            Target    = $(if ($isGraph) { "$TargetGraphVersion" } else { 'latest' })
+        })
+    }
+
+    # ---- 2. ask once ----
+    if ($todo.Count -gt 0) {
+        Write-Host ""
+        Write-Host "-> $($todo.Count) module(s) need to be installed:" -ForegroundColor Yellow
+        foreach ($t in $todo) {
+            $what = if ($t.Status -eq 'Missing') { 'missing' } else { "installed $($t.Installed), needs $($t.Target)" }
+            Write-Host ("   {0,-55} {1}" -f $t.Module, $what) -ForegroundColor Yellow
+        }
+        Write-Host ""
+        $choice = ''
+        while ($choice -notmatch '^[ASN]$') {
+            $choice = (Read-Host "Install? [A] All  [S] Select per module  [N] None").Trim().ToUpper()
+            if ($choice -eq 'J') { $choice = 'A' }   # Swedish "ja" = all
         }
 
+        $chosen = switch ($choice) {
+            'A' { @($todo) }
+            'N' { @() }
+            'S' {
+                @(foreach ($t in $todo) {
+                    $a = ''
+                    while ($a -notmatch '^[YNJ]$') { $a = (Read-Host "  Install $($t.Module) ($($t.Target))? (Y/N)").Trim().ToUpper() }
+                    if ($a -in 'Y', 'J') { $t }
+                })
+            }
+        }
+        $skipped = @($todo | Where-Object { $chosen -notcontains $_ })
+        foreach ($s in $skipped) { Write-Host "   Skipped: $($s.Module) - parts of the script that need it may fail." -ForegroundColor DarkYellow }
+
+        # ---- 3. install what was chosen ----
+        $i = 0
+        foreach ($t in $chosen) {
+            $i++
+            Write-Host "`n-> [$i/$($chosen.Count)] Installing $($t.Module) ($($t.Target))..." -ForegroundColor Yellow
+            try {
+                if ($t.IsGraph) {
+                    if (Get-Module -Name $t.Module) { Remove-Module -Name $t.Module -Force -ErrorAction SilentlyContinue }
+                    if ($t.Status -eq 'WrongVersion') {
+                        Get-InstalledModule -Name $t.Module -AllVersions -ErrorAction SilentlyContinue |
+                            Uninstall-Module -Force -ErrorAction SilentlyContinue
+                    }
+                    Install-Module -Name $t.Module -RequiredVersion $TargetGraphVersion -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+                }
+                else {
+                    Install-Module -Name $t.Module -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+                }
+                Write-Host "   Installed." -ForegroundColor DarkGreen
+            }
+            catch {
+                Write-Host "   Failed to install $($t.Module): $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "   Continuing script..." -ForegroundColor Yellow
+            }
+        }
+    }
+
+    # ---- 4. import ----
+    Write-Host ""
+    Write-Host "-> Importing modules..."
+    foreach ($module in $RequiredModules) {
         try {
-            Write-Host "---> Importing module..." -ForegroundColor Yellow
-            Import-Module $module -ErrorAction Stop
-            Write-Host "----> Module imported." -ForegroundColor DarkGreen
+            if ($module -like 'Microsoft.Graph*' -and (Get-Module -ListAvailable -Name $module | Where-Object { $_.Version -eq $TargetGraphVersion })) {
+                Import-Module $module -RequiredVersion $TargetGraphVersion -ErrorAction Stop
+            }
+            else { Import-Module $module -ErrorAction Stop }
+            Write-Host "   $module" -ForegroundColor DarkGreen
         }
         catch {
-            Write-Host "----> Could not import module: $module" -ForegroundColor Red
-            Write-Host "     Error: $($_.Exception.Message)" -ForegroundColor Red
-            Write-Host "     Continuing script..." -ForegroundColor Yellow
+            Write-Host "   Could not import $module : $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "   Continuing script..." -ForegroundColor Yellow
         }
     }
 

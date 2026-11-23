@@ -11,6 +11,8 @@
       .\Autodoc.ps1 -Collectors UserInformation,ConditionalAccess    # collect only these datasets
       .\Autodoc.ps1 -All -Formats Excel    # collect everything, Excel output only
       .\Autodoc.ps1 -Mode Report           # step 2: build Excel charts from latest export
+      .\Autodoc.ps1 -Mode Hunt             # workload identity hunt into the latest export
+      .\Autodoc.ps1 -Mode Hunt -ExportFolder <path>   # ...into this export (new folder if none exists)
 
     Author : Fardin Barashi
     GitHub : https://github.com/fardinbarashi/psAutoDocs
@@ -18,11 +20,12 @@
 #>
 
 param(
-    [ValidateSet('Collect','Report')][string]$Mode,   # bypass the GUI
+    [ValidateSet('Collect','Report','Hunt')][string]$Mode,   # bypass the GUI
     [string[]]$Collectors,   # collect only these registry keys
     [string[]]$Formats,      # any of: Csv, Json, Excel (default: all three)
     [switch]$All,            # collect everything without the GUI
-    [switch]$NoGui           # headless full collect (same as -All)
+    [switch]$NoGui,          # headless full collect (same as -All)
+    [string]$ExportFolder    # -Mode Hunt: export folder to write into (default: latest)
 )
 
 $ErrorActionPreference = 'Continue'
@@ -45,7 +48,6 @@ $Settings = Import-PowerShellDataFile (Join-Path $EntraRoot 'Config\Settings.psd
 Get-ChildItem (Join-Path $EntraRoot 'Functions') -Recurse -Filter '*.ps1' |
     ForEach-Object { . $_.FullName }
 
-
 $registry        = Get-CollectorRegistry
 $selectedFormats = if ($Formats) { @($Formats) } else { @('Csv','Json','Excel') }
 
@@ -57,13 +59,19 @@ $runAction = {
         'ReportDocs' {
             $fmts = @($request.Formats)
             if (-not $fmts -or $fmts.Count -eq 0) {
-                Write-Host "No formats selected - tick at least one (Excel, SVG, HTML, Word)." -ForegroundColor Yellow
+                Write-Host "No formats selected - tick at least one (Excel, SVG, HTML, Word, Security)." -ForegroundColor Yellow
             } else {
                 foreach ($fmt in $fmts) {
                     Invoke-AutodocReport -EntraRoot $EntraRoot -Kind $fmt -SourceFolder $request.SourceFolder `
                         -WordLanguage $request.WordLanguage -WordCompanyLogo $request.WordCompanyLogo -WordClientLogo $request.WordClientLogo
                 }
             }
+        }
+        'Hunt' {
+            Invoke-AutodocHunt -EntraRoot $EntraRoot -Settings $Settings -TargetFolder $request.TargetFolder `
+                -NewFolder:([bool]$request.NewFolder) -HuntSettings $request.HuntSettings -BuildReport:([bool]$request.BuildReport) `
+                -Language $(if ($request.Language) { $request.Language } else { 'sv' }) `
+                -ConsultantLogo $request.WordCompanyLogo -CustomerLogo $request.WordClientLogo | Out-Null
         }
         default {
             Invoke-AutodocCollect -EntraRoot $EntraRoot -Settings $Settings -Registry $registry `
@@ -73,7 +81,11 @@ $runAction = {
 }
 
 # --- Headless modes (no GUI) ----------------------------------------------
-if     ($Mode -eq 'Report') { & $runAction ([pscustomobject]@{ Action = 'ReportDocs'; Formats = @('Excel') }); return }
+if     ($Mode -eq 'Hunt') {
+    $target = Resolve-AutodocSource -SourceFolder $ExportFolder -ExportsRoot $ExportsRoot
+    & $runAction ([pscustomobject]@{ Action = 'Hunt'; TargetFolder = $target; NewFolder = (-not $target) }); return
+}
+elseif ($Mode -eq 'Report') { & $runAction ([pscustomobject]@{ Action = 'ReportDocs'; Formats = @('Excel') }); return }
 elseif ($Collectors)        { & $runAction ([pscustomobject]@{ Action = 'Collect'; Collectors = @($Collectors);   Formats = $selectedFormats }); return }
 elseif ($All -or $NoGui -or $Mode -eq 'Collect') {
                               & $runAction ([pscustomobject]@{ Action = 'Collect'; Collectors = @($registry.Key); Formats = $selectedFormats }); return }
