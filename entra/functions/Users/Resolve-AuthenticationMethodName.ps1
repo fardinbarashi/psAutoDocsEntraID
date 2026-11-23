@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Resolve-AuthenticationMethodName {
     <# Maps a Graph auth-method @odata.type to a friendly name. #>
     param([string]$ODataType)

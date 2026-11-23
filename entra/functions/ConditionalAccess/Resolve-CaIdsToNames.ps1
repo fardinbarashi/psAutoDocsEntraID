@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Resolve-CaIdsToNames {
     <#
         Resolves a set of CA condition IDs (users/groups/roles/apps/locations)

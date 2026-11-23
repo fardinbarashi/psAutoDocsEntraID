@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 <#
     Autodoc
     ------------------------------------------------------------------
@@ -40,6 +40,11 @@ $ExportsRoot = Join-Path $EntraRoot 'files\exports'
 if ($env:OS -eq 'Windows_NT') {   # $IsWindows does not exist in Windows PowerShell 5.1
     Get-ChildItem -Path $ScriptRoot -Recurse -File -Include '*.ps1','*.psm1','*.psd1' |
         Unblock-File -ErrorAction SilentlyContinue
+}
+
+# --- Windows PowerShell 5.1: allow TLS 1.2 for downloads (Microsoft Learn, GitHub)
+if ($PSVersionTable.PSEdition -eq 'Desktop') {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 }
 
 # --- Load configuration + functions from the Entra module -----------------

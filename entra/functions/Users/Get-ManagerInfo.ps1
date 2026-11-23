@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-ManagerInfo {
     <#
         Returns a user's manager (id / UPN / display name), using the expanded

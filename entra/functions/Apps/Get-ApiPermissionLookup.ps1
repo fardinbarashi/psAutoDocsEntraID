@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-ApiPermissionLookup {
     <#
         Builds the table needed to turn API permission GUIDs into names.

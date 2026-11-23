@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Invoke-AutodocReport {
     <#
         STEP 2 wrapper - runs a report builder with a transcript, so report runs

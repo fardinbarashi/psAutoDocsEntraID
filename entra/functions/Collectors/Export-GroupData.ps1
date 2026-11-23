@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-GroupData {
     <#
         Section 1.3 - Groups with owners, members, role assignments, licenses,

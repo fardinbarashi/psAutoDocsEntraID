@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Invoke-AutodocCollect {
     <#
         STEP 1 - Runs a full collection: module check, Graph connect, reference

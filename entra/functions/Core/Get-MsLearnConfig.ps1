@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-MsLearnConfig {
     <#
         Reads AzureDocs.json and downloads each data source into the cache
@@ -15,7 +15,7 @@ function Get-MsLearnConfig {
         return
     }
 
-    $config = Get-Content $ConfigPath | ConvertFrom-Json
+    $config = Read-AutodocJson -Path $ConfigPath
 
     foreach ($source in $config.dataSources) {
         $url = if ($source.downloadUrl) { $source.downloadUrl } else { $source.url }

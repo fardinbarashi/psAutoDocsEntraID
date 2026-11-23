@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-ServicePrincipalSignInActivityLookup {
     <#
         Builds an AppId -> sign-in activity lookup from the beta

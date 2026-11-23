@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-TenantInformation {
     <#
         Section 1.2.1 - Tenant info + directory object counts + verified domains.

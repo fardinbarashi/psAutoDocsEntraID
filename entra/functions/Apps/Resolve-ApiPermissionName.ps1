@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Resolve-ApiPermissionName {
     <#
         Turns an application's RequiredResourceAccess into readable text, e.g.

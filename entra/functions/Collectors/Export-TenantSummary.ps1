@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-TenantSummary {
     <#
         Section 1.12 - Builds the consolidated TenantSummary: a multi-sheet Excel

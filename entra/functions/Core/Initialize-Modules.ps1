@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Initialize-Modules {
     <#
         Makes sure every module the script needs is installed, then imports them.

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Invoke-AutodocHunt {
     <#
         Runs the workload identity hunt on its own (Tools tab, or

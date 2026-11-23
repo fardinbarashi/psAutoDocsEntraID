@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-InventoryData {
     <#
         Writes a dataset to CSV, JSON and Excel in one call.
@@ -34,6 +34,10 @@ function Export-InventoryData {
     if (-not $formats) { $formats = @('Csv','Json','Excel') }   # default: all three
 
     if ($formats -contains 'Csv')   { $Data     | Export-Csv -Path $csvFile -NoTypeInformation -Encoding UTF8 -Force }
-    if ($formats -contains 'Json')  { $JsonData | ConvertTo-Json -Depth $JsonDepth | Out-File -FilePath $jsonFile -Force }
+    if ($formats -contains 'Json')  {
+        # 5.1 would write dates as \/Date(...)\/ - ConvertTo-AutodocJsonSafe writes ISO 8601 like PowerShell 7
+        $jsonOut = if ($PSVersionTable.PSEdition -eq 'Desktop') { ConvertTo-AutodocJsonSafe -InputObject $JsonData -Depth $JsonDepth } else { $JsonData }
+        $jsonOut | ConvertTo-Json -Depth $JsonDepth | Out-File -FilePath $jsonFile -Encoding UTF8 -Force
+    }
     if ($formats -contains 'Excel') { $Data     | Export-Excel -Path $excelFile -WorksheetName $WorksheetName -AutoSize -TableName $WorksheetName }
 }

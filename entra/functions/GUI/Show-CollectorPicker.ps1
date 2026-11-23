@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Show-CollectorPicker {
     <#
         Shows the Autodoc window (layout in Entra\Config\CollectorPicker.xaml).
