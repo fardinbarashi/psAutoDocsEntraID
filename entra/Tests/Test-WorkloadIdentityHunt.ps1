@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 <#
     Self-test for the workload identity hunt. Needs no tenant and no sign-in.
 
@@ -65,6 +65,7 @@ param($EntraRoot, $CaseDir, $Mode, $ArgsText)
 $ErrorActionPreference = 'Stop'
 Import-Module Microsoft.Graph.Authentication
 Get-ChildItem (Join-Path $EntraRoot 'Functions\Hunt') -Filter '*.ps1' | ForEach-Object { . $_.FullName }
+. (Join-Path $EntraRoot 'Functions\Core\Read-AutodocJson.ps1')
 Start-Transcript -Path (Join-Path $CaseDir 'transcript.log') -Force | Out-Null
 try {
     if ($Mode -eq 'Collector') {

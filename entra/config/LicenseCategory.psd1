@@ -1,4 +1,4 @@
-@{
+﻿@{
     # Groups purchased SKUs for the licence map so related licences sit together.
     #
     # Order matters: groups are laid out left to right in the order listed here.

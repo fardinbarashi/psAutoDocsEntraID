@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function New-AutodocPaths {
     <#
         Builds every path the script uses for a single run and creates the

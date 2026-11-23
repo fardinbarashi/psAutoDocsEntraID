@@ -1,4 +1,4 @@
-@{
+﻿@{
     # Target Microsoft Graph module version
     TargetGraphVersion = '2.33.0'
 

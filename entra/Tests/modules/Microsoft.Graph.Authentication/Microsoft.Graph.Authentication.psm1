@@ -1,4 +1,4 @@
-# Autodoc v1.0 - test double for Microsoft.Graph.Authentication used by Test-WorkloadIdentityHunt.ps1
+﻿# Autodoc v1.0 - test double for Microsoft.Graph.Authentication used by Test-WorkloadIdentityHunt.ps1
 # Test double for Microsoft.Graph.Authentication. Generates Graph-like data, no network.
 # $env:MOCK_DATES = 'string' (like Windows PowerShell 5.1) or 'datetime' (like PowerShell 7)
 # $env:MOCK_SCENARIO = 'full' | 'empty'

@@ -1,4 +1,4 @@
-@{
+﻿@{
     # SKU part number  ->  text that appears in the icon file name
     #
     # The map builder looks for an icon in three passes, stopping at the first hit:
