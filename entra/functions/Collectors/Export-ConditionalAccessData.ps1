@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-ConditionalAccessData {
     <#
         Section 1.5 - Conditional Access policies, named locations and

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraSvgMaps {
     <#
         Builds every SVG map for an export into <export>\Report\svg and returns

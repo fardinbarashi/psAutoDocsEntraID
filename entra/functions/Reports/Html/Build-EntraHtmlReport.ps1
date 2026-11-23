@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraHtmlReport {
     <#
         Builds one self-contained HTML report that gathers every SVG map for an

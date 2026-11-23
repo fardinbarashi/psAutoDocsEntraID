@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-WordTemplateValues {
     <#
         Builds the flat {placeholder} -> value table used to fill the Word

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Add-KpiSheetAppRegistrations {
     <#
         App registration overview: ownership, tenancy, credential expiry,

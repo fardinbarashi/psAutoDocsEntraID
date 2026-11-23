@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-PdfConverterExe {
     <#
         Locates an external converter executable by probing the usual install

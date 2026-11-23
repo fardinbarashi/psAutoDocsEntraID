@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function ConvertTo-ExcelColumnLetter {
     <# 1 -> A, 28 -> AB. Used to place KPI cards and chart source tables. #>
     param([Parameter(Mandatory)][int]$Index)
@@ -71,6 +71,11 @@ function ConvertTo-SafeDateTime {
     param($Value)
 
     if (-not $Value) { return $null }
+    if ($Value -is [datetime]) { return $Value }
+    # "/Date(1700000000000)/" - how Windows PowerShell 5.1 writes dates to JSON
+    if ("$Value" -match '^\\?/Date\((-?\d+)') {
+        return [datetime]::SpecifyKind([datetime]'1970-01-01', 'Utc').AddMilliseconds([double]$Matches[1]).ToLocalTime()
+    }
     try   { return [datetime]::Parse("$Value", [System.Globalization.CultureInfo]::InvariantCulture) }
     catch {
         try   { return [datetime]"$Value" }

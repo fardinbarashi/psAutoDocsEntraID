@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraSecurityMapSvg {
     <#
         "Security and improvements" map: a header box with the tenant, then one

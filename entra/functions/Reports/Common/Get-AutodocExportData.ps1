@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-AutodocExportData {
     <#
         Loads one exported dataset from an export folder. Prefers JSON, falls
@@ -13,7 +13,7 @@ function Get-AutodocExportData {
 
     $jsonFile = Get-ChildItem -Path (Join-Path $ExportFolder 'rawDataJson') -Filter "$BaseName*.json" -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($jsonFile) {
-        try   { return @(Get-Content -Path $jsonFile.FullName -Raw -Encoding UTF8 | ConvertFrom-Json) }
+        try   { return @(Read-AutodocJson -Path $jsonFile.FullName) }
         catch { Write-Host "  JSON unreadable for $BaseName ($($_.Exception.Message)) - trying CSV." -ForegroundColor Yellow }
     }
 

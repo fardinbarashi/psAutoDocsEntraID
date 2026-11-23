@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-MapAsSvg {
     <#
         Renders a shape/connector model as a self-contained SVG picture that

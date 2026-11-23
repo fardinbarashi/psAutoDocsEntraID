@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Invoke-WorkloadIdentityHunt {
     <#
         Workload identity hunt. Looks for signs of a stolen or abused app

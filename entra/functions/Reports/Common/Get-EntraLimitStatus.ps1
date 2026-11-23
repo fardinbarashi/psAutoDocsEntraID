@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-EntraLimitStatus {
     <#
         Compares the tenant's actual counts against the documented Microsoft
@@ -33,7 +33,7 @@ function Get-EntraLimitStatus {
         Write-Host "Service-limits config not found: $ConfigPath" -ForegroundColor Yellow
         return
     }
-    $config = Get-Content $ConfigPath -Raw | ConvertFrom-Json
+    $config = Read-AutodocJson -Path $ConfigPath
 
     # ---- gather the raw counts once ----
     $ti    = @(Get-AutodocExportData -ExportFolder $SourceFolder -BaseName 'TenantInformation') | Select-Object -First 1

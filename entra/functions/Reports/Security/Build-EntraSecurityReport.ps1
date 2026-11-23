@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraSecurityReport {
     <#
         Builds the "Security and improvements" set into <export>\Report\security,
@@ -24,7 +24,7 @@ function Build-EntraSecurityReport {
 
     if (-not $SourceFolder -and -not $DataJson) { throw 'Give -SourceFolder (an export) or -DataJson (an earlier result).' }
     $cfgPath = Join-Path (Split-Path (Split-Path (Split-Path $PSScriptRoot))) 'Config\SecurityImprovements.json'
-    $names = (Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable).Text.FileName
+    $names = (Read-AutodocJson -Path $cfgPath -AsHashtable).Text.FileName
     $lang = if ("$Language" -eq 'en') { 'en' } else { 'sv' }
     $stamp = Get-Date -Format 'yyyy-MM-dd_HH.mm.ss'
 

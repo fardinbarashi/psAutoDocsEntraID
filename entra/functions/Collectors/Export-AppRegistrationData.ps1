@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-AppRegistrationData {
     <#
         Section 1.4 - App registrations + matching enterprise apps (service

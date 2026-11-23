@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-KpiCardData {
     <#
         Returns the KPI cards shown at the top of the Excel KPI sheets, computed

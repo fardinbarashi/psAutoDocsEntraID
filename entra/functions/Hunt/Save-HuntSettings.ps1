@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-HuntSettings {
     <#
         Reads Entra\Config\WorkloadIdentityHunt.json as an ordered hashtable
@@ -7,7 +7,7 @@ function Get-HuntSettings {
     [CmdletBinding()]
     param([Parameter(Mandatory)][string]$Path)
     if (-not (Test-Path $Path)) { return [ordered]@{} }
-    try { Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable }
+    try { $h = Read-AutodocJson -Path $Path -AsHashtable; if ($h) { $h } else { [ordered]@{} } }
     catch { Write-Host "  Could not read $Path : $($_.Exception.Message)" -ForegroundColor Yellow; [ordered]@{} }
 }
 

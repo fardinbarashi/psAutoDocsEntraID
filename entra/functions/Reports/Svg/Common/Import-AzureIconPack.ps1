@@ -1,4 +1,4 @@
-function Import-AzureIconPack {
+﻿function Import-AzureIconPack {
     <#
         Fills files\cache\Azure icons\Icons from Microsoft's official Azure icon pack.
 

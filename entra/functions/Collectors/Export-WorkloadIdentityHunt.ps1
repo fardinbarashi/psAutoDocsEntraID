@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-WorkloadIdentityHunt {
     <#
         Workload identity hunt as Autodoc datasets. Reads its settings from
@@ -35,7 +35,7 @@ function Export-WorkloadIdentityHunt {
         if (-not $ConfigPath) { $ConfigPath = Join-Path $Paths.Root 'Config\WorkloadIdentityHunt.json' }
         $huntArgs = @{}
         if (Test-Path $ConfigPath) {
-            $cfg = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
+            $cfg = Read-AutodocJson -Path $ConfigPath
             $known = (Get-Command Invoke-WorkloadIdentityHunt).Parameters
             foreach ($p in $cfg.PSObject.Properties) {
                 if (-not $known.ContainsKey($p.Name) -or $p.Name -in 'OutputFolder','ReportFolder') { continue }

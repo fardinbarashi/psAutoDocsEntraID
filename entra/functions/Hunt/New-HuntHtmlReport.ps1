@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 <#
     Self-contained HTML report (no external files or CDN) for
     Invoke-WorkloadIdentityHunt:

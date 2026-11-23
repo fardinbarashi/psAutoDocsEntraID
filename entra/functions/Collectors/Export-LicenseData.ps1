@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-LicenseData {
     <#
         Section 1.2.2 - Subscribed SKUs / license inventory.

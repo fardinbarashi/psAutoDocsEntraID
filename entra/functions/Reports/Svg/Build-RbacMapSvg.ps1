@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-RbacMapSvg {
     <#
         RBAC as six category sections. Each section has a coloured header and the

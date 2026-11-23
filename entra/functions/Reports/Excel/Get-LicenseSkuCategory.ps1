@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-LicenseSkuCategory {
     <#
         Classifies a SKU as 'Purchased' or 'Free/Viral'.

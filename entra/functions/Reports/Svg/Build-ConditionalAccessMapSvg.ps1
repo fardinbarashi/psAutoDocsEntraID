@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-ConditionalAccessMapSvg {
     <#
         SVG map of Conditional Access policies. One card per policy, coloured by

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-AppRegMapSvg {
     <#
         SVG map of app registrations as detail cards in a masonry layout. Each

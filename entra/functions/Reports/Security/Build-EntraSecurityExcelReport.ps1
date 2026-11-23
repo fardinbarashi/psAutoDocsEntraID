@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraSecurityExcelReport {
     <#
         "Security and improvements" workbook. Same content as the Word file,

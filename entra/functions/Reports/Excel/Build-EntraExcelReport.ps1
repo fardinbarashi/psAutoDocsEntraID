@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraExcelReport {
     <#
         STEP 2 - Builds "KPI <date>_<time>.xlsx": a licence-focused workbook with

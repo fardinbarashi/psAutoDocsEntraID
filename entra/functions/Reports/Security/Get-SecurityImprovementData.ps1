@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-SecurityImprovementData {
     <#
         Builds everything the "Security and improvements" report shows (Word,
@@ -27,7 +27,7 @@ function Get-SecurityImprovementData {
 
     $lang = if ("$Language" -eq 'en') { 'en' } else { 'sv' }
     $entraRoot = Split-Path (Split-Path (Split-Path $PSScriptRoot))   # Functions\Reports\Security -> Entra
-    $cfg = Get-Content -LiteralPath (Join-Path $entraRoot 'Config\SecurityImprovements.json') -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+    $cfg = Read-AutodocJson -Path (Join-Path $entraRoot 'Config\SecurityImprovements.json') -AsHashtable
 
     function Pick($entry) { if ($entry -and "$($entry[$lang])") { "$($entry[$lang])" } elseif ($entry) { "$($entry['en'])" } else { '' } }
     function Share([double]$part, [double]$whole) {

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-UserData {
     <#
         Section 1.2.3 - Users + assigned licenses/plans, manager and auth methods.

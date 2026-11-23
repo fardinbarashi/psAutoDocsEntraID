@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-PasswordResetData {
     <#
         Section 1.7.1 - Self-service password reset (SSPR) configuration:

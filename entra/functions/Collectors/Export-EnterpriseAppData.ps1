@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-EnterpriseAppData {
     <#
         Section 1.5 - Enterprise applications (service principals) in their own

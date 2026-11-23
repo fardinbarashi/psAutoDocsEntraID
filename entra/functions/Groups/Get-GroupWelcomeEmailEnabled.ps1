@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Get-GroupWelcomeEmailEnabled {
     <#
         For M365 (Unified) groups, reads autoSubscribeNewMembers from the beta

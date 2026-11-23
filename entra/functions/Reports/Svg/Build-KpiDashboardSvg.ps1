@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-KpiDashboardSvg {
     <#
         A one-page dashboard of the tenant, drawn as doughnut charts in

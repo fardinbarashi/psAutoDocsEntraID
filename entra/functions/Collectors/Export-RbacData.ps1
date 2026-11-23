@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Export-RbacData {
     <#
         Section 1.6 - RBAC / PIM: active and eligible directory role assignments

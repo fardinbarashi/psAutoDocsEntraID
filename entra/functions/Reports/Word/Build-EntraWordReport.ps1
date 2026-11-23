@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraWordReport {
     <#
         Builds a Word system-documentation report (.docx) from an export, in pure
@@ -32,11 +32,11 @@ function Build-EntraWordReport {
     # document text - editable per language under files\cache\wordTemplates\<lang> (also matches eng/swe)
     $txtAll = @{}
     $txtFile = Join-Path $entraRoot 'Config\wordText.json'
-    if (Test-Path $txtFile) { try { $txtAll = Get-Content -LiteralPath $txtFile -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable } catch { $txtAll = @{} } }
+    if (Test-Path $txtFile) { try { $txtAll = Read-AutodocJson -Path $txtFile -AsHashtable } catch { $txtAll = @{} } }
     function T($k) { $e = $txtAll[$k]; if ($e -and "$($e[$lang])") { "$($e[$lang])" } elseif ($e -and "$($e['en'])") { "$($e['en'])" } else { "[$k]" } }
     $prof = @{}
     $profilePath = Join-Path $entraRoot 'Config\WordReportProfile.json'
-    if (Test-Path $profilePath) { try { $prof = Get-Content -LiteralPath $profilePath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable } catch { $prof = @{} } }
+    if (Test-Path $profilePath) { try { $prof = Read-AutodocJson -Path $profilePath -AsHashtable } catch { $prof = @{} } }
     # real values live centrally in Config\WordReportProfile.json; a blank field falls back to the per-language default/placeholder in Config\wordText.json
     $consultant = if ("$($prof.ConsultantCompany)") { "$($prof.ConsultantCompany)" } else { T 'ConsultantPlaceholder' }
     $author     = if ("$($prof.Author)") { "$($prof.Author)" } else { T 'AuthorPlaceholder' }

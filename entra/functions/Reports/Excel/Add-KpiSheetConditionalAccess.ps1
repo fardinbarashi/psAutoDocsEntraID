@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Add-KpiSheetConditionalAccess {
     <#
         Conditional Access overview: policy states, targeting, MFA usage and

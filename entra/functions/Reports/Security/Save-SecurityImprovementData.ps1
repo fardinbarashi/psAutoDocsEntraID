@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Save-SecurityImprovementData {
     <#
         Writes the result of Get-SecurityImprovementData to a JSON file. This
@@ -26,7 +26,7 @@ function Save-SecurityImprovementData {
     }
     $dir = Split-Path $Path -Parent
     if ($dir -and -not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
-    $doc | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $Path -Encoding UTF8
+    ConvertTo-AutodocJsonSafe -InputObject $doc -Depth 8 | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $Path -Encoding UTF8
     return $Path
 }
 
@@ -43,9 +43,9 @@ function Import-SecurityImprovementData {
         [string]$Language
     )
 
-    $doc = Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json
+    $doc = Read-AutodocJson -Path $Path
     $entraRoot = Split-Path (Split-Path (Split-Path $PSScriptRoot))   # Functions\Reports\Security -> Entra
-    $cfg = Get-Content -LiteralPath (Join-Path $entraRoot 'Config\SecurityImprovements.json') -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+    $cfg = Read-AutodocJson -Path (Join-Path $entraRoot 'Config\SecurityImprovements.json') -AsHashtable
     $lang = if ($Language) { $(if ($Language -eq 'en') { 'en' } else { 'sv' }) } else { "$($doc.Language)" }
 
     # another language than the file: take the rule texts from the config again

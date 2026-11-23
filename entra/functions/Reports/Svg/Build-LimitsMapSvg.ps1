@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-LimitsMapSvg {
     <#
         Builds the "Service limits & recommendations" SVG: one horizontal bar

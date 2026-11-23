@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-RbacMatrixSvg {
     <#
         RBAC broken into six category matrices (by function / risk). Each matrix

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Add-KpiSheetRbac {
     <#
         RBAC overview: role assignments, privileged roles, principals holding

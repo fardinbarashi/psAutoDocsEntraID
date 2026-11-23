@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Add-KpiSheetEnterpriseApps {
     <#
         Enterprise application overview: SSO configuration, protocol mix,

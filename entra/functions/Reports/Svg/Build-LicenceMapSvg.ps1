@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-LicenceMapSvg {
     <#
         Builds the SVG licence map.

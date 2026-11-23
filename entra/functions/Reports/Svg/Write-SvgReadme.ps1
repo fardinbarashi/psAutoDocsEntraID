@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Write-SvgReadme {
     <#
         Writes a README.md into the SVG output folder describing each generated

@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-EntraSecurityWordReport {
     <#
         "Security and improvements" Word document (.docx), written as raw Office
@@ -31,7 +31,7 @@ function Build-EntraSecurityWordReport {
     $entraRoot = Split-Path (Split-Path (Split-Path $PSScriptRoot))   # Functions\Reports\Security -> Entra
     $prof = @{}
     $profilePath = Join-Path $entraRoot 'Config\WordReportProfile.json'
-    if (Test-Path $profilePath) { try { $prof = Get-Content -LiteralPath $profilePath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable } catch { $prof = @{} } }
+    if (Test-Path $profilePath) { try { $prof = Read-AutodocJson -Path $profilePath -AsHashtable } catch { $prof = @{} } }
     $tenant     = $Data.Tenant
     $consultant = if ("$($prof.ConsultantCompany)") { "$($prof.ConsultantCompany)" } else { '[Consultant]' }
     $author     = if ("$($prof.Author)") { "$($prof.Author)" } else { '[Author]' }

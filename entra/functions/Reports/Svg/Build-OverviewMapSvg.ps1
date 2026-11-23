@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-OverviewMapSvg {
     <#
         A single combined overview. Two styles via -Style:

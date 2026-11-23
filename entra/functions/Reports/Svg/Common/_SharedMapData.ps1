@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 # ---------------------------------------------------------------------------
 # Shared DATA for the maps. These only read and shape the exported
 # data - they do NOT build any drawing model. Each SVG map builder makes its

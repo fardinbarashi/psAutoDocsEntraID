@@ -1,4 +1,4 @@
-# Autodoc v1.0
+﻿# Autodoc v1.0
 function Build-GroupDeptMatrixSvg {
     <#
         Group -> department matrices, one SVG FILE PER FIRST LETTER. Each file
