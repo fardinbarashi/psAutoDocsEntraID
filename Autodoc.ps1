@@ -30,11 +30,21 @@ $ScriptRoot = $PSScriptRoot
 $EntraRoot  = Join-Path $ScriptRoot 'Entra'
 $ExportsRoot = Join-Path $EntraRoot 'files\exports'
 
+# --- Unblock files downloaded from the internet (GitHub zip) --------------
+# Windows marks every file in a downloaded zip as "from the internet", and the
+# RemoteSigned execution policy then asks before each one is loaded. Removing
+# that mark once here stops the prompts for the rest of the files.
+if ($env:OS -eq 'Windows_NT') {   # $IsWindows does not exist in Windows PowerShell 5.1
+    Get-ChildItem -Path $ScriptRoot -Recurse -File -Include '*.ps1','*.psm1','*.psd1' |
+        Unblock-File -ErrorAction SilentlyContinue
+}
+
 # --- Load configuration + functions from the Entra module -----------------
 $Settings = Import-PowerShellDataFile (Join-Path $EntraRoot 'Config\Settings.psd1')
 . (Join-Path $EntraRoot 'Config\Paths.ps1')
 Get-ChildItem (Join-Path $EntraRoot 'Functions') -Recurse -Filter '*.ps1' |
     ForEach-Object { . $_.FullName }
+
 
 $registry        = Get-CollectorRegistry
 $selectedFormats = if ($Formats) { @($Formats) } else { @('Csv','Json','Excel') }
