@@ -23,7 +23,7 @@ psAutoDocs connects to Microsoft Graph, saves a **read-only** snapshot of the te
 |---|---|---|
 | [Features](#features) | [Excel KPI workbook](#excel-kpi-workbook) | [Graph scopes](#graph-scopes) |
 | [How it works](#how-it-works) | [SVG maps](#svg-maps) | [Project layout](#project-layout) |
-| [Requirements](#requirements) | [Export folder](#export-folder) | [Performance](#performance) |
+| [Requirements](#requirements) | [Export folder](#export-folder) | |
 | [Quick start](#quick-start) | | |
 
 ---
@@ -284,14 +284,6 @@ entra\
   Settings\                 Templates and script settings
   files\                    Cache and exports
 ```
-
-### Performance
-
-| Area | Note |
-|---|---|
-| Users, groups, app registrations | The slowest areas in large tenants |
-| Groups | Faster when Users is also selected, since member data is reused |
-| Overview tree | Can be very tall in large tenants. Opens best in Firefox |
 
 ---
 
